@@ -1,0 +1,141 @@
+KSON: Keyless Schemafied Object Notation
+=======================================-
+
+KSON is a simple data interchange format based on JSON, intended to have
+a more compact serialized representation and to require only a minimal
+javscript library to parse and serialize.
+
+JSON includes keys as part of its serailized data and is restricted to a
+narrow set of datatypes. KSON uses a simple schema format to describe
+serialized objects which allows keys to be omitted from serailized
+data. An extensible encoding/decoding mechanism can be used to extend
+native JSON datatypes and further reduce the size of serialized data.
+
+
+Q: Why should I use this instead of JSON/MessagePack/Thrift/...?
+A: Unless you are targeting the browser you shouldn't. If you are,
+   then size and speed of the libraries needed to use these formats
+   in the browser may be prohibitive.
+
+Q: Is it faster than JSON?
+A: Tests using node.js indicate that parsing is marginally slower.
+   This may be outweighed by faster transmission speed of signifigantly
+   less data.
+
+Q: Is this a drop in replacement for JSON?
+A: No, you will need to write schema definitions for your data. Automatic
+   schema detection based on example data may help in getting started.
+   The top level elements in KSON data is also restricted to be either an
+   *array* or an *object*.
+
+Q: Why a new schema format?
+A: Existing JSON schemas formats include extrenious information to the
+   purpose of KSON and would require larger javascript library for
+   parsing and serialization.
+
+
+Schema Specification:
+
+A KSON schema consists of three fields:
+    id              *string* identifier
+    fields          *array* of field names
+    meta            *array* signifying the types associated with
+                    corresponding elements in the *fields* array.
+
+
+An element of *meta* specifies the content of the element of *fields* at
+the same index. The lengths of the *fields* and *meta* arrays must be equal.
+An element of *meta* must be one of the following:
+    0                field contains a plain value of type
+                     *string*, *boolean*, *number*, *null*.
+    "[]"             *array* of plain values
+    "schema_id"      *string* reference the schema of a nested object
+    "[]schema_id"    
+    "codec_id"
+    "[]codec_id"
+
+
+An example JSON object followed by possible schemas and the same data
+serialized in KSON using those schemas:
+
+JSON Data:
+
+    [
+        {
+           "title": "Forrest Gump",
+           "year": 1994,
+           "rating": 8.7,
+           "cover": "http://movies.db/covers/8.jpg",
+           "actors": [
+                {
+                    "name": "Tom Hanks",
+                    "character": "Forest Gump",
+                },
+                {
+                    "name": "Robin Wright",
+                    "character": "Jenny Curran"
+                },
+                {
+                    "name": "Gary Sinise",
+                    "character": "Lieutenant Dan Taylor"
+                }
+           ]
+        },
+        {
+            "title": "Toy Story",
+            ...
+        }
+        ...
+    ]
+
+JSON Schemas:
+
+    {
+        "id": "role",
+        "fields": ["name", "character"],
+        "meta": [0, 0]
+    }
+
+    {
+        "id": "movie",
+        "fields": ["title", "year", "rating", "cover", "actors"],
+        "meta": [0, 0, 0, "prefix(http://movies.db/covers/)", "[]role"]
+    }
+
+KSON Schemas
+    
+    ["schema", "role", ["name", "character"], [0, 0]]
+
+    ["schema", "movie", ["title", "year", "rating", "cover", "actors"],
+        [0, 0, 0, "prefix(http://movies.db/covers/)", "[]role"]
+    ]
+
+KSON Data:
+
+    ["[]movie", "Forest Gump", 1994, 8.7, "8.jpg", [
+            ["Tom Hanks", "Forest Gump"],
+            ["Robin Wright", "Jenny Curran"],
+            ["Gary Sinise", "Lieutenant Dan Taylor"]
+        ], "Toy Story", ...
+    ]
+
+
+Here is some meta geekery for those inclined. The schema schema for
+KSON has the identifier "schema" and its own schema definition in JSON
+looks like this:
+
+{
+    "id": "schema",
+    "fields": ["id", "fields", "meta"],
+    "meta": [0, "[]", "[]"]
+}
+
+The same definition in KSON would in theory look like this:
+
+["schema", ["id", "fields", "meta"], [0, "[]", "[]"]]
+
+Of course no KSON library could parse this without having parsed 
+it first..., so a library must be initialized/bootstraped with this
+schema definiton by another means before being able to parse any
+further schema definitions.
+
