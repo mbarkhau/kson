@@ -90,7 +90,7 @@ The same definition in KSON would in theory look like this:
 but of course no KSON library could parse this without having parsed 
 it first..., so a library must be initialized/bootstraped with this
 schema definiton by another means before being able to parse any
-further schema definitions.
+further schema definitions. Meta enough for you yet?
 
 
 
