@@ -1,8 +1,11 @@
-"""KSON: Keyless Schemafied Object Notation
+"""KSON: Keystripped Schemafied Object Notation v0.1
 
-KSON is a data interchange format based on JSON, intended to be more
-efficient in terms of size and requiring only a minimal javscript
-library to parse and serialize.
+KSON is a simple data interchange format based on JSON. It has a more
+compact serialized representation and requires only a minimal javscript
+library to parse and serialize. KSON removes keys from its serailized
+representation and defines an extensible codec mechanism to further
+reduce the size of serialized data. KSON uses a simple schema format
+to describe arbitrarrily nested objects.
 
 Usage:
     kson --auto-schema <name> <input.json>
@@ -14,6 +17,7 @@ from base64 import b64encode
 
 try:
     import ujson as json
+
     def json_dumps(*args, **kwargs):
         kwargs['encode_html_chars'] = False
         return json.dumps(*args, **kwargs)
@@ -144,7 +148,7 @@ def loads(data, schema_id=None):
                         val[i] = decoder(val[i], obj)
                 else:
                     val = decoder(val, obj)
-        
+
         obj[fields[j]] = val
 
     if not is_array:
@@ -169,6 +173,7 @@ add_schema({
 #   	bool should turn out to be enum(false, true)
 def detect_codecs(data, schema_id):
     return 0
+
 
 def compact_schemas(base_schema_id):
     def replace_schema(old_sid, new_sid):
@@ -205,7 +210,6 @@ def compact_schemas(base_schema_id):
                 break
 
 
-
 def detect_meta(obj, id_prefix, lvl):
     idx = 0
     meta_map = {}
@@ -218,8 +222,8 @@ def detect_meta(obj, id_prefix, lvl):
 
 def detect_schemas(data, id_prefix=None, lvl=0, idx=0):
     if id_prefix is None:
-        id_prefix = "auto_schema_" + b64encode(os.urandom(6))
-    schema_id = id_prefix + "_" + str(lvl) + "_" + str(idx)
+        id_prefix = "auto-schema-" + b64encode(os.urandom(6))
+    schema_id = id_prefix + "-" + str(lvl) + "-" + str(idx)
     fields = set()
     meta_map = {}
     if isinstance(data, dict):
@@ -299,22 +303,26 @@ bench()
 sys.exit(0)
 
 
-def main(argv):
+def main(args):
+    from docopt import docopt
+    opts = docopt(__doc__, args, version='KSON v0.1')
+    print opts
+
     # movies = json_loads(open("movies.json").read())
     # movie_schema_id = detect_schemas(movies, "movies")
     # print len(json.dumps(movies))
     # print len(dumps(movies, movie_schema_id))
-    
+
     # books = json_loads(open("books.json").read())
     # books_schema_id = detect_schemas(books, "books")
     # print len(json.dumps(books))
     # print len(dumps(books, books_schema_id))
-    
+
     # apis = json_loads(open("apis.json").read())
     # apis_schema_id = detect_schemas(apis, "apis")
     # print len(json.dumps(apis))
     # print len(dumps(apis, apis_schema_id))
-    
+
     api_description = json.loads(open("api_description.json").read())
     api_description_schema_id = detect_schemas(api_description, "apidesc")
     print len(json.dumps(api_description))
