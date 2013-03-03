@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """KSON: Keystripped Schemafied Object Notation v0.1
 
 KSON is a simple data interchange format based on JSON. It has a more
@@ -8,8 +9,17 @@ reduce the size of serialized data. KSON uses a simple schema format
 to describe arbitrarrily nested objects.
 
 Usage:
-    kson --auto-schema <name> <input.json>
+    kson -i <json-input> -s <schema-file> [-o <kson-output>] [-v]
+    kson --auto-schema <schema-name> -i <example-json-input>
+         [-o <schema-output>] [-vj]
 
+Options:
+    --version               Show version
+    -v --verbose            Show schema data and compression info
+    -i --input=<input>      Input file
+    -s --schema=<schema>    Schema file in KSON or JSON format
+    -o --output=<output>    Output file (defaults to)
+    -j --json               Write schema-output as JSON instead of KSON
 """
 import os
 import sys
@@ -32,11 +42,14 @@ DECODERS = {}
 ENCODERS = {}
 SCHEMAS = {}
 
+_verbose = False
+
 
 def add_schema(schema):
     if isinstance(schema, basestring):
         schema = loads(schema)
-    if schema['id'] not in SCHEMAS:
+
+    if _verbose and schema['id'] not in SCHEMAS:
         print "Adding new schema: ", schema['id']
         print "\t", schema['fields']
         print "\t", schema['meta']
@@ -299,14 +312,17 @@ def bench():
     print "loads kson   ", timeit("kson_loads(raw_kson)")
 
 
-bench()
-sys.exit(0)
-
-
 def main(args):
     from docopt import docopt
     opts = docopt(__doc__, args, version='KSON v0.1')
+
+    global _verbose
+    _verbose = opts['--verbose']
+
+    if opts['--auto-schema']:
+
     print opts
+    return 0
 
     # movies = json_loads(open("movies.json").read())
     # movie_schema_id = detect_schemas(movies, "movies")
