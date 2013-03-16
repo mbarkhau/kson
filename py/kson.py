@@ -49,10 +49,19 @@ def add_schema(schema):
     if isinstance(schema, basestring):
         schema = loads(schema)
 
-    if _verbose and schema['id'] not in SCHEMAS:
+    if _verbose:
         print "Adding new schema: ", schema['id']
         print "\t", schema['fields']
         print "\t", schema['meta']
+
+    if 'id' not in schema:
+        raise ValueError("Invalid Schema: Missing field 'id'")
+    if 'fields' not in schema:
+        raise ValueError("Invalid Schema: Missing field 'fields'")
+    if 'meta' not in schema:
+        raise ValueError("Invalid Schema: Missing field 'meta'")
+
+    assert len(schema['fields']) == len(schema['meta'])
 
     SCHEMAS[schema['id']] = schema
 
@@ -124,6 +133,11 @@ def dumps(data, schema_id, is_sublist=False):
 
 def loads(data, schema_id=None):
     data = json_loads(data) if isinstance(data, basestring) else data
+    if not isinstance(data, list) or len(data) == 0:
+        return data
+    if not isinstance(data[0], basestring):
+        return data
+
     data_start = 0
     if not schema_id:
         schema_id = data[0]
@@ -320,6 +334,7 @@ def main(args):
     _verbose = opts['--verbose']
 
     if opts['--auto-schema']:
+        pass
 
     print opts
     return 0
