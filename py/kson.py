@@ -192,7 +192,7 @@ def loads(data, schema_id=None):
     data = json_loads(data) if isinstance(data, basestring) else data
     if not isinstance(data, list) or len(data) == 0:
         return data
-    if not isinstance(data[0], basestring):
+    if not (schema_id or isinstance(data[0], basestring)):
         return data
 
     data_start = 0
