@@ -52,16 +52,24 @@ import sys
 from base64 import b64encode
 
 try:
-    import ujson as json
+    import simplejson as json
+except ImportError:
+    import json
+
+default_json_dumps = json.dumps
+default_json_loads = json.loads
+
+try:
+    import ujson
+    json_loads = ujson.loads
 
     def json_dumps(*args, **kwargs):
         kwargs['encode_html_chars'] = False
-        return json.dumps(*args, **kwargs)
+        return ujson.dumps(*args, **kwargs)
 except ImportError:
-    import json
-    json_dumps = json.dumps
+    json_dumps = default_json_dumps
+    json_loads = default_json_loads
 
-json_loads = json.loads
 
 
 DECODERS = {}
@@ -152,7 +160,7 @@ def load(fp_or_filename, *args, **kwargs):
     return loads(data, *args, **kwargs)
 
 
-def dumps(data, schema_id, is_sublist=False):
+def dumps(data, schema_id, is_sublist=False, *args, **kwargs):
     is_array = schema_id[0] == u"["
     schema_id = schema_id[2:] if is_array else schema_id
     schema = SCHEMAS[schema_id]
@@ -185,6 +193,9 @@ def dumps(data, schema_id, is_sublist=False):
 
     if is_sublist:
         return result
+
+    if args or kwargs:
+        return default_json_dumps(result, *args, **kwargs)
     return json_dumps(result)
 
 
