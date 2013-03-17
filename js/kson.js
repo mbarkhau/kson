@@ -46,7 +46,7 @@
 )(function () {
 "use strict";
 
-var DECODERS = {}, ENCODERS = {}, SCHEMAS = {};
+var CODECS = {}, DECODERS = {}, ENCODERS = {}, SCHEMAS = {};
 
 function addSchema(schema) {
 	if (typeof schema === 'string') {
@@ -55,9 +55,9 @@ function addSchema(schema) {
 	SCHEMAS[schema.id] = schema;
 }
 
-function addCodec(name, decoder, encoder){
-	DECODERS[name] = decoder;
+function addCodec(name, encoder, decoder){
 	ENCODERS[name] = encoder;
+	DECODERS[name] = decoder;
 }
 
 function stringify(data, schema_id, is_subarray) {
@@ -192,6 +192,23 @@ addSchema({
 	meta: [0, "[]", "[]"]
 });
 
+addCodec('enum',
+	function(vals) {return function (val) {return vals.indexOf[val]; }; },
+	function(vals) {return function (val) {return vals[val]; }; }
+);
+
+addCodec('prefix',
+	function (prefix) {
+		return function (val) {
+
+		};
+	},
+	function (prefix) {
+		return function (val) {
+
+		};
+	}
+)
 // equivalent in KSON (if the schema schema were already bootstrapped)
 // addSchema('["schema", ["id", "fields", "meta"], [0,0,0]]');
 
