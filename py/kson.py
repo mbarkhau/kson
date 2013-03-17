@@ -49,6 +49,7 @@ Options:
 """
 import os
 import sys
+import collections
 from base64 import b64encode
 
 try:
@@ -71,9 +72,10 @@ except ImportError:
     json_loads = default_json_loads
 
 
+_DECODERS = {}
+_ENCODERS = {}
 
-DECODERS = {}
-ENCODERS = {}
+CODEC_FACTORIES = {}
 SCHEMAS = {}
 
 _verbose = False
@@ -121,25 +123,26 @@ def loads_schemas(schema_data):
         add_schema(schemas)
 
 
-def add_codec(name, decoder, encoder):
-    DECODERS[name] = decoder
-    ENCODERS[name] = encoder
+def add_codec(name, codec):
+    CODEC_FACTORIES[name] = codec
 
 
-def encoder(name):
-    """decorator to register a kson encoder function"""
-    def _dec(fn):
-        ENCODERS[name] = fn
-        return fn
-    return _dec
+def codec(codec_or_name):
+    """decorator to register a kson codec factory function"""
+    if not isinstance(codec_or_name, basestring):
+        # assume the argument is the factory function
+        codec = codec_or_name
+        name = codec.__name__
+        CODEC_FACTORIES[name] = codec
+        return codec
 
+    name = codec_or_name
 
-def decoder(name):
-    """decorator to register a kson decoder function"""
-    def _dec(fn):
-        DECODERS[name] = fn
-        return fn
-    return _dec
+    def dec(codec):
+        CODEC_FACTORIES[name] = codec
+        return codec
+
+    return dec
 
 
 def dump(data, fp_or_filename, *args, **kwargs):
@@ -168,6 +171,12 @@ def dumps(data, schema_id, is_sublist=False, *args, **kwargs):
     meta = schema['meta']
     result = []
 
+    if is_array and not isinstance(data, collections.Iterable):
+        raise ValueError("Schema specifies array, got %s" % type(data))
+
+    if not is_array and not isinstance(data, collections.Mapping):
+        raise ValueError("Schema specifies object, got %s" % type(data))
+
     if not is_sublist:
         result.append("[]" + schema_id if is_array else schema_id)
 
@@ -182,8 +191,8 @@ def dumps(data, schema_id, is_sublist=False, *args, **kwargs):
                 _meta_id = meta_id[2:] if meta_is_subarray else meta_id
                 if _meta_id in SCHEMAS:
                     val = dumps(val, meta_id, True)
-                elif _meta_id in ENCODERS:
-                    encoder = ENCODERS[_meta_id]
+                elif _meta_id in _ENCODERS:
+                    encoder = _ENCODERS[_meta_id]
                     if meta_is_subarray:
                         for i in xrange(len(val)):
                             val[i] = encoder(val[i], obj)
@@ -236,8 +245,8 @@ def loads(data, schema_id=None):
             _meta_id = meta_id[2:] if meta_is_subarray else meta_id
             if _meta_id in SCHEMAS:
                 val = loads(val, meta_id)
-            elif _meta_id in DECODERS:
-                decoder = DECODERS[_meta_id]
+            elif _meta_id in _DECODERS:
+                decoder = _DECODERS[_meta_id]
                 if meta_is_subarray:
                     for k in xrange(len(val)):
                         val[i] = decoder(val[i], obj)
@@ -259,6 +268,18 @@ add_schema({
     'fields': ['id', 'fields', 'meta'],
     'meta': [0, "[]", "[]"]
 })
+
+
+@codec('prefix')
+def prefix_codec(prefix):
+    def encoder(val):
+        if val.startswith(prefix):
+            return val.replace(prefix, "", 1)
+
+    def decoder(val):
+        return prefix + val
+
+    return encoder, decoder
 
 
 # TODO: codecs
