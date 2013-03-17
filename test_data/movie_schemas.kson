@@ -1,0 +1,1 @@
+["[]schema", "movies-status", ["code", "text"], [0, 0], "movies-item", ["id", "title", "rating", "year", "description", "cover_big", "cover_small", "description_plain", "genres"], [0, 0, 0, 0, 0, 0, 0, 0, "[]"], "movies-content", ["movies", "size"], ["[]movies-item", 0], "movies", ["status", "content"], ["movies-status", "movies-content"]]

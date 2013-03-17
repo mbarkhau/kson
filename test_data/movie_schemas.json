@@ -1,0 +1,32 @@
+{
+    "movies": {
+        "id": "movies",
+        "fields": ["status", "content"],
+        "meta": ["movies-status", "movies-content"]
+    }, 
+    "movies-status": {
+        "id": "movies-status",
+        "fields": ["code", "text"],
+        "meta": [0, 0 ]
+    }, 
+    "movies-content": {
+        "id": "movies-content",
+        "fields": ["movies", "size"],
+        "meta": ["[]movies-item", 0]
+    }, 
+    "movies-item": {
+        "id": "movies-item",
+        "fields": [
+            "id", 
+            "title", 
+            "rating", 
+            "year", 
+            "description", 
+            "cover_big", 
+            "cover_small", 
+            "description_plain", 
+            "genres"
+        ], 
+        "meta": [0, 0, 0, 0, 0, 0, 0, 0, "[]"]
+    }
+}
