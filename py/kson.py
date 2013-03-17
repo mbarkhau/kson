@@ -153,7 +153,7 @@ def load(fp_or_filename, *args, **kwargs):
 
 
 def dumps(data, schema_id, is_sublist=False):
-    is_array = schema_id[0] is "["
+    is_array = schema_id[0] == u"["
     schema_id = schema_id[2:] if is_array else schema_id
     schema = SCHEMAS[schema_id]
     fields = schema['fields']
@@ -170,7 +170,7 @@ def dumps(data, schema_id, is_sublist=False):
         for field, meta_id in zip(fields, meta):
             val = obj.get(field, None)
             if val is not None:
-                meta_is_subarray = meta_id and meta_id[0] == "["
+                meta_is_subarray = meta_id and meta_id[0] == u"["
                 _meta_id = meta_id[2:] if meta_is_subarray else meta_id
                 if _meta_id in SCHEMAS:
                     val = dumps(val, meta_id, True)
@@ -200,7 +200,7 @@ def loads(data, schema_id=None):
         schema_id = data[0]
         data_start = 1
 
-    is_array = schema_id[0] == "["
+    is_array = schema_id[0] == u"["
     if is_array:
         schema_id = schema_id[2:]
         result = []
@@ -221,7 +221,7 @@ def loads(data, schema_id=None):
         meta_id = meta[j]
 
         if val is not None:
-            meta_is_subarray = meta_id and meta_id[0] == "["
+            meta_is_subarray = meta_id and meta_id[0] == u"["
             _meta_id = meta_id[2:] if meta_is_subarray else meta_id
             if _meta_id in SCHEMAS:
                 val = loads(val, meta_id)
