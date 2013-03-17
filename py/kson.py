@@ -134,12 +134,22 @@ def decoder(name):
     return _dec
 
 
-def dump(data, fp, *args, **kwargs):
-    return fp.write(dumps(data, *args, **kwargs))
+def dump(data, fp_or_filename, *args, **kwargs):
+    data = dumps(data, *args, **kwargs)
+    if isinstance(fp_or_filename, basestring):
+        with open(fp_or_filename, 'w') as fp:
+            fp.write(data)
+    else:
+        fp_or_filename.write(data)
 
 
-def load(fp, *args, **kwargs):
-    return loads(fp.read(), *args, **kwargs)
+def load(fp_or_filename, *args, **kwargs):
+    if isinstance(fp_or_filename, basestring):
+        with open(fp_or_filename, 'r') as f:
+            data = f.read()
+    else:
+        data = fp_or_filename.read()
+    return loads(data, *args, **kwargs)
 
 
 def dumps(data, schema_id, is_sublist=False):
