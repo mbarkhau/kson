@@ -18,7 +18,9 @@ def minify(s):
 
 
 def data_eq(a, b):
-    return json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
+    a_val = json.dumps(a, sort_keys=True)
+    b_val = json.dumps(b, sort_keys=True)
+    return a_val == b_val
 
 
 FAMILY_SCHEMAS = """[
@@ -124,10 +126,10 @@ def test_schema_loading():
 
 def test_multi_schema_loading():
     kson.load_schemas(FIXTURES_PATH + "movie_schemas.kson")
-    assert kson.SCHEMAS['movies'] == MOVIE_SCHEMAS['movies']
-    assert kson.SCHEMAS['movies-status'] == MOVIE_SCHEMAS['movies-status']
-    assert kson.SCHEMAS['movies-content'] == MOVIE_SCHEMAS['movies-content']
-    assert kson.SCHEMAS['movies-item'] == MOVIE_SCHEMAS['movies-item']
+    assert kson.SCHEMAS['movies-item'] == MOVIE_SCHEMAS[0]
+    assert kson.SCHEMAS['movies-content'] == MOVIE_SCHEMAS[1]
+    assert kson.SCHEMAS['movies-status'] == MOVIE_SCHEMAS[2]
+    assert kson.SCHEMAS['movies'] == MOVIE_SCHEMAS[3]
 
 
 def test_load_file():
