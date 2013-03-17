@@ -75,10 +75,8 @@ def add_schema(schema):
     if isinstance(schema, basestring):
         schema = loads(schema)
 
-    if _verbose:
-        print "Adding new schema: ", schema['id']
-        print "\t", schema['fields']
-        print "\t", schema['meta']
+    if not schema:
+        raise ValueError("Invalid Schema: " + str(schema))
 
     if 'id' not in schema:
         raise ValueError("Invalid Schema: Missing field 'id'")
@@ -89,7 +87,30 @@ def add_schema(schema):
 
     assert len(schema['fields']) == len(schema['meta'])
 
+    if _verbose:
+        print "Adding new schema: ", schema['id']
+        print "\t", schema['fields']
+        print "\t", schema['meta']
+
     SCHEMAS[schema['id']] = schema
+
+
+def load_schemas(fp_or_filename):
+    if isinstance(fp_or_filename, basestring):
+        with open(fp_or_filename, 'r') as f:
+            data = f.read()
+    else:
+        data = fp_or_filename.read()
+    return loads_schemas(data)
+
+
+def loads_schemas(schema_data):
+    schemas = loads(schema_data)
+    if isinstance(schemas, list):
+        for s in schemas:
+            add_schema(s)
+    else:
+        add_schema(schemas)
 
 
 def add_codec(name, decoder, encoder):
