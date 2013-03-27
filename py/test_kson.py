@@ -177,3 +177,19 @@ def test_round_trip():
 
 def test_decode_loads():
     pass
+
+
+def filepaths(rootdir, ext_filter=None):
+    if isinstance(ext_filter, basestring):
+        _filter = lambda p: p.endswith(ext_filter)
+    else:
+        _filter = ext_filter
+
+    for root, subfolders, files in os.walk(rootdir):
+        for filename in files:
+            path = root + "/" + filename
+            if not _filter or _filter(path):
+                yield path
+
+
+print list(filepaths("/home/mbarkhau/workspace/kson", ".json"))
