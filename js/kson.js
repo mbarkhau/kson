@@ -46,13 +46,67 @@
 )(function () {
 "use strict";
 
-var CODECS = {}, DECODERS = {}, ENCODERS = {}, SCHEMAS = {};
+// There are two types of encoder/decoder functions:
+// 1. Simple functions that directly process arguments
+// 2. Factory functions that are initialized when the schema is loaded.
+//    These return a function/closure which of type 1.
+var DECODERS = {
+		enum: function(vals) {
+			return function (raw) {return vals.indexOf[raw]; };
+		},
+		prefix: function (prefix) {
+			return function (raw) {
+
+			};
+		}
+	},
+	ENCODERS = {
+		enum: function(vals) {
+			return function (val) {return vals[val]; };
+		},
+		prefix: function (prefix) {
+			return function (val) {
+
+			};
+		}
+	},
+	SCHEMAS = {};
 
 function addSchema(schema) {
 	if (typeof schema === 'string') {
 		schema = parse(schema);
 	}
+	initCodecs(schema);
 	SCHEMAS[schema.id] = schema;
+}
+
+function initCodecs(schema) {
+	var i, j, meta, metas, id, args, encoders = [], decoders = [];
+	for (i = schema.meta.length - 1; i >= 0; i--) {
+		meta = schema.meta[i];
+		metas = meta.match(/(\\.|[^\|])+/g);
+		id = metas[0];
+		if (!id || SCHEMAS[id] || DECODERS[meta]) {
+			continue;
+		}
+		for (j = metas.length - 1; j >= 0; j--) {
+			args = metas[j].match(/(\\.|[^:])+/g);
+			encoders[j] = ENCODERS[args[0]].apply(metas[j], args.slice(1))
+			decoders[j] = DECODERS[args[0]].apply(metas[j], args.slice(1))
+		}
+
+		ENCODERS[meta] = function(val) {
+			for (j = 0; j < metas.length; j++) {
+				metas[j]
+			}
+		};
+		DECODERS[meta] = function(raw) {
+			for (j = metas.length - 1; j >= 0; j--) {
+				if (!args[0] || )
+			}
+		};
+	};
+	"prefix:http://moviesdb.brm.us/files/movies/covers/big/|suffix:.jpg"
 }
 
 function addCodec(name, encoder, decoder){
@@ -168,7 +222,13 @@ function parse(raw, schema_id) {
 }
 
 
-// addCodec('flagset',
+// addCodec('enum',
+// 	function(flags) {
+//         s = ""
+//         for b in arguments
+//             s = (0 + b) + s
+//         return parseInt(s, 2).toString(36);
+// 	},
 // 	function (raw) {
 //         var base2 = parseInt(raw, 36).toString(2),
 // 	        flags = [false, false, false, false, false, false];
@@ -176,12 +236,6 @@ function parse(raw, schema_id) {
 // 	    	base2[i]
 // 	    }
 //         return flags;
-// 	},
-// 	function(flags) {
-//         s = ""
-//         for b in arguments
-//             s = (0 + b) + s
-//         return parseInt(s, 2).toString(36);
 // 	}
 // );
 
@@ -192,23 +246,6 @@ addSchema({
 	meta: [0, "[]", "[]"]
 });
 
-addCodec('enum',
-	function(vals) {return function (val) {return vals.indexOf[val]; }; },
-	function(vals) {return function (val) {return vals[val]; }; }
-);
-
-addCodec('prefix',
-	function (prefix) {
-		return function (val) {
-
-		};
-	},
-	function (prefix) {
-		return function (val) {
-
-		};
-	}
-)
 // equivalent in KSON (if the schema schema were already bootstrapped)
 // addSchema('["schema", ["id", "fields", "meta"], [0,0,0]]');
 
