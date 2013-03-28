@@ -46,10 +46,9 @@
 )(function () {
 "use strict";
 
-// There are two types of encoder/decoder functions:
-// 1. Simple functions that directly process arguments
-// 2. Factory functions that are initialized when the schema is loaded.
-//    These return a function/closure which of type 1.
+// Encoder/decoder functions are Factory functions that are initialized
+// when the schema is loaded. They return function closures that are used
+// for the actual decoding.
 var DECODERS = {
 		enum: function(vals) {
 			return function (raw) {return vals.indexOf[raw]; };
@@ -81,32 +80,44 @@ function addSchema(schema) {
 }
 
 function initCodecs(schema) {
-	var i, j, meta, metas, id, args, encoders = [], decoders = [];
+	var i, j, meta, metas, id, args, encoders, decoders;
 	for (i = schema.meta.length - 1; i >= 0; i--) {
 		meta = schema.meta[i];
+		if (!meta) {
+			continue;
+		}
 		metas = meta.match(/(\\.|[^\|])+/g);
 		id = metas[0];
 		if (!id || SCHEMAS[id] || DECODERS[meta]) {
 			continue;
 		}
+		encoders = [];
+		decoders = [];
 		for (j = metas.length - 1; j >= 0; j--) {
 			args = metas[j].match(/(\\.|[^:])+/g);
-			encoders[j] = ENCODERS[args[0]].apply(metas[j], args.slice(1))
-			decoders[j] = DECODERS[args[0]].apply(metas[j], args.slice(1))
+			encoders[j] = ENCODERS[args[0]].apply(metas[j], args.slice(1));
+			decoders[j] = DECODERS[args[0]].apply(metas[j], args.slice(1));
 		}
 
-		ENCODERS[meta] = function(val) {
-			for (j = 0; j < metas.length; j++) {
-				metas[j]
-			}
-		};
-		DECODERS[meta] = function(raw) {
-			for (j = metas.length - 1; j >= 0; j--) {
-				if (!args[0] || )
-			}
-		};
+		ENCODERS[meta] = (function(encoders) {
+			return function (val) {
+				var i, len = encoders.length;
+				for (i = 0; i < len; i++) {
+					val = encoders[i](val);
+				}
+				return val;
+			};
+		}(encoders);
+
+		DECODERS[meta] = (function(decoders) {
+			return function (raw) {
+				for (var i = decoders.length - 1; i >= 0; i--) {
+					raw = decoders[i](raw);
+				}
+				return raw;
+			};
+		}(decoders);
 	};
-	"prefix:http://moviesdb.brm.us/files/movies/covers/big/|suffix:.jpg"
 }
 
 function addCodec(name, encoder, decoder){
