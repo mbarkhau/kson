@@ -82,30 +82,16 @@ var ENCODERS = {
 			return new Date(parseInt(raw, 36));
 		}
 	},
-	SCHEMAS = {};
-
-function addCodec(name, encoder, decoder){
-	ENCODERS[name] = encoder;
-	DECODERS[name] = decoder;
-}
-
-function addSchema(schema) {
-	if (typeof schema === 'string') {
-		schema = parse(schema);
-	}
-	if (typeof schema.id == 'undefined') {
-		// assume array of schemas
-		for (var i = schema.length - 1; i >= 0; i--) {
-			addSchema(schema[i]);
-		};
-	} else {
-		initCodecs(schema);
-		SCHEMAS[schema.id] = schema;
-	}
-}
+	SCHEMAS = {
+		schema: {
+			id: 'schema',
+			fields: ['id', 'fields', 'meta'],
+			meta: [0, "[]", "[]"]
+		}
+	};
 
 function plain_id(id) {
-	return id && (id[0] == "[" ? id.slice(2) : id);
+	return id[0] == "[" ? id.slice(2) : id;
 }
 
 function coder_fn(coders, dir) {
@@ -152,12 +138,12 @@ function initCodecs(schema) {
 	};
 }
 
-function process_val(val, meta_id, codecs, subprocess) {
+function process_val(val, meta_id, recurse, codecs) {
 	var i, p_meta_id = plain_id(meta_id),
 		coder = codecs[p_meta_id];
 	if (val !== null && val !== undefined) {
 		if (SCHEMAS[p_meta_id]) {
-			val = subprocess(val, meta_id, 1);
+			val = recurse(val, meta_id, 1);
 		} else if (coder) {
 			if (p_meta_id == meta_id) {
 				val = coder(val);
@@ -176,8 +162,6 @@ function stringify(data, schema_id, is_subarray) {
 	var p_schema_id = plain_id(schema_id),
 		schema = SCHEMAS[p_schema_id],
 		fields = schema.fields,
-		fields_length = fields.length,
-		meta = schema.meta,
 		i, j, obj,
 		result = [];
 
@@ -187,13 +171,14 @@ function stringify(data, schema_id, is_subarray) {
 	if (p_schema_id == schema_id) {
 		data = [data];
 	}
-	var data_length = data.length;
+	var data_length = data.length, 
+		fields_length = fields.length;
 
 	for (i = 0; i < data_length; i++) {
 		obj = data[i];
 		for (j = 0; j < fields_length; j++) {
 			result.push(process_val(
-				obj[fields[j]], meta[j], ENCODERS, stringify
+				obj[fields[j]], schema.meta[j], stringify, ENCODERS
 			));
 		}
 	}
@@ -213,14 +198,13 @@ function parse(raw, schema_id) {
 	var p_schema_id = plain_id(schema_id),
 		schema = SCHEMAS[p_schema_id],
 		fields = schema.fields,
-		meta = schema.meta,
 		fields_length = fields.length;
 
 	for (; i < data_length; i += fields_length) {
 		tmp_obj = {};
 		for (j = 0; j < fields_length; j++) {
 			tmp_obj[fields[j]] = process_val(
-				data[i + j], meta[j], DECODERS, parse
+				data[i + j], schema.meta[j], parse, DECODERS
 			);
 		}
 
@@ -233,20 +217,29 @@ function parse(raw, schema_id) {
 	return result;
 }
 
-// add the schema schema
-addSchema({
-	id: 'schema',
-	fields: ['id', 'fields', 'meta'],
-	meta: [0, "[]", "[]"]
-});
-
-// equivalent in KSON (if the schema schema were already bootstrapped)
-// addSchema('["schema", ["id", "fields", "meta"], [0,0,0]]');
+function addSchema(schema) {
+	if (typeof schema === 'string') {
+		schema = parse(schema);
+	}
+	if (typeof schema.id == 'undefined') {
+		// assume array of schemas
+		for (var i = schema.length - 1; i >= 0; i--) {
+			addSchema(schema[i]);
+		};
+	} else {
+		initCodecs(schema);
+		SCHEMAS[schema.id] = schema;
+	}
+}
 
 // exports
 return {
-	addCodec: addCodec,
+	addCodec: function (name, encoder, decoder) {
+		ENCODERS[name] = encoder;
+		DECODERS[name] = decoder;
+	},
 	addSchema: addSchema,
+
 	parse: parse,
 	stringify: stringify
 };
