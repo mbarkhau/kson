@@ -25,7 +25,6 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 import os
-import sys
 import collections
 from base64 import b64encode
 
@@ -43,6 +42,7 @@ try:
 
     def json_dumps(*args, **kwargs):
         kwargs['encode_html_chars'] = False
+        kwargs['ensure_ascii'] = False
         return ujson.dumps(*args, **kwargs)
 except ImportError:
     json_dumps = default_json_dumps
@@ -250,11 +250,23 @@ add_schema({
 @codec('prefix')
 def prefix_codec(prefix):
     def encoder(val):
-        if val.startswith(prefix):
-            return val.replace(prefix, "", 1)
+        if not val.startswith(prefix):
+            raise ValueError("Expected %s to have prefix %s" % (val, prefix))
+        return val.replace(prefix, "", 1)
 
-    def decoder(val):
-        return prefix + val
+    def decoder(raw):
+        return prefix + raw
+
+    return encoder, decoder
+
+
+@codec('enum')
+def enum_codec(vals):
+    def encoder(val):
+        return vals.index(val)
+
+    def decoder(raw):
+        return vals[raw]
 
     return encoder, decoder
 
