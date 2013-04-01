@@ -44,45 +44,87 @@
   typeof exports === "object" ? function (m) { module.exports = m(); } :
   function(m){ this.KSON = m(); }
 )(function () {
-"use strict";
 
 // Encoder/decoder functions are Factory functions that are initialized
 // when the schema is loaded. They return function closures that are used
 // for the actual decoding.
-var DECODERS = {
-		enum: function(vals) {
-			return function (raw) {return vals.indexOf[raw]; };
+var ENCODERS = {
+		'enum': function(args) {
+			return function (raw) {return args.indexOf(raw);};
 		},
-		prefix: function (prefix) {
-			return function (raw) {
-
-			};
+		'prefix': function (args) {
+			return function (raw) {return args[0] + raw;};
+		},
+		'suffix': function (args) {
+			return function (raw) {return raw + args[0];};
+		},
+		'date': function(val) {
+			return (+val).toString(36);
 		}
 	},
-	ENCODERS = {
-		enum: function(vals) {
-			return function (val) {return vals[val]; };
+	DECODERS = {
+		'enum': function(args) {
+			return function (val) {return args[val]; };
 		},
-		prefix: function (prefix) {
+		'prefix': function (args) {
+			var prefix = new RegExp("^" + args[0])
 			return function (val) {
-
+				return val.replace(prefix, "");
 			};
+		},
+		'suffix': function (args) {
+			var suffix = new RegExp(args[0] + "$")
+			return function (val) {
+				return val.replace(suffix, "");
+			};
+		},
+		'date': function(raw) {
+			return new Date(parseInt(raw, 36));
 		}
 	},
 	SCHEMAS = {};
+
+function addCodec(name, encoder, decoder){
+	ENCODERS[name] = encoder;
+	DECODERS[name] = decoder;
+}
 
 function addSchema(schema) {
 	if (typeof schema === 'string') {
 		schema = parse(schema);
 	}
-	initCodecs(schema);
-	SCHEMAS[schema.id] = schema;
+	if (typeof schema.id == 'undefined') {
+		// assume array of schemas
+		for (var i = schema.length - 1; i >= 0; i--) {
+			addSchema(schema[i]);
+		};
+	} else {
+		initCodecs(schema);
+		SCHEMAS[schema.id] = schema;
+	}
+}
+
+function plain_id(id) {
+	return id && (id[0] == "[" ? id.slice(2) : id);
+}
+
+function coder_fn(coders, dir) {
+	return function (val) {
+		var len = coders.length,
+			i = dir > 0 ? 0 : len - 1,
+			end = dir > 0 ? len : -1;
+
+		for (; i != end; i += dir) {
+			val = coders[i](val);
+		}
+		return val;
+	};
 }
 
 function initCodecs(schema) {
 	var i, j, meta, metas, id, args, encoders, decoders;
 	for (i = schema.meta.length - 1; i >= 0; i--) {
-		meta = schema.meta[i];
+		meta = plain_id(schema.meta[i]);
 		if (!meta) {
 			continue;
 		}
@@ -95,50 +137,28 @@ function initCodecs(schema) {
 		decoders = [];
 		for (j = metas.length - 1; j >= 0; j--) {
 			args = metas[j].match(/(\\.|[^:])+/g);
-			encoders[j] = ENCODERS[args[0]].apply(metas[j], args.slice(1));
-			decoders[j] = DECODERS[args[0]].apply(metas[j], args.slice(1));
+			encoders[j] = ENCODERS[args[0]](args.slice(1));
+			decoders[j] = DECODERS[args[0]](args.slice(1));
 		}
 
-		ENCODERS[meta] = (function(encoders) {
-			return function (val) {
-				var i, len = encoders.length;
-				for (i = 0; i < len; i++) {
-					val = encoders[i](val);
-				}
-				return val;
-			};
-		}(encoders);
-
-		DECODERS[meta] = (function(decoders) {
-			return function (raw) {
-				for (var i = decoders.length - 1; i >= 0; i--) {
-					raw = decoders[i](raw);
-				}
-				return raw;
-			};
-		}(decoders);
+		ENCODERS[meta] = coder_fn(encoders, 1);
+		DECODERS[meta] = coder_fn(decoders, -1);
 	};
 }
 
-function addCodec(name, encoder, decoder){
-	ENCODERS[name] = encoder;
-	DECODERS[name] = decoder;
-}
-
 function stringify(data, schema_id, is_subarray) {
-	var is_array = schema_id[0] === "[",
-		schema_id = is_array ? schema_id.slice(2) : schema_id,
-		schema = SCHEMAS[schema_id],
+	var p_schema_id = plain_id(schema_id),
+		schema = SCHEMAS[p_schema_id],
 		fields = schema.fields,
 		fields_length = fields.length,
-		meta = schema.meta, meta_id, meta_is_subarray,
+		meta = schema.meta, meta_id, p_meta_id,
 		i, j, k, obj, val, encoder,
 		result = [];
 
 	if (!is_subarray) {
-		result[0] = (is_array) ? "[]" + schema_id : schema_id;
+		result[0] = schema_id;
 	}
-	if (!is_array) {
+	if (p_schema_id == schema_id) {
 		data = [data];
 	}
 	var data_length = data.length;
@@ -149,16 +169,12 @@ function stringify(data, schema_id, is_subarray) {
 			val = obj[fields[j]];
 			if (val !== null && val !== undefined) {
 				meta_id = meta[j];
-				meta_is_subarray = meta_id && meta_id[0] === "[";
-				if (meta_is_subarray) {
-					meta_id = meta_id.slice(2);
-				}
-				encoder = ENCODERS[meta_id];
-				schema = SCHEMAS[meta_id];
-				if (schema) {
-					val = stringify(val, meta[j], 1);
+				p_meta_id = plain_id(meta_id);
+				encoder = ENCODERS[p_meta_id];
+				if (SCHEMAS[p_meta_id]) {
+					val = stringify(val, meta_id, 1);
 				} else if (encoder) {
-					if (meta_is_subarray) {
+					if (p_meta_id != meta_id) {
 						for (k = val.length - 1; k >= 0; k--) {
 							val[k] = encoder(val[k], obj);
 						}
@@ -174,26 +190,19 @@ function stringify(data, schema_id, is_subarray) {
 }
 
 function parse(raw, schema_id) {
-	var data = (typeof raw === 'string') ? JSON.parse(raw) : raw,
+	var data = (typeof raw == 'string') ? JSON.parse(raw) : raw,
 		data_length = data.length,
-		is_array, meta_is_subarray,
-		result, tmp_obj, val,
-		decoder, schema, meta_id,
+		result = [], tmp_obj, val,
+		decoder, meta_id, p_meta_id,
 		i = 0, j, k;
 
 	if (!schema_id) {
 		schema_id = data[0];
 		i = 1;
 	}
-
-	is_array = schema_id[0] === "[";
-	if (is_array) {
-		schema_id = schema_id.slice(2);
-		result = [];
-	}
-	schema = SCHEMAS[schema_id];
-
-	var fields = schema.fields,
+	var p_schema_id = plain_id(schema_id),
+		schema = SCHEMAS[p_schema_id],
+		fields = schema.fields,
 		meta = schema.meta,
 		fields_length = fields.length;
 
@@ -203,27 +212,23 @@ function parse(raw, schema_id) {
 			val = data[i + j];
 			if (val !== null && val !== undefined) {
 				meta_id = meta[j];
-				meta_is_subarray = meta_id && meta_id[0] === "[";
-				if (meta_is_subarray) {
-					meta_id = meta_id.slice(2);
-				}
-				decoder = DECODERS[meta_id];
-				schema = SCHEMAS[meta_id];
-				if (schema) {
-					val = parse(val, meta[j]);
+				p_meta_id = plain_id(meta_id);
+				decoder = DECODERS[p_meta_id];
+				if (p_meta_id && SCHEMAS[p_meta_id]) {
+					val = parse(val, meta_id);
 				} else if (decoder) {
-					if (meta_is_subarray) {
+					if (p_meta_id == meta_id) {
+						val = decoder(val, tmp_obj);
+					} else {
 						for (k = val.length - 1; k >= 0; k--) {
 							val[k] = decoder(val[k], tmp_obj);
 						}
-					} else {
-						val = decoder(val, tmp_obj);
 					}
 				}
 			}
 			tmp_obj[fields[j]] = val;
 		}
-		if (is_array) {
+		if (schema_id != p_schema_id) {
 			result.push(tmp_obj);
 		} else {
 			return tmp_obj;
@@ -231,24 +236,6 @@ function parse(raw, schema_id) {
 	}
 	return result;
 }
-
-
-// addCodec('enum',
-// 	function(flags) {
-//         s = ""
-//         for b in arguments
-//             s = (0 + b) + s
-//         return parseInt(s, 2).toString(36);
-// 	},
-// 	function (raw) {
-//         var base2 = parseInt(raw, 36).toString(2),
-// 	        flags = [false, false, false, false, false, false];
-// 	    for (var i = base2.length - 1; i >= 0; i--) {
-// 	    	base2[i]
-// 	    }
-//         return flags;
-// 	}
-// );
 
 // add the schema schema
 addSchema({
@@ -260,48 +247,12 @@ addSchema({
 // equivalent in KSON (if the schema schema were already bootstrapped)
 // addSchema('["schema", ["id", "fields", "meta"], [0,0,0]]');
 
-// console.log(SCHEMAS);
-// var raw_test = '["schema","test",["a","b","c"],[0,"foo",0]]';
-// console.log(raw_test);
-// var parsed_test = parse(raw_test);
-// console.log(parsed_test);
-// var stringified_test = stringify(parsed_test, 'schema');
-// console.log(stringified_test);
-
-// addSchema('["schema","child",["child_a","child_b"],[0,0]]');
-// addSchema('["schema","parent",["parent_a","parent_b"],["child","child"]]');
-
-// var test_data = [
-// {
-// 	parent_a: {
-// 		child_a: [1,2,3,4],
-// 		child_b: "foobar"
-// 	},
-// 	parent_b: {
-// 		child_a: null,
-// 		child_b: true
-// 	}
-// },
-// {
-// 	parent_a: {
-// 		child_a: ["one", "two", "three"],
-// 		child_b: "barbaz"
-// 	},
-// 	parent_b: null
-// }
-// ];
-// console.log(test_data);
-// console.log(stringify(test_data, '[]parent'));
-// console.log(parse(stringify(test_data, '[]parent')));
-
 // exports
 return {
 	addCodec: addCodec,
 	addSchema: addSchema,
 	parse: parse,
-	stringify: stringify,
-	encoders: ENCODERS,
-	decoders: DECODERS
+	stringify: stringify
 };
 
 });
