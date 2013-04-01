@@ -85,23 +85,46 @@ tests.array_round_trip = function() {
     assert(JSON.stringify(KSON.parse(raw)) == JSON.stringify(arr));
 };
 
-tests.codec_field = function() {
+tests.codec_round_trip = function() {
     KSON.addSchema('["schema",' +
         '"codec_test", ["c_field", "c_arr"], ["date", "[]enum:a:b:c"]' +
     ']');
-    var raw = KSON.stringify({
+    var data = {
         c_field: new Date(0),
         c_arr: ["a", "a", "b", "b", "c", "a", "b", "a"]
-    }, "codec_test");
-    assert(raw == '["codec_test","0",[0,0,1,1,2,0,1,0]]')
-};
-
-tests.codec_array = function() {
-
+    };
+    var raw = KSON.stringify(data, "codec_test");
+    assert(raw == '["codec_test","0",[0,0,1,1,2,0,1,0]]');
+    assert(JSON.stringify(KSON.parse(raw)) == JSON.stringify(data));
 };
 
 tests.codec_chaining = function() {
+    KSON.addSchema('["schema",' +
+        '"codec_chain_test",' + 
+        '["c_image_path"],' +
+        '["prefix:/static/images/|suffix:.png"]' +
+    ']');
+    var data = [
+        {c_image_path: "/static/images/foo.png"},
+        {c_image_path: "/static/images/bar.png"},
+        {c_image_path: "/static/images/baz.png"},
+    ];
+    var raw = KSON.stringify(data, "[]codec_chain_test");
+    assert(raw == '["[]codec_chain_test","foo","bar","baz"]');
+    assert(JSON.stringify(KSON.parse(raw)) == JSON.stringify(data));
+};
 
+tests.movies = function() {
+    KSON.addSchema(files["test_data/movie_schemas.kson"]);
+    var k_movie_data = files["test_data/movies.kson"],
+        j_movie_data = files["test_data/movies.json"],
+        k_movies = KSON.parse(k_movie_data),
+        j_movies = JSON.parse(j_movie_data),
+        k_raw = KSON.stringify(k_movies, "movies");
+
+    assert(k_movies.content.movies[0].cover_big == j_movies.content.movies[0].cover_big);
+    assert(k_raw == KSON.stringify(j_movies, "movies"));
+    assert(k_raw.length * 2 < j_movie_data.length);
 };
 
 function assert(cond, msg) {

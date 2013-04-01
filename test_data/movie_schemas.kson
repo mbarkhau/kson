@@ -19,8 +19,8 @@
         0, 
         0, 
         0, 
-        "prefix:http://moviesdb.brm.us/files/movies/covers/big/|suffix:.jpg", 
-        "prefix:http://moviesdb.brm.us/files/movies/covers/small/|suffix:.jpg", 
+        "prefix:http\\://moviesdb.brm.us/files/movies/covers/big/|suffix:.jpg", 
+        "prefix:http\\://moviesdb.brm.us/files/movies/covers/small/|suffix:.jpg", 
         "[]"
     ], 
     "movies-content", ["movies", "size"], ["[]movies-item", 0],

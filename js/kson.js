@@ -53,20 +53,6 @@ var ENCODERS = {
 			return function (raw) {return args.indexOf(raw);};
 		},
 		'prefix': function (args) {
-			return function (raw) {return args[0] + raw;};
-		},
-		'suffix': function (args) {
-			return function (raw) {return raw + args[0];};
-		},
-		'date': function(val) {
-			return (+val).toString(36);
-		}
-	},
-	DECODERS = {
-		'enum': function(args) {
-			return function (val) {return args[val]; };
-		},
-		'prefix': function (args) {
 			var prefix = new RegExp("^" + args[0])
 			return function (val) {
 				return val.replace(prefix, "");
@@ -77,6 +63,20 @@ var ENCODERS = {
 			return function (val) {
 				return val.replace(suffix, "");
 			};
+		},
+		'date': function(val) {
+			return (+val).toString(36);
+		}
+	},
+	DECODERS = {
+		'enum': function(args) {
+			return function (val) {return args[val]; };
+		},
+		'prefix': function (args) {
+			return function (raw) {return args[0] + raw;};
+		},
+		'suffix': function (args) {
+			return function (raw) {return raw + args[0];};
 		},
 		'date': function(raw) {
 			return new Date(parseInt(raw, 36));
@@ -122,28 +122,54 @@ function coder_fn(coders, dir) {
 }
 
 function initCodecs(schema) {
-	var i, j, meta, metas, id, args, encoders, decoders;
+	var i, j, k, meta_id, id, metas, args, encoders, decoders;
 	for (i = schema.meta.length - 1; i >= 0; i--) {
-		meta = plain_id(schema.meta[i]);
-		if (!meta) {
+		meta_id = plain_id(schema.meta[i]);
+		if (!meta_id) {
 			continue;
 		}
-		metas = meta.match(/(\\.|[^\|])+/g);
-		id = metas[0];
-		if (!id || SCHEMAS[id] || DECODERS[meta]) {
+		metas = meta_id.match(/(\\.|[^\|])+/g);
+		if (ENCODERS[metas[0]] || ENCODERS[meta_id]) {
 			continue;
 		}
 		encoders = [];
 		decoders = [];
 		for (j = metas.length - 1; j >= 0; j--) {
 			args = metas[j].match(/(\\.|[^:])+/g);
-			encoders[j] = ENCODERS[args[0]](args.slice(1));
-			decoders[j] = DECODERS[args[0]](args.slice(1));
+			id = args[0];
+			if (!ENCODERS[id]) {return}
+			args = args.slice(1);
+			// remove escape chars
+			for (var k = args.length - 1; k >= 0; k--) {
+				args[k] = args[k].replace("\\:", ":");
+			}
+			encoders[j] = ENCODERS[id](args);
+			decoders[j] = DECODERS[id](args);
 		}
 
-		ENCODERS[meta] = coder_fn(encoders, 1);
-		DECODERS[meta] = coder_fn(decoders, -1);
+		ENCODERS[meta_id] = coder_fn(encoders, 1);
+		DECODERS[meta_id] = coder_fn(decoders, -1);
 	};
+}
+
+function process_val(val, meta_id, codecs, subprocess) {
+	var i, p_meta_id = plain_id(meta_id),
+		coder = codecs[p_meta_id];
+	if (val !== null && val !== undefined) {
+		if (SCHEMAS[p_meta_id]) {
+			val = subprocess(val, meta_id, 1);
+		} else if (coder) {
+			if (p_meta_id == meta_id) {
+				val = coder(val);
+			} else {
+				val = val.slice(0); // clone so we don't modify argument
+				for (i = val.length - 1; i >= 0; i--) {
+					val[i] = coder(val[i]);
+				}
+			}
+		}
+	}
+	return val;
 }
 
 function stringify(data, schema_id, is_subarray) {
@@ -151,8 +177,8 @@ function stringify(data, schema_id, is_subarray) {
 		schema = SCHEMAS[p_schema_id],
 		fields = schema.fields,
 		fields_length = fields.length,
-		meta = schema.meta, meta_id, p_meta_id,
-		i, j, k, obj, val, encoder,
+		meta = schema.meta,
+		i, j, obj,
 		result = [];
 
 	if (!is_subarray) {
@@ -166,24 +192,9 @@ function stringify(data, schema_id, is_subarray) {
 	for (i = 0; i < data_length; i++) {
 		obj = data[i];
 		for (j = 0; j < fields_length; j++) {
-			val = obj[fields[j]];
-			if (val !== null && val !== undefined) {
-				meta_id = meta[j];
-				p_meta_id = plain_id(meta_id);
-				encoder = ENCODERS[p_meta_id];
-				if (SCHEMAS[p_meta_id]) {
-					val = stringify(val, meta_id, 1);
-				} else if (encoder) {
-					if (p_meta_id != meta_id) {
-						for (k = val.length - 1; k >= 0; k--) {
-							val[k] = encoder(val[k], obj);
-						}
-					} else {
-						val = encoder(val, obj);
-					}
-				}
-			}
-			result.push(val);
+			result.push(process_val(
+				obj[fields[j]], meta[j], ENCODERS, stringify
+			));
 		}
 	}
 	return (is_subarray) ? result : JSON.stringify(result);
@@ -192,9 +203,8 @@ function stringify(data, schema_id, is_subarray) {
 function parse(raw, schema_id) {
 	var data = (typeof raw == 'string') ? JSON.parse(raw) : raw,
 		data_length = data.length,
-		result = [], tmp_obj, val,
-		decoder, meta_id, p_meta_id,
-		i = 0, j, k;
+		result = [], tmp_obj,
+		i = 0, j;
 
 	if (!schema_id) {
 		schema_id = data[0];
@@ -209,25 +219,11 @@ function parse(raw, schema_id) {
 	for (; i < data_length; i += fields_length) {
 		tmp_obj = {};
 		for (j = 0; j < fields_length; j++) {
-			val = data[i + j];
-			if (val !== null && val !== undefined) {
-				meta_id = meta[j];
-				p_meta_id = plain_id(meta_id);
-				decoder = DECODERS[p_meta_id];
-				if (p_meta_id && SCHEMAS[p_meta_id]) {
-					val = parse(val, meta_id);
-				} else if (decoder) {
-					if (p_meta_id == meta_id) {
-						val = decoder(val, tmp_obj);
-					} else {
-						for (k = val.length - 1; k >= 0; k--) {
-							val[k] = decoder(val[k], tmp_obj);
-						}
-					}
-				}
-			}
-			tmp_obj[fields[j]] = val;
+			tmp_obj[fields[j]] = process_val(
+				data[i + j], meta[j], DECODERS, parse
+			);
 		}
+
 		if (schema_id != p_schema_id) {
 			result.push(tmp_obj);
 		} else {
