@@ -192,4 +192,4 @@ def filepaths(rootdir, ext_filter=None):
                 yield path
 
 
-print list(filepaths("/home/mbarkhau/workspace/kson", ".json"))
+print list(filepaths(FIXTURES_PATH, ".json"))
