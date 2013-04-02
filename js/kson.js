@@ -60,9 +60,9 @@ var ENCODERS = {
 				return val.replace(suffix, "");
 			};
 		},
-		'date': function(val) {
-			return (+val).toString(36);
-		}
+		'bool': function(val) {return val && 1 || 0;},
+		'int36': function(val) {return val.toString(36);},
+		'date': function(val) {return +val;}
 	},
 	DECODERS = {
 		'enum': function(args) {
@@ -74,9 +74,9 @@ var ENCODERS = {
 		'suffix': function (args) {
 			return function (raw) {return raw + args[0];};
 		},
-		'date': function(raw) {
-			return new Date(parseInt(raw, 36));
-		}
+		'bool': function(raw) {return raw && true || false;},
+		'int36': function(raw) {return parseInt(raw, 36);},
+		'date': function(raw) {return new Date(raw);}
 	},
 	SCHEMAS = {
 		schema: {
@@ -103,34 +103,46 @@ function coder_fn(coders, dir) {
 	};
 }
 
-function initCodecs(schema) {
-	var i, j, k, meta_id, id, metas, args, encoders, decoders;
-	for (i = schema.meta.length - 1; i >= 0; i--) {
-		meta_id = plain_id(schema.meta[i]);
-		if (!meta_id) {
-			continue;
-		}
-		metas = meta_id.match(/(\\.|[^\|])+/g);
-		if (ENCODERS[metas[0]] || ENCODERS[meta_id]) {
-			continue;
-		}
-		encoders = [];
-		decoders = [];
-		for (j = metas.length - 1; j >= 0; j--) {
-			args = metas[j].match(/(\\.|[^:])+/g);
-			id = args[0];
-			if (!ENCODERS[id]) {return}
-			args = args.slice(1);
-			// remove escape chars
-			for (var k = args.length - 1; k >= 0; k--) {
-				args[k] = args[k].replace("\\:", ":");
-			}
-			encoders[j] = ENCODERS[id](args);
-			decoders[j] = DECODERS[id](args);
+function init_codec(meta_id) {
+	var i, j, enc, dec, encoders, decoders, metas, args, args_length;
+	if (!meta_id || ENCODERS[meta_id]) {
+		return;
+	}
+	metas = meta_id.match(/(\\.|[^\|])+/g);
+	encoders = [];
+	decoders = [];
+	for (i = metas.length - 1; i >= 0; i--) {
+		args = metas[i].match(/(\\.|[^:])+/g);
+		codec_id = args[0];
+		if (!ENCODERS[codec_id]) {
+			return;
 		}
 
-		ENCODERS[meta_id] = coder_fn(encoders, 1);
-		DECODERS[meta_id] = coder_fn(decoders, -1);
+		enc = ENCODERS[codec_id];
+		dec = DECODERS[codec_id];
+
+		args = args.slice(1);
+		args_length = args.length;
+
+		if (args_length > 0) {
+			// remove escape chars
+			for (j = 0; j < args_length; j++) {
+				args[j] = args[j].replace("\\", "");
+			}
+			enc = enc(args);
+			dec = dec(args);
+		}
+		encoders[i] = enc;
+		decoders[i] = dec;
+	}
+
+	ENCODERS[meta_id] = coder_fn(encoders, 1);
+	DECODERS[meta_id] = coder_fn(decoders, -1);
+}
+
+function init_codecs(schema) {
+	for (var i = schema.meta.length - 1; i >= 0; i--) {
+		init_codec(plain_id(schema.meta[i]));
 	};
 }
 
@@ -144,7 +156,7 @@ function process_val(val, meta_id, recurse, codecs) {
 			if (p_meta_id == meta_id) {
 				val = coder(val);
 			} else {
-				val = val.slice(0); // clone so we don't modify argument
+				val = val.slice(0); // copy so argument isn't modified
 				for (i = val.length - 1; i >= 0; i--) {
 					val[i] = coder(val[i]);
 				}
@@ -213,6 +225,10 @@ function parse(raw, schema_id) {
 	return result;
 }
 
+/**
+ * Initialize a schema from a javascript object, a JSON or a KSON
+ * encoded schema string.
+ */
 function addSchema(schema) {
 	if (typeof schema === 'string') {
 		schema = parse(schema);
@@ -223,7 +239,7 @@ function addSchema(schema) {
 			addSchema(schema[i]);
 		};
 	} else {
-		initCodecs(schema);
+		init_codecs(schema);
 		SCHEMAS[schema.id] = schema;
 	}
 }

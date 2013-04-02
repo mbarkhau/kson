@@ -87,15 +87,18 @@ tests.array_round_trip = function() {
 
 tests.codec_round_trip = function() {
     KSON.addSchema('["schema",' +
-        '"codec_test", ["c_field", "c_arr"], ["date", "[]enum:a:b:c"]' +
+        '"codec_test", ["c_field", "c_arr"], ["date|int36", "[]enum:a:b:c"]' +
     ']');
-    var data = {
-        c_field: new Date(0),
+
+    var date = new Date(1776, 0, 1, 0, 0, 0, 0),
+        data = {
+        c_field: date,
         c_arr: ["a", "a", "b", "b", "c", "a", "b", "a"]
     };
     var raw = KSON.stringify(data, "codec_test");
-    assert(raw == '["codec_test","0",[0,0,1,1,2,0,1,0]]');
+    assert(raw == '["codec_test","-264fhjts0",[0,0,1,1,2,0,1,0]]');
     assert(JSON.stringify(KSON.parse(raw)) == JSON.stringify(data));
+    assert(+KSON.parse(raw).c_field == +date)
 };
 
 tests.codec_chaining = function() {
