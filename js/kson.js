@@ -39,11 +39,7 @@
  *	native JSON datatypes with an encoding/decoding mechanism. Codecs allow
  *	for a compact serialized data representation.
  */
-( // Module boilerplate to support browser globals and browserify and AMD.
-  typeof define === "function" ? function (m) { define("kson-js", m); } :
-  typeof exports === "object" ? function (m) { module.exports = m(); } :
-  function(m){ this.KSON = m(); }
-)(function () {
+(function (global, module) {
 
 // Encoder/decoder functions are Factory functions that are initialized
 // when the schema is loaded. They return function closures that are used
@@ -233,7 +229,7 @@ function addSchema(schema) {
 }
 
 // exports
-return {
+global.KSON = module.exports = {
 	addCodec: function (name, encoder, decoder) {
 		ENCODERS[name] = encoder;
 		DECODERS[name] = decoder;
@@ -244,4 +240,4 @@ return {
 	stringify: stringify
 };
 
-});
+})(this, typeof module == "undefined" ? {} : module);
