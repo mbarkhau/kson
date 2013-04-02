@@ -1,119 +1,110 @@
 KSON: Keystripped Schemafied Object Notation
 ============================================
 
-KSON is a simple data interchange format based on JSON. It has a more
-compact serialized representation and requires only a minimal javscript
-library to parse and serialize. KSON removes keys from its serailized
-representation and defines an extensible codec mechanism to further
-reduce the size of serialized data. KSON uses a simple schema format
-to describe arbitrarrily nested objects.
+KSON is a simple data interchange format based on JSON. Its serialized
+representation doesn't contain the redundant keys of typical json 
+documents and more compact representations of values through
+an extensible encoding/decoding mechanism.
+
+KSON uses a simple schema format to describe arbitrarrily nested objects
+and encoded types. The minified and gzipped javascript library is < 1K.
 
 
-Example
--------
+Usage in javascript
+-------------------
 
-KSON schema definitions in JSON:
+    // Load schema definitions
 
-    {
-        "id": "movie",
-        "fields": ["title", "year", "rating", "cover", "actors"],
-        "meta": [0, 0, 0, "prefix(http://movies.db/covers/)", "[]role"]
-    }
-
-    {
+    var movie_schemas = [
+      {
         "id": "role",
         "fields": ["name", "character"],
         "meta": [0, 0]
-    }
+      },{
+        "id": "movie",
+        "fields": ["title", "year", "rating", "cover", "actors"],
+        "meta": [0, 0, 0, "prefix:http\://movies.db/covers/|suffix.jpg", "[]role"]
+      }
+    ];
+    KSON.addSchema(movie_schemas);
 
-JSON Data:
-
-    [
-        {
-           "title": "Forrest Gump",
-           "year": 1994,
-           "rating": 8.7,
-           "cover": "http://movies.db/covers/8.jpg",
-           "actors": [
-                {"name": "Tom Hanks", "character": "Forest Gump"},
-                {"name": "Robin Wright", "character": "Jenny Curran"},
-                {"name": "Gary Sinise", "character": "Lieutenant Dan Taylor"}
-           ]
-        },
-        {
-            "title": "Toy Story",
-            ...
-        }
+    var movies = [
+      {
+       "title": "Forrest Gump",
+       "year": 1994,
+       "rating": 8.7,
+       "cover": "http://movies.db/covers/8.jpg",
+       "actors": [
+        {"name": "Tom Hanks", "character": "Forest Gump"},
+        {"name": "Robin Wright", "character": "Jenny Curran"},
+        {"name": "Gary Sinise", "character": "Lieutenant Dan Taylor"}
+       ]
+      },
+      {
+        "title": "Toy Story",
         ...
-    ]
+      }
+      ...
+    ];
 
-KSON Data:
-
+    // pretty printing is not part of the library
+    console.log(KSON.stringify(movies, "[]movie"));
     [
       "[]movie",
       "Forest Gump",
       1994,
       8.7,
-      "8.jpg",
+      "8",
       [
-            ["Tom Hanks", "Forest Gump"],
-            ["Robin Wright", "Jenny Curran"],
-            ["Gary Sinise", "Lieutenant Dan Taylor"]
+        ["Tom Hanks", "Forest Gump"],
+        ["Robin Wright", "Jenny Curran"],
+        ["Gary Sinise", "Lieutenant Dan Taylor"]
       ],
       "Toy Story",
       ...
     ]
 
-Of course the "movie" and "role" schema definitions may also be
-serialized to KSON using the "schema" schema:
+    // Of course the "movie" and "role" schema definitions may also be
+    // serialized to KSON using the "schema" schema:
 
-    ["schema", "movie",
-        ["title", "year", "rating", "cover", "actors"],
-        [0, 0, 0, "prefix(http://movies.db/covers/)", "[]role"]
-    ]
-    ["schema", "role", ["name", "character"], [0, 0]]
+    var schema_data = KSON.stringify(movie_schemas, "[]schema")
+    console.log(schema_data);
 
+    ["[]schema","role",["name","character"],[0, 0],"movie",
+      ["title","year","rating","cover","actors"],
+      [0,0,0,"prefix:http\://movies.db/covers/|suffix:.jpg","[]role"]]
 
-The "schema" schema for KSON has the identifier "schema" and its own
-schema definition in JSON looks like this:
+    // Likewise schemas can be initialized with a kson document
+    KSON.addSchema(schema_data);
 
-    {
-        "id": "schema",
-        "fields": ["id", "fields", "meta"],
-        "meta": [0, "[]", "[]"]
-    }
-
-The same definition in KSON would in theory look like this:
-
-    ["schema", ["id", "fields", "meta"], [0, "[]", "[]"]]
-
-but of course no KSON library could parse this without having parsed 
-it first..., so a library must be initialized/bootstraped with this
-schema definiton by another means before being able to parse any
-further schema definitions. Meta enough for you yet?
-
-
+FAQ
+---
 
 Q: Why should I use this instead of JSON/MessagePack/Thrift/...?
-A: Unless you are targeting the browser you shouldn't. If you are,
-   then size and speed of the libraries needed to use these formats
-   in the browser may be prohibitive.
+A: Unless you are targeting the browser you probably shouldn't. If you
+   are, then the size and speed of the javascript libraries for these
+   formats may make KSON a favorable option.
 
-Q: Is it faster than JSON?
-A: Tests using node.js indicate that parsing is marginally slower.
-   This may be outweighed by faster transmission speed of signifigantly
-   less data.
+Q: Is KSON faster/smaller/better than JSON?
+A: Tests using node.js indicate that parsing is marginally slower. This
+   should be outweighed by faster transmission speed of signifigantly less
+   data. See the node.js benchmarks for more info.
 
 Q: Is this a drop in replacement for JSON?
 A: No, you will need to write schema definitions for your data. Automatic
    schema detection based on example data may help in getting started.
-   The top level elements in KSON data is also restricted to be either an
-   *array* or an *object*.
+   The top level elements of a KSON document must be either an *array* or
+   an *object*.
 
-Q: Why a new schema format?
-A: Existing JSON schemas formats include extrenious information to the
+Q: Why yet another a schema format for JSON?
+A: Existing JSON schema formats include extrenious information to the
    purpose of KSON and would require larger javascript library for
    parsing and serialization.
+
+Q: Is their language support for php/ruby/java/c...?
+A: Currently javascript and python are supported. Porting to other
+   languages with existing JSON support should be fairly easy and patches
+   are very welcome.
 
 
 Schema Specification:
@@ -147,17 +138,25 @@ intermediate data object as the second. The intermediate object will have
 the values of all previous fields decoded and applied.
 
 
+Included codecs:
+
+  prefix:egg     "eggbacon" -> "bacon"
+  suffix:bacon   "eggsausagebacon" -> "eggsausage"
+  bool           true -> 1, false -> 0
+  date           new Date() -> 1364938727390
+  int36          1364938727390 -> "hf1lcnka"
+
+
+Codec chaining
+
+  prefix:egg|suffix:bacon    "eggsausagebacon" -> "sausage"
+  date|int36    new Date() -> "hf1lcnka"
+
+
 Installation
 ------------
 
-  $ apt-get install python-pip
   $ pip install kson
-
-  $ yum install python-pip
-  $ python-pip install kson
-
-  $ npm install kson -g
-
 
 Automatic schema detection:
   
