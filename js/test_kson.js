@@ -150,8 +150,6 @@ function run_tests() {
 }
 
 function read_files(filenames, callback){
-    var KSON = require("./kson.js");
-
     (function read_file(i) {
         if (!i) {
             i = 0;

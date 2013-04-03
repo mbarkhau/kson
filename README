@@ -93,8 +93,9 @@ A: Tests using node.js indicate that parsing is marginally slower. This
 Q: Is this a drop in replacement for JSON?
 A: No, you will need to write schema definitions for your data. Automatic
    schema detection based on example data may help in getting started.
-   The top level elements of a KSON document must be either an *array* or
-   an *object*.
+   The top level elements of a KSON document must be either an *array* of
+   objects or an *object*, it cannot serialize just a plain value or
+   only an *array* of plain values.
 
 Q: Why yet another a schema format for JSON?
 A: Existing JSON schema formats include extrenious information to the
@@ -156,8 +157,24 @@ Codec chaining
 Installation
 ------------
 
-  $ pip install kson
+    $ pip install kson
 
 Automatic schema detection:
   
-  $ kson --auto-detect data.json --id schema_id
+    $ kson --auto-detect data.json --id schema_id
+
+
+Development
+-----------
+
+    $ git clone git@bitbucket.org:mbarkhau/kson.git
+    $ npm install benchmark microtime
+
+    $ pip install py.test
+
+    $ py.test py/
+    $ node js/test_kson.js
+
+    $ node js/bench_kson.js
+
+
