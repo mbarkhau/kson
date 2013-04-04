@@ -118,23 +118,26 @@ def init_codec(meta_id):
     for meta in metas:
         args = ARGS_RE.findall(meta)
         codec_id = args[0]
-        if codec_id not in ENCODERS:
+        if codec_id not in CODEC_FACTORIES:
             return
 
         args = args[1:]
         for j, arg in enumerate(args):
-            args[j] = arg.replace(r"\\", "")
+            args[j] = arg.replace("\\", "")
 
-        encoders.append(ENCODERS[codec_id](args))
-        decoders.append(DECODERS[codec_id](args))
+        enc, dec = CODEC_FACTORIES[codec_id](args)
+        encoders.append(enc)
+        decoders.append(dec)
 
     ENCODERS[meta_id] = coder_fn(encoders)
-    DECODERS[meta_id] = coder_fn(reversed(decoders))
+    DECODERS[meta_id] = coder_fn(list(reversed(decoders)))
 
 
 def init_codecs(schema):
     for meta_id in schema['meta']:
-        init_codec(_plain_id(meta_id))
+        meta_id = _plain_id(meta_id)
+        if meta_id:
+            init_codec(meta_id)
 
 
 # default codecs
@@ -156,7 +159,9 @@ def suffix_codec(args):
 
 
 @add_codec('prefix')
-def prefix_codec(prefix):
+def prefix_codec(args):
+    prefix = args[0]
+
     def encoder(val):
         if not val.startswith(prefix):
             raise ValueError("Expected %s to have prefix %s" % (val, prefix))
@@ -168,13 +173,35 @@ def prefix_codec(prefix):
     return encoder, decoder
 
 
-@add_codec('enum')
-def enum_codec(vals):
+@add_codec('bool')
+def bool_codec(args):
     def encoder(val):
-        return vals.index(val)
+        return 1 if val else 0
 
     def decoder(raw):
-        return vals[raw]
+        return bool(raw)
+
+    return encoder, decoder
+
+
+@add_codec('enum')
+def enum_codec(args):
+    def encoder(val):
+        return args.index(val)
+
+    def decoder(raw):
+        return args[raw]
+
+    return encoder, decoder
+
+
+@add_codec('int36')
+def int36_codec(args):
+    def encoder(val):
+        return baseN(val, 36)
+
+    def decoder(val):
+        return int(val, 36)
 
     return encoder, decoder
 
@@ -182,10 +209,10 @@ def enum_codec(vals):
 @add_codec('date')
 def date_codec(args):
     def encoder(val):
-        return baseN(timegm(val.utctimetuple()) * 1000, 36)
+        return timegm(val.utctimetuple())
 
     def decoder(val):
-        return datetime.fromtimestamp(int(val, 36) / 1000.0)
+        return datetime.utcfromtimestamp(val)
 
     return encoder, decoder
 

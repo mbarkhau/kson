@@ -2,6 +2,7 @@
 import os
 import kson
 import json
+from datetime import datetime
 
 BASEPATH = os.path.abspath(os.path.dirname(__file__) + "/..")
 FIXTURES_PATH = BASEPATH + "/test_data/"
@@ -179,6 +180,23 @@ def test_decode_loads():
     pass
 
 
+def test_codec_chaining():
+    kson.add_schema("""[
+        "schema",
+        "codec_test",
+        ["c_field", "c_arr"],
+        ["date|int36", "[]enum:a:b:c"]
+    ]""")
+    date = datetime(1955, 11, 5, 0, 0, 0)
+    raw = kson.dumps({
+        'c_field': date,
+        'c_arr': ["a", "a", "b", "b", "c", "a", "b", "a"]
+    }, "codec_test")
+
+    assert raw == '["codec_test","-7dzxc0",[0,0,1,1,2,0,1,0]]'
+    assert kson.loads(raw)['c_field'] == date
+
+
 def filepaths(rootdir, ext_filter=None):
     if isinstance(ext_filter, basestring):
         _filter = lambda p: p.endswith(ext_filter)
@@ -190,6 +208,3 @@ def filepaths(rootdir, ext_filter=None):
             path = root + "/" + filename
             if not _filter or _filter(path):
                 yield path
-
-
-print list(filepaths(FIXTURES_PATH, ".json"))
