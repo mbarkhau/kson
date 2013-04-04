@@ -176,11 +176,7 @@ def test_round_trip():
     assert data_eq(family_obj, FAMILY_OBJ)
 
 
-def test_decode_loads():
-    pass
-
-
-def test_codec_chaining():
+def test_codec_round_trip():
     kson.add_schema("""[
         "schema",
         "codec_test",

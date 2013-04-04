@@ -78,7 +78,7 @@ def baseN(num, b=36, digits=string.digits + string.ascii_letters):
 
 def add_codec(codec_or_name):
     """decorator to register a kson codec factory function"""
-    if not isinstance(codec_or_name, basestring):
+    if not isinstance(codec_or_name, (str, bytes)):
         # assume the argument is the factory function
         codec = codec_or_name
         name = codec.__name__
@@ -221,7 +221,7 @@ def date_codec(args):
 
 
 def add_schema(schema):
-    if isinstance(schema, basestring):
+    if isinstance(schema, (str, bytes)):
         schema = loads(schema)
 
     if not schema:
@@ -243,6 +243,7 @@ def add_schema(schema):
 
     init_codecs(schema)
     SCHEMAS[schema['id']] = schema
+    return schema
 
 
 add_schema({
@@ -253,7 +254,7 @@ add_schema({
 
 
 def load_schemas(fp_or_filename):
-    if isinstance(fp_or_filename, basestring):
+    if isinstance(fp_or_filename, (str, bytes)):
         with open(fp_or_filename, 'r') as f:
             data = f.read()
     else:
@@ -264,10 +265,9 @@ def load_schemas(fp_or_filename):
 def loads_schemas(schema_data):
     schemas = loads(schema_data)
     if isinstance(schemas, list):
-        for s in schemas:
-            add_schema(s)
+        return [add_schema(s) for s in schemas]
     else:
-        add_schema(schemas)
+        return [add_schema(schemas)]
 
 
 ## (de)serialization
@@ -326,7 +326,8 @@ def dumps(data, schema_id, is_recurse=False, *args, **kwargs):
 
 
 def loads(data, schema_id=None, is_recurse=False):
-    data = json_loads(data) if isinstance(data, basestring) else data
+    data = json_loads(data) if isinstance(data, (str, bytes)) else data
+
     if not isinstance(data, list) or len(data) == 0:
         return data
     if not (schema_id or isinstance(data[0], basestring)):
@@ -372,7 +373,7 @@ def loads(data, schema_id=None, is_recurse=False):
 
 def dump(data, fp_or_filename, *args, **kwargs):
     data = dumps(data, *args, **kwargs)
-    if isinstance(fp_or_filename, basestring):
+    if isinstance(fp_or_filename, (str, bytes)):
         with open(fp_or_filename, 'w') as fp:
             fp.write(data)
     else:
@@ -380,7 +381,7 @@ def dump(data, fp_or_filename, *args, **kwargs):
 
 
 def load(fp_or_filename, *args, **kwargs):
-    if isinstance(fp_or_filename, basestring):
+    if isinstance(fp_or_filename, (str, bytes)):
         with open(fp_or_filename, 'r') as f:
             data = f.read()
     else:
@@ -435,17 +436,25 @@ def detect_meta(obj, id_prefix, lvl):
     meta_map = {}
     for field, value in obj.items():
         if isinstance(value, dict) or isinstance(value, list):
-            meta_map[field] = detect_schemas(value, id_prefix, lvl + 1, idx)
+            sid, schemas = detect_schemas(value, id_prefix, lvl + 1, idx,
+                                          field)
+            meta_map[field] = sid
             idx += 1
     return meta_map
 
 
-def detect_schemas(data, id_prefix=None, lvl=0, idx=0):
+def detect_schemas(data, id_prefix=None, lvl=0, idx=0, schema_ext=None):
     if id_prefix is None:
         id_prefix = "auto-schema-" + b64encode(os.urandom(6))
     schema_id = id_prefix + "-" + str(lvl) + "-" + str(idx)
+    if schema_ext:
+        schema_id += "-" + schema_ext
     fields = set()
     meta_map = {}
+
+    if isinstance(data, (str, bytes)):
+        data = json_loads(data)
+
     if isinstance(data, dict):
         fields.update(data.keys())
         meta_map.update(detect_meta(data, id_prefix, lvl))
@@ -460,7 +469,7 @@ def detect_schemas(data, id_prefix=None, lvl=0, idx=0):
     if len(fields) == 0:
         if isinstance(data, list):
             return "[]"
-        return 0
+        return 0, tuple()
 
     fields = sorted(list(fields))
 
@@ -475,5 +484,8 @@ def detect_schemas(data, id_prefix=None, lvl=0, idx=0):
         detect_codecs(data, schema_id)
 
     if isinstance(data, list):
-        return "[]" + schema_id
-    return schema_id
+        return "[]" + schema_id, tuple()
+
+    schemas = [s for s in SCHEMAS.values() if s['id'].startswith(id_prefix)]
+    schemas = sorted(schemas, key=lambda s: s['id'], reverse=True)
+    return schema_id, schemas
