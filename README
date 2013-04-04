@@ -168,13 +168,13 @@ Development
 -----------
 
     $ git clone git@bitbucket.org:mbarkhau/kson.git
+    $ npm install uglify-js -g
     $ npm install benchmark microtime
 
     $ pip install py.test
 
-    $ py.test py/
-    $ node js/test_kson.js
-
-    $ node js/bench_kson.js
+    $ make test
+    $ make bench
+    $ make minify
 
 
