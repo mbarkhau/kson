@@ -1,7 +1,12 @@
 var KSON = require("./kson.js"),
     fs = require("fs"),
-    files = {},
     tests = {};
+
+function assert(cond, msg) {
+    if (!cond) {
+        throw new Error(msg);
+    }
+}
 
 tests.load_schema = function() {
     KSON.addSchema('["schema", "test_schema", ["field_1", "field_2"], [0, 0]]');
@@ -90,13 +95,13 @@ tests.codec_round_trip = function() {
         '"codec_test", ["c_field", "c_arr"], ["date|int36", "[]enum:a:b:c"]' +
     ']');
 
-    var date = new Date(1776, 0, 1, 0, 0, 0, 0),
+    var date = new Date(Date.UTC(1955, 10, 5, 0, 0, 0, 0)),
         data = {
         c_field: date,
         c_arr: ["a", "a", "b", "b", "c", "a", "b", "a"]
     };
     var raw = KSON.stringify(data, "codec_test");
-    assert(raw == '["codec_test","-264fhjts0",[0,0,1,1,2,0,1,0]]');
+    assert(raw == '["codec_test","-7dzxc0",[0,0,1,1,2,0,1,0]]');
     assert(JSON.stringify(KSON.parse(raw)) == JSON.stringify(data));
     assert(+KSON.parse(raw).c_field == +date)
 };
@@ -118,9 +123,9 @@ tests.codec_chaining = function() {
 };
 
 tests.movies = function() {
-    KSON.addSchema(files["test_data/movie_schemas.kson"]);
-    var k_movie_data = files["test_data/movies.kson"],
-        j_movie_data = files["test_data/movies.json"],
+    KSON.addSchema(fs.readFileSync("test_data/movie_schemas.kson", 'utf-8'));
+    var k_movie_data = fs.readFileSync("test_data/movies.kson", 'utf-8'),
+        j_movie_data = fs.readFileSync("test_data/movies.json", 'utf-8'),
         k_movies = KSON.parse(k_movie_data),
         j_movies = JSON.parse(j_movie_data),
         k_raw = KSON.stringify(k_movies, "movies");
@@ -130,44 +135,12 @@ tests.movies = function() {
     assert(k_raw.length * 2 < j_movie_data.length);
 };
 
-function assert(cond, msg) {
-    if (!cond) {
-        throw new Error(msg);
+for (var test_name in tests) {
+    try {
+        tests[test_name]();
+        console.log(test_name + "...ok");
+    } catch (ex) {
+        console.log(test_name + "...fail");
+        console.log(ex.stack);
     }
 }
-
-
-function run_tests() {
-    for (var test_name in tests) {
-        try {
-            tests[test_name]();
-            console.log(test_name + "...ok");
-        } catch (ex) {
-            console.log(test_name + "...fail");
-            console.log(ex.stack);
-        }
-    };
-}
-
-function read_files(filenames, callback){
-    (function read_file(i) {
-        if (!i) {
-            i = 0;
-        }
-        if (i < filenames.length) {
-            fs.readFile(filenames[i], 'utf-8', function(err, data) {
-                files[filenames[i]] = data;
-                read_file(i + 1);
-            });
-        } else {
-            callback();
-        }
-    })();
-}
-
-read_files([
-    "test_data/movie_schemas.json",
-    "test_data/movie_schemas.kson",
-    "test_data/movies.json",
-    "test_data/movies.kson"
-], run_tests);

@@ -62,7 +62,7 @@ var ENCODERS = {
 		},
 		'bool': function(val) {return val && 1 || 0;},
 		'int36': function(val) {return val.toString(36);},
-		'date': function(val) {return +val;}
+		'date': function(val) {return Math.round(val / 1000);}
 	},
 	DECODERS = {
 		'enum': function(args) {
@@ -76,7 +76,7 @@ var ENCODERS = {
 		},
 		'bool': function(raw) {return raw && true || false;},
 		'int36': function(raw) {return parseInt(raw, 36);},
-		'date': function(raw) {return new Date(raw);}
+		'date': function(raw) {return new Date(raw * 1000);}
 	},
 	SCHEMAS = {
 		schema: {
