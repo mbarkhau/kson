@@ -37,8 +37,8 @@ tests.array_fields = function() {
 
 tests.nested_schemas = function() {
     KSON.addSchema('["[]schema",' +
-        '"parent", ["p_field", "p_child"], [0, "child"],' +
-        '"child", ["cf1", "cf2"], [0, 0]' +
+        '"child", ["cf1", "cf2"], [0, 0],' +
+        '"parent", ["p_field", "p_child"], [0, "child"]' +
     ']');
     var data = KSON.parse('["parent", "foo", ["bar", "baz"]]');
     assert(data.p_field == "foo");
@@ -48,15 +48,71 @@ tests.nested_schemas = function() {
 
 tests.nested_array = function() {
     KSON.addSchema('["[]schema",' +
-        '"parent", ["p_field", "p_child"], [0, "[]child"],' +
-        '"child", ["cf1", "cf2"], [0, 0]' +
+        '"child", ["cf1", "cf2"], [0, 0],' +
+        '"parent", ["p_field", "p_child"], [0, "[]child"]' +
     ']');
-    var data = KSON.parse('["parent", "foo", ["bar", "baz", "bat", "buz"]]');
+    var raw = '["parent","foo",["bar","baz","bat","buz"]]';
+    var data = KSON.parse(raw);
+
     assert(data.p_field == "foo");
     assert(data.p_child[0].cf1 == "bar");
     assert(data.p_child[0].cf2 == "baz");
     assert(data.p_child[1].cf1 == "bat");
     assert(data.p_child[1].cf2 == "buz");
+
+    assert(KSON.stringify(data, "parent") == raw);
+};
+
+tests.self_ref_schema = function() {
+    KSON.addSchema('["schema",' +
+        '"a-schema", ["a_field", "val"], ["a-schema", 0]' +
+    ']');
+    var raw = '["a-schema",[[null,"term"],"level1"],"base"]';
+    var data = KSON.parse(raw);
+
+    assert(data.val == "base");
+    assert(data.a_field.val == "level1");
+    assert(data.a_field.a_field.val == "term");
+
+    assert(KSON.stringify(data, "a-schema") == raw);
+};
+
+tests.circular_schemas = function() {
+    KSON.addSchema('["[]schema",' +
+        '"a-schema", [], [],' +
+        '"b-schema", ["a_field", "val"], ["[]a-schema", 0],' +
+        '"a-schema", ["b_field", "val"], ["b-schema", 0]' +
+    ']');
+    var data = {
+        "b_field": {
+            "a_field": [
+                {"b_field": null, "val": "level2"},
+                {"b_field": null, "val": "level2"},
+                {
+                    "b_field": {
+                        "a_field": null,
+                        "val": "level3"
+                    },
+                    "val": "level2"
+                },
+            ],
+            "val": "level1"
+        },
+        "val": "base"
+    };
+    var expected = ('["a-schema",' + 
+        '[[null,"level2",null,"level2",[null,"level3"],"level2"],"level1"],' +
+        '"base"]'),
+        raw = KSON.stringify(data, "a-schema"),
+        p_data = KSON.parse(raw);
+
+    assert(p_data.val == "base");
+    assert(p_data.b_field.val == "level1");
+    assert(p_data.b_field.a_field.length == 3);
+    assert(p_data.b_field.a_field[0].val == "level2");
+    assert(p_data.b_field.a_field[2].b_field.val == "level3");
+    assert(raw == expected);
+    assert(JSON.stringify(data) == JSON.stringify(p_data));
 };
 
 tests.round_trip = function() {
