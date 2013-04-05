@@ -44,39 +44,24 @@
 // Encoder/decoder functions are Factory functions that are initialized
 // when the schema is loaded. They return function closures that are used
 // for the actual decoding.
-var ENCODERS = {
+var CODERS = {
 		'enum': function(args) {
-			return function (raw) {return args.indexOf(raw);};
+			return function (val, enc) {
+				return enc ? args.indexOf(val) : args[val];
+			};
 		},
 		'prefix': function (args) {
-			var prefix = new RegExp("^" + args[0])
-			return function (val) {
-				return val.replace(prefix, "");
+			var prefix = new RegExp("^" + args[0]);
+			return function (val, enc) {
+				return enc ? val.replace(prefix, "") : args[0] + val;
 			};
 		},
 		'suffix': function (args) {
-			var suffix = new RegExp(args[0] + "$")
-			return function (val) {
-				return val.replace(suffix, "");
+			var suffix = new RegExp(args[0] + "$");
+			return function (val, enc) {
+				return enc ? val.replace(suffix, "") : val + args[0];
 			};
-		},
-		'bool': function(val) {return val && 1 || 0;},
-		'int36': function(val) {return val.toString(36);},
-		'date': function(val) {return Math.round(val / 1000);}
-	},
-	DECODERS = {
-		'enum': function(args) {
-			return function (val) {return args[val]; };
-		},
-		'prefix': function (args) {
-			return function (raw) {return args[0] + raw;};
-		},
-		'suffix': function (args) {
-			return function (raw) {return raw + args[0];};
-		},
-		'bool': function(raw) {return raw && true || false;},
-		'int36': function(raw) {return parseInt(raw, 36);},
-		'date': function(raw) {return new Date(raw * 1000);}
+		}
 	},
 	SCHEMAS = {
 		schema: {
@@ -86,84 +71,88 @@ var ENCODERS = {
 		}
 	};
 
+function base_coder(args, codec_id) {
+	return function (val, enc) {
+		return (
+			val == null           ? val :
+			codec_id == 'bool'    ? (enc ? val && 1 || 0 : val && true || false) :
+			codec_id == 'int36'   ? (enc ? val.toString(36) : parseInt(val, 36)) :
+			codec_id == 'date'    ? (enc ? Math.round(val / 1000) : new Date(val * 1000)) :
+			codec_id == 'isodate' ? (enc ? d.toISOString(): new Date(Date.parse(val))) :
+			val
+		);
+	};
+}
+
 function plain_id(id) {
 	return id[0] == "[" ? id.slice(2) : id;
 }
 
-function coder_fn(coders, dir) {
-	return function (val) {
+function coder_fn(coders) {
+	return function (val, dir) {
 		var len = coders.length,
 			i = dir > 0 ? 0 : len - 1,
 			end = dir > 0 ? len : -1;
 
 		for (; i != end; i += dir) {
-			val = coders[i](val);
+			val = coders[i](val, dir != 1);
 		}
 		return val;
 	};
 }
 
-function init_codec(meta_id) {
-	var i, j, enc, dec, encoders, decoders, metas, args, args_length;
-	if (!meta_id || ENCODERS[meta_id]) {
+function init_coder(meta_id) {
+	if (!meta_id || SCHEMAS[meta_id]) {
 		return;
 	}
-	metas = meta_id.match(/(\\.|[^\|])+/g);
-	encoders = [];
-	decoders = [];
+
+	var i, j, coder_id, args,
+		metas = meta_id.match(/(\\.|[^\|])+/g),
+		coders = [];
+
 	for (i = metas.length - 1; i >= 0; i--) {
-		args = metas[i].match(/(\\.|[^:])+/g);
-		codec_id = args[0];
-		if (!ENCODERS[codec_id]) {
+		coder_id = metas[i];
+		args = coder_id.match(/(\\.|[^:])+/g);
+		coder_id = args[0];
+
+		if (!coder_id || SCHEMAS[coder_id]) {
 			return;
 		}
 
-		enc = ENCODERS[codec_id];
-		dec = DECODERS[codec_id];
-
 		args = args.slice(1);
-		args_length = args.length;
-
-		if (args_length > 0) {
-			// remove escape chars
-			for (j = 0; j < args_length; j++) {
-				args[j] = args[j].replace("\\", "");
-			}
-			enc = enc(args);
-			dec = dec(args);
+		// remove escape chars
+		for (j = args.length - 1; j >= 0; j--) {
+			args[j] = args[j].replace("\\", "");
 		}
-		encoders[i] = enc;
-		decoders[i] = dec;
+
+		coders.push((CODERS[coder_id] || base_coder)(args, coder_id));
 	}
 
-	ENCODERS[meta_id] = coder_fn(encoders, 1);
-	DECODERS[meta_id] = coder_fn(decoders, -1);
+	CODERS[meta_id] = coder_fn(coders);
 }
 
-function init_codecs(schema) {
+function init_coders(schema) {
 	for (var i = schema.meta.length - 1; i >= 0; i--) {
-		init_codec(plain_id(schema.meta[i]));
-	};
+		init_coder(plain_id(schema.meta[i]));
+	}
 }
 
-function process_val(val, meta_id, recurse, codecs) {
+function process_val(val, meta_id, recurse, dir) {
 	var i, p_meta_id = plain_id(meta_id),
-		coder = codecs[p_meta_id];
-	if (val !== null && val !== undefined) {
-		if (SCHEMAS[p_meta_id]) {
-			val = recurse(val, meta_id, 1);
-		} else if (coder) {
-			if (p_meta_id == meta_id) {
-				val = coder(val);
-			} else {
-				val = val.slice(0); // copy so argument isn't modified
-				for (i = val.length - 1; i >= 0; i--) {
-					val[i] = coder(val[i]);
-				}
-			}
+		coder = CODERS[p_meta_id];
+
+	if (coder && p_meta_id != meta_id) {
+		val = val.slice(0); // copy so original reference isn't modified
+		for (i = val.length - 1; i >= 0; i--) {
+			val[i] = coder(val[i], dir);
 		}
+		return val;
 	}
-	return val;
+	return (
+		val == null ? val :
+		SCHEMAS[p_meta_id] ? recurse(val, meta_id, 1) :
+		coder ? coder(val, dir) : val
+	);
 }
 
 function stringify(data, schema_id, is_subarray) {
@@ -186,7 +175,7 @@ function stringify(data, schema_id, is_subarray) {
 		obj = data[i];
 		for (j = 0; j < fields_length; j++) {
 			result.push(process_val(
-				obj[fields[j]], schema.meta[j], stringify, ENCODERS
+				obj[fields[j]], schema.meta[j], stringify, -1
 			));
 		}
 	}
@@ -212,7 +201,7 @@ function parse(raw, schema_id) {
 		tmp_obj = {};
 		for (j = 0; j < fields_length; j++) {
 			tmp_obj[fields[j]] = process_val(
-				data[i + j], schema.meta[j], parse, DECODERS
+				data[i + j], schema.meta[j], parse, 1
 			);
 		}
 
@@ -235,21 +224,18 @@ function addSchema(schema) {
 	}
 	if (typeof schema.id == 'undefined') {
 		// assume array of schemas
-		for (var i = schema.length - 1; i >= 0; i--) {
+		for (var i = 0; i < schema.length; i++) {
 			addSchema(schema[i]);
-		};
+		}
 	} else {
-		init_codecs(schema);
 		SCHEMAS[schema.id] = schema;
+		init_coders(schema);
 	}
 }
 
 // exports
 global.KSON = module.exports = {
-	addCodec: function (name, encoder, decoder) {
-		ENCODERS[name] = encoder;
-		DECODERS[name] = decoder;
-	},
+	coders: CODERS,
 	addSchema: addSchema,
 
 	parse: parse,
