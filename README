@@ -141,6 +141,7 @@ the values of all previous fields decoded and applied.
 
 Included codecs:
 
+  enum:a:b:c:d   "a" -> 0, "b" -> 1, ...
   prefix:egg     "eggbacon" -> "bacon"
   suffix:bacon   "eggsausagebacon" -> "eggsausage"
   bool           true -> 1, false -> 0
@@ -152,6 +153,42 @@ Codec chaining
 
   prefix:egg|suffix:bacon    "eggsausagebacon" -> "sausage"
   date|int36    new Date() -> "hf1lcnka"
+
+
+Custom codecs are registered using factory functions in the following manner.
+
+    KSON.coders["my_coder_id"] = function(args) {
+        // args is a string array from a schemas meta field
+        // enum:a:b:c:d -> args == ["a", "b", "c", "d"]
+
+        return function (val, encode) {
+            // The actual encoding/decoding function
+            return encode ? encode_op(val) : decode_op(val);
+        }
+    }
+
+Schema Validation
+-----------------
+
+The python library validates schemas and codec definitions, the javascript
+library does not. Invalid schema definition loaded with the javascript
+library may parse or stringify bad data without any throwing any errors.
+
+Common errors include:
+    - Loading a schema before the custom codecs it uses have been registered.
+    - Loading a schema before the subschemas on which it depends have been
+      loaded. Note that schemas are loaded in the order they appear in a file,
+      so dependent schmas schould come after those they depend uppon.
+    - Circularly dependent schmas (including schemas which depend on 
+      themselves) are possible by using a stub schema, which only specifies
+      an id and no fields. This can be replaced by the propper schema with
+      the same id, after its dependencies have been loaded.
+    - Loading a json encoded schema. The argument of the KSON.addSchema
+      function may be either a KSON encoded schema or schemas, an already
+      decoded schema or an array of schemas. It is however fairly simple to
+      load json encoded schemas: KSON.addSchema(JSON.parse(raw_json_schemas));
+
+The python library will warn about these and other issues, so use it to
 
 
 Installation
