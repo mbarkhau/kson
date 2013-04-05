@@ -4,3 +4,6 @@
 py/__pycache__
 node-*
 *.sublime*
+*.tar.gz
+npm*
+node_modules
