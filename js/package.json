@@ -6,16 +6,13 @@
   "description": "Keystripped Schemafied Object Notation",
   "contributors": [],
   "bin": {},
-  "scripts": {
-    "test": "node js/test_kson.js",
-    "bench": "node js/bench_kson.js"
-  },
-  "main": "js/kson.js",
+  "scripts": {},
+  "main": "kson.js",
   "repository": {
     "type": "git",
     "url": "https://bitbucket.org/mbarkhau/kson.git"
   },
-  "keywords": ["json", "kson", "parser", "schema"],
+  "keywords": ["kson", "json", "parser", "schema"],
   "dependencies" : {},
   "analyze": false,
   "devDependencies": {

@@ -33,6 +33,9 @@ from base64 import b64encode
 from datetime import datetime
 from calendar import timegm
 
+__version__ = "0.1.0"
+
+
 default_json_dumps = json.dumps
 default_json_loads = json.loads
 
@@ -217,6 +220,17 @@ def date_codec(args):
     return encoder, decoder
 
 
+@add_codec('isodate')
+def isodate_codec(args):
+    def encoder(val):
+        return timegm(val.utctimetuple())
+
+    def decoder(val):
+        return datetime.utcfromtimestamp(val)
+
+    return encoder, decoder
+
+
 ## schema
 
 
@@ -299,11 +313,12 @@ def dumps(data, schema_id, is_recurse=False, *args, **kwargs):
     meta = schema['meta']
     result = []
 
+    err_arg = (schema_id, type(data))
     if is_array and not isinstance(data, collections.Iterable):
-        raise ValueError("Schema specifies array, got %s" % type(data))
+        raise ValueError("Schema %s specifies array, got %s" % err_arg)
 
     if not is_array and not isinstance(data, collections.Mapping):
-        raise ValueError("Schema specifies object, got %s" % type(data))
+        raise ValueError("Schema %s specifies object, got %s" % err_arg)
 
     if not is_recurse:
         result.append("[]" + schema_id if is_array else schema_id)
