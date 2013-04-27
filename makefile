@@ -11,4 +11,8 @@ test:
 	@node js/test_kson.js
 bench:
 	@node js/bench_kson.js
-all: test bench minify
+package_js:
+	@tar -czf kson.tar.gz -C js/ package.json kson.js kson.min.js
+package_py:
+	@cd py/; python setup.py sdist
+all: test bench minify package_js package_py

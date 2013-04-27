@@ -7,3 +7,6 @@ node-*
 *.tar.gz
 npm*
 node_modules
+*.egg-info
+dist/
+build/
