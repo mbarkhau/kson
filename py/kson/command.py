@@ -9,26 +9,34 @@ reduce the size of serialized data. KSON uses a simple schema format
 to describe arbitrarrily nested objects.
 
 Usage:
-    kson introspect [-s <id>] [-vj] [-i <input>] [-o <output>]
-    kson convert (<schemas>...) [-s <id>] [-vj] [-i <input>] [-o <output>]
-                                [--out_schema_id=<id>]
-    kson convert [-vj] [-i <input>] [-o <output>]
+    kson introspect [-jp] [-i <input>] [-o <output>] [--schema_id <id>]
+    kson (j2k|k2j|k2k|j2j) [<schemas>...] [-i <input>] [-o <output>] [-p]
+        [--schema_id <id>] [--out_schema_id=<id>]
 
 Options:
     --version               Show version
     -h --help               Show help
-    -v --verbose            Show schema data and compression info
     -i --input=<input>      Input file
     -o --output=<output>    Output file (defaults to)
     -j --json               Write output as JSON instead of KSON
-    -s --schema_id=<id>     Explicitly specify schema when schema file is
-                            ambiguous about the top level schema.
+    -s --schema_id=<id>     Explicitly specify schema (required if schema
+                            file is ambiguous about the top level schema.)
+    -p --pretty             Indentat output
     --out_schema_id=<id>    Use different schema for output during conversion
 """
 
 import sys
-import kson
 import json
+
+try:
+    import kson
+except ImportError:
+    # some setup to run from dev environment
+    from os.path import abspath, dirname, join, pardir
+    sys.path.insert(0, abspath(join(dirname(__file__), pardir)))
+
+from kson import __version__, SCHEMAS
+from kson import dumps, loads, load_schemas, detect_schemas
 
 
 def read(opts):
@@ -60,87 +68,104 @@ def find_top_schema(schemas):
         if is_sub_schema(s):
             continue
         if top_schema:
-            return None
-        return s
+            return None, False
+        top_schema = s['id']
 
-    return top_schema
+    return top_schema, True
 
 
-def load_schemas(opts):
+def load_opts_schemas(opts):
     paths = opts['<schemas>']
     if not paths:
         return []
 
     schemas = []
     for p in paths:
-        schemas += kson.load_schemas(p)
+        schemas += load_schemas(p)
     return schemas
 
 
-def main(args):
-    from docopt import docopt
-    opts = docopt(__doc__, args, version=kson.__version__)
+def introspect(opts, in_data, schema_id=None):
+    sid, schemas = detect_schemas(read(opts), id_prefix=opts['--schema_id'])
 
-    global _verbose
-    _verbose = opts['--verbose']
+    if opts['--json']:
+        schema_data = json.dumps(schemas, indent=4)
+    else:
+        schema_data = dumps(schemas, 'schema')
 
-    schema_id = opts['--schema_id']
-    loaded_schemas = load_schemas(opts)
-    in_data = read(opts)
-
-    if opts['introspect']:
-        sid, schemas = kson.detect_schemas(in_data, id_prefix=schema_id)
-        write(opts, json.dumps(schemas, indent=4))
-
-    if opts['convert']:
-        if not schema_id and not opts['<schemas>']:
-            schema_id = "schema"
-
-        if schema_id:
-            if schema_id in kson.SCHEMAS:
-                schema = kson.SCHEMAS[schema_id]
-            else:
-                ids = ", ".join(kson.SCHEMAS.keys())
-                print "schema_id '%s' not found in: %s" % (schema_id, ids)
-                return 1
-        elif loaded_schemas:
-            schema = find_top_schema(loaded_schemas)
-        else:
-            schema = None
-
-        if schema:
-            schema_id = schema['id']
-        else:
-            print "unable to determine appropriate schema for conversion"
-            return 1
-
-        in_data = json.loads(in_data)
-        if isinstance(in_data, list):
-            schema_id = "[]" + schema_id
-        write(opts, kson.dumps(in_data, schema_id))
-
-    # movies = json_loads(open("movies.json").read())
-    # movie_schema_id = detect_schemas(movies, "movies")
-    # print len(json.dumps(movies))
-    # print len(dumps(movies, movie_schema_id))
-
-    # books = json_loads(open("books.json").read())
-    # books_schema_id = detect_schemas(books, "books")
-    # print len(json.dumps(books))
-    # print len(dumps(books, books_schema_id))
-
-    # apis = json_loads(open("apis.json").read())
-    # apis_schema_id = detect_schemas(apis, "apis")
-    # print len(json.dumps(apis))
-    # print len(dumps(apis, apis_schema_id))
-
-    # api_description = json.loads(open("api_description.json").read())
-    # api_description_schema_id = detect_schemas(api_description, "apidesc")
-    # print len(json.dumps(api_description))
-    # print len(dumps(api_description, api_description_schema_id))
-
+    write(opts, schema_data)
     return 0
 
 
+def init_schemas(opts):
+    loaded_schemas = load_opts_schemas(opts)
+
+    in_schema_id = opts['--schema_id']
+
+    if loaded_schemas and not in_schema_id:
+        in_schema_id, ok = find_top_schema(loaded_schemas)
+        if not ok:
+            sys.stderr.write("--schema_id=<id> required\n")
+            return None, None, False
+
+    if not in_schema_id:
+        sys.stderr.write("--schema_id=<id> required\n")
+        return None, None, False
+
+    out_schema_id = opts['--out_schema_id'] or in_schema_id
+
+    in_schema = SCHEMAS.get(in_schema_id, None)
+    out_schema = SCHEMAS.get(out_schema_id, None)
+
+    if not in_schema:
+        err_arg = (in_schema_id, ", ".join(SCHEMAS.keys()))
+        sys.stderr.write("--schema_id '%s' not found in: %s\n" % err_arg)
+        return None, None, False
+
+    if not out_schema:
+        err_arg = (out_schema_id, ", ".join(SCHEMAS.keys()))
+        sys.stderr.write("--out_schema_id '%s' not found in: %s\n" % err_arg)
+        return None, None, False
+
+    return in_schema, out_schema, True
+
+
+def convert(opts):
+    if not opts['j2j']:
+        in_schema, out_schema, ok = init_schemas(opts)
+
+        if not ok:
+            return 1
+
+    in_data = read(opts)
+
+    if opts['j2k'] or opts['j2j']:
+        in_data = json.loads(in_data)
+
+    if opts['k2j'] or opts['k2k']:
+        in_data = loads(in_data, in_schema['id'])
+
+    indent = 4 if opts['--pretty'] else None
+
+    if opts['k2j'] or opts['j2j']:
+        out_data = json.dumps(in_data, indent=indent)
+
+    if opts['j2k'] or opts['k2k']:
+        out_data = dumps(in_data, out_schema['id'], indent=4)
+
+    write(opts, out_data)
+    return 0
+
+
+def main(args=sys.argv[1:]):
+    from docopt import docopt
+    opts = docopt(__doc__, args, version=__version__)
+
+    if opts['introspect']:
+        return introspect(opts)
+
+    return convert(opts)
+
+
 if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())

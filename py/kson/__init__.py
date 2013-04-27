@@ -26,6 +26,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 import os
 import re
+import sys
 import json
 import string
 import collections
@@ -35,6 +36,7 @@ from calendar import timegm
 
 __version__ = "0.1.0"
 
+PY2 = sys.version < '3'
 
 default_json_dumps = json.dumps
 default_json_loads = json.loads
@@ -220,13 +222,15 @@ def date_codec(args):
     return encoder, decoder
 
 
-@add_codec('isodate')
+@add_codec('iso8601')
 def isodate_codec(args):
+    import iso8601
+
     def encoder(val):
-        return timegm(val.utctimetuple())
+        return val.isoformat()
 
     def decoder(val):
-        return datetime.utcfromtimestamp(val)
+        return iso8601.parse_date(val)
 
     return encoder, decoder
 
@@ -251,9 +255,9 @@ def add_schema(schema):
     assert len(schema['fields']) == len(schema['meta'])
 
     if _verbose:
-        print "Adding new schema: ", schema['id']
-        print "\t", schema['fields']
-        print "\t", schema['meta']
+        print("Adding new schema: ", schema['id'])
+        print("\t", schema['fields'])
+        print("\t", schema['meta'])
 
     init_codecs(schema)
     SCHEMAS[schema['id']] = schema
@@ -288,20 +292,23 @@ def loads_schemas(schema_data):
 
 
 def _process_val(val, meta_id, recurse, coders):
-    if val is not None:
-        p_meta_id = _plain_id(meta_id)
-        if p_meta_id in SCHEMAS:
-            return recurse(val, meta_id, True)
+    if val is None:
+        return None
 
-        if p_meta_id in coders:
-            coder = coders[p_meta_id]
+    p_meta_id = _plain_id(meta_id)
+    if p_meta_id in SCHEMAS:
+        return recurse(val, meta_id, True)
 
-            if p_meta_id == meta_id:
-                return coder(val)
+    if p_meta_id in coders:
+        coder = coders[p_meta_id]
 
-            val = val[:]  # copy so argument isn't modified
-            for i, v in enumerate(val):
-                val[i] = coder(v)
+        if p_meta_id == meta_id:
+            return coder(val)
+
+        val = val[:]  # copy so argument isn't modified
+        for i, v in enumerate(val):
+            val[i] = coder(v)
+
     return val
 
 
@@ -343,14 +350,19 @@ def dumps(data, schema_id, is_recurse=False, *args, **kwargs):
 def loads(data, schema_id=None, is_recurse=False):
     data = json_loads(data) if isinstance(data, (str, bytes)) else data
 
+    # plain json value or json object
     if not isinstance(data, list) or len(data) == 0:
         return data
-    if not (schema_id or isinstance(data[0], basestring)):
+
+    if not (schema_id or
+            PY2 and isinstance(data[0], unicode) or
+            isinstance(data[0], str)):
         return data
 
     data_start = 0
     if not schema_id:
         schema_id = data[0]
+    if not is_recurse:
         data_start = 1
 
     is_array = schema_id[0] == u"["
@@ -380,6 +392,7 @@ def loads(data, schema_id=None, is_recurse=False):
 
     if obj:
         result.append(obj)
+
     return result
 
 
