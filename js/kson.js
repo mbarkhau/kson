@@ -182,16 +182,16 @@ function stringify(data, schema_id, is_subarray) {
 	return (is_subarray) ? result : JSON.stringify(result);
 }
 
-function parse(raw, schema_id) {
+function parse(raw, schema_id, recurse) {
 	var data = (typeof raw == 'string') ? JSON.parse(raw) : raw,
 		data_length = data.length,
 		result = [], tmp_obj,
-		i = 0, j;
+		i = recurse ? 0 : 1, j;
 
 	if (!schema_id) {
 		schema_id = data[0];
-		i = 1;
 	}
+
 	var p_schema_id = plain_id(schema_id),
 		schema = SCHEMAS[p_schema_id],
 		fields = schema.fields,
