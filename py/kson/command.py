@@ -151,7 +151,7 @@ def convert(opts):
         out_data = json.dumps(in_data, indent=indent)
 
     if opts['j2k'] or opts['k2k']:
-        out_data = dumps(in_data, out_schema['id'], indent=4)
+        out_data = dumps(in_data, out_schema['id'], indent=indent)
 
     write(opts, out_data)
     return 0
