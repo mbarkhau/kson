@@ -3,7 +3,7 @@ KSON: Keystripped Schemafied Object Notation
 
 KSON is a simple data interchange format based on JSON. Its serialized
 representation doesn't contain the redundant keys of typical json 
-documents and more compact representations of values through
+documents and more compact representations of values are possible through
 an extensible encoding/decoding mechanism.
 
 KSON uses a simple schema format to describe arbitrarrily nested objects
@@ -92,23 +92,22 @@ A: Tests using node.js indicate that parsing is marginally slower. This
 
 Q: Is this a drop in replacement for JSON?
 A: No, you will need to write schema definitions for your data. Automatic
-   schema detection based on example data may help in getting started.
-   The top level elements of a KSON document must be either an *array* of
-   objects or an *object*, it cannot serialize just a plain value or
-   only an *array* of plain values.
+   schema detection based on example data may help in getting started. Also
+   see "restrictions" in the Specification.
 
 Q: Why yet another a schema format for JSON?
 A: Existing JSON schema formats include extrenious information to the
    purpose of KSON and would require larger javascript library for
    parsing and serialization.
 
-Q: Is their language support for php/ruby/java/c...?
+Q: Is there language support for php/ruby/java/c...?
 A: Currently javascript and python are supported. Porting to other
    languages with existing JSON support should be fairly easy and patches
    are very welcome.
 
 
-Schema Specification:
+Schema Specification
+--------------------
 
 A KSON schema consists of three fields:
     id              *string* identifier
@@ -129,6 +128,12 @@ An element of *meta* must be one of the following:
     "[]schema-id"    
     "codec-id"
     "[]codec-id"
+
+
+The top level elements of a KSON document must be either an *array* of
+objects or an *object*. A plain value or an *array* of plain values
+cannot be serialized.
+
 
 Codecs
 ------
