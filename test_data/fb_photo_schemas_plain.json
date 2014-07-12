@@ -1,0 +1,81 @@
+[
+    {
+        "id": "fb-paging",
+        "fields": ["next"],
+        "meta": [0]
+    },
+    {
+        "id": "fb-cursor-paging",
+        "fields": ["cursors", "next"],
+        "meta": ["fb-cursors", 0 ]
+    },
+    {
+        "id": "fb-comment-tag",
+        "fields": ["id", "length", "name", "offset", "type"],
+        "meta": [0, 0, 0, 0, 0]
+    },
+    {
+        "id": "fb-comment-user",
+        "fields": ["id", "name"],
+        "meta": [0, 0]
+    },
+    {
+        "id": "fb-photo-image",
+        "fields": ["height", "width", "source"],
+        "meta": [0, 0, 0]
+    },
+    {
+        "id": "fb-like",
+        "fields": ["id", "name"],
+        "meta": [0, 0]
+    },
+    {
+        "id": "fb-photo-comment",
+        "fields": [
+            "id", "from", "message", "message_tags", "can_remove",
+            "created_time", "like_count", "user_likes"
+        ],
+        "meta": [
+            0, "fb-comment-user", 0, "[]fb-comment-tag", 0,
+            0, 0, 0 
+        ]
+    },
+    {
+        "id": "fb-likes",
+        "fields": ["data", "paging"],
+        "meta": ["[]fb-like", "fb-paging"]
+    },
+    {
+        "id": "fb-photo-comments",
+        "fields": ["data", "paging"],
+        "meta": ["[]fb-photo-comment", "fb-paging"]
+    },
+    {
+        "id": "fb-photo-source",
+        "fields": ["category", "name", "id"],
+        "meta": [0, 0, 0],
+    },
+    {
+        "id": "fb-cursors",
+        "fields": ["after", "before"],
+        "meta": [0, 0]
+    },
+    {
+        "id": "fb-photo",
+        "fields": [
+            "id", "from", "picture", "source", "height", "width",
+            "images", "link", "icon", "created_time", "updated_time",
+            "comments", "likes"
+        ], 
+        "meta": [
+            0, "fb-photo-source", 0, 0, 0, 0,
+            "[]fb-photo-image", 0, 0, 0, 0,
+            "fb-photo-comments", "fb-likes"
+        ]
+    },
+    {
+        "id": "fb-photos",
+        "fields": ["data", "paging"],
+        "meta": ["[]fb-photo", "fb-cursor-paging"]
+    }
+]

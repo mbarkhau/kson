@@ -29,7 +29,7 @@
  * A serialization format with two goals in mind:
  *	1. Easily parsable using minimal javascript.
  *	2. Reduce serialized size compared to JSON.
- * 
+ *
  * 1. is accomplished by using the (comparativly fast) JSON parse/stringify
  *	functions, thus reducing the task of KSON to packing/unpacking the values
  *	according to a predefined schema. This also greatly reduces the size of
@@ -168,7 +168,7 @@ function stringify(data, schema_id, is_subarray) {
 	if (p_schema_id == schema_id) {
 		data = [data];
 	}
-	var data_length = data.length, 
+	var data_length = data.length,
 		fields_length = fields.length;
 
 	for (i = 0; i < data_length; i++) {

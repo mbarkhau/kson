@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import os
-import kson
 import json
+import kson
+from kson.command import main
 from datetime import datetime
 
 BASEPATH = os.path.abspath(os.path.dirname(__file__) + "/..")
@@ -193,14 +194,18 @@ def test_codec_round_trip():
     assert kson.loads(raw)['c_field'] == date
 
 
-def filepaths(rootdir, ext_filter=None):
-    if isinstance(ext_filter, basestring):
-        _filter = lambda p: p.endswith(ext_filter)
-    else:
-        _filter = ext_filter
-
-    for root, subfolders, files in os.walk(rootdir):
-        for filename in files:
-            path = root + "/" + filename
-            if not _filter or _filter(path):
-                yield path
+def test_command_j2k():
+    main([
+        "j2k", FIXTURES_PATH + "fb_photo_schemas_plain.json",
+        "--schema_id", "fb-photos",
+        "--input", FIXTURES_PATH + "fb_photos.json",
+        "--output", "/tmp/fb_photos_nomin.kson"
+    ])
+    main([
+        "k2k", FIXTURES_PATH + "fb_photo_schemas_uncompressed.json",
+        FIXTURES_PATH + "fb_photo_schemas_compressed.json",
+        "--input", "/tmp/fb_photos_nomin.kson",
+        "--output", "/tmp/fb_photos_min.kson",
+        "--schema_id", "uc-fb-photos",
+        "--out_schema_id", "c-fb-photos",
+    ])
