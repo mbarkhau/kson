@@ -1,4 +1,5 @@
-(function(){}
+(function(){
+
 HOLIDAYS = [
 	{"day": "2013-01-01", "name": "New Year’s Day"},
 	{"day": "2013-01-21", "name": "Birthday of Martin Luther King, Jr."},
@@ -73,5 +74,6 @@ EXAMPLES = {
 		],
 		"json_docs": HOLIDAYS,
 	},
-}
+};
+
 })();
