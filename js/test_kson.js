@@ -100,7 +100,7 @@ tests.circular_schemas = function() {
         },
         "val": "base"
     };
-    var expected = ('["a-schema",' + 
+    var expected = ('["a-schema",' +
         '[[null,"level2",null,"level2",[null,"level3"],"level2"],"level1"],' +
         '"base"]'),
         raw = KSON.stringify(data, "a-schema"),
@@ -164,7 +164,7 @@ tests.codec_round_trip = function() {
 
 tests.codec_chaining = function() {
     KSON.addSchema('["schema",' +
-        '"codec_chain_test",' + 
+        '"codec_chain_test",' +
         '["c_image_path"],' +
         '["prefix:/static/images/|suffix:.png"]' +
     ']');
