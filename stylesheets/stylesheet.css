@@ -367,10 +367,71 @@ Full-Width Styles
 }
 
 
+/*******************************************************************************
+Custom Styles
+*******************************************************************************/
+
+header {
+  height: 160px;
+  position: relative;
+}
+
+#kson_logo {
+  display: block;
+  position: relative;
+  left: 0px;
+  top: 0px;
+  background: url(../images/kson-logo-128.png);
+  width: 128px;
+  height: 128px;
+}
+
+#project_tagline {
+  position: relative;
+  left: 170px;
+  bottom: 85px;
+  font-size: 22px;
+  width: 220px;
+}
+
+#main_content {
+  height: 600px;
+}
+
+#input_pane, #output_pane {
+  width: 310px;
+  height: 500px;
+  background: #ccc;
+  margin-top: 20px;
+}
+
+#input_pane {
+  float: left;
+}
+
+#output_pane {
+  float: left;
+  margin-left: 20px;
+}
 
 /*******************************************************************************
 Small Device Styles
 *******************************************************************************/
+@media only screen and (max-width: 680px) {
+  #input_pane, #output_pane {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media only screen and (max-device-width: 400px) {
+  #project_tagline {
+    bottom: 92px;
+    font-size: 18px;
+    width: 120px;
+    height:; 300px;
+  }
+}
 
 @media screen and (max-width: 480px) {
   body {
@@ -387,7 +448,7 @@ Small Device Styles
   }
 
   #project_title {
-  font-size: 32px;
+    font-size: 32px;
   }
 
   h1 {
