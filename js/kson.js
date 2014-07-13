@@ -41,6 +41,8 @@
  */
 (function (global, module) {
 
+"use strict";
+
 // Encoder/decoder functions are Factory functions that are initialized
 // when the schema is loaded. They return function closures that are used
 // for the actual decoding.
@@ -69,7 +71,11 @@ var CODERS = {
 			fields: ['id', 'fields', 'meta'],
 			meta: [0, "[]", "[]"]
 		}
+	},
+	plain_id = function(id) {
+		return id[0] == "[" ? id.slice(2) : id;
 	};
+
 
 function base_coder(args, codec_id) {
 	return function (val, enc) {
@@ -84,15 +90,11 @@ function base_coder(args, codec_id) {
 	};
 }
 
-function plain_id(id) {
-	return id[0] == "[" ? id.slice(2) : id;
-}
-
 function coder_fn(coders) {
 	return function (val, dir) {
 		var len = coders.length,
 			i = dir > 0 ? 0 : len - 1,
-			end = dir > 0 ? len : -1;
+			end = dir > 0 ? len : -1
 
 		for (; i != end; i += dir) {
 			val = coders[i](val, dir != 1);
@@ -106,11 +108,11 @@ function init_coder(meta_id) {
 		return;
 	}
 
-	var i, j, coder_id, args,
-		metas = meta_id.match(/(\\.|[^\|])+/g),
-		coders = [];
+	var metas = meta_id.match(/(\\.|[^\|])+/g),
+		coder_id, args, coders = [],
+		i = metas.length - 1, j;
 
-	for (i = metas.length - 1; i >= 0; i--) {
+	for (; i >= 0; i--) {
 		coder_id = metas[i];
 		args = coder_id.match(/(\\.|[^:])+/g);
 		coder_id = args[0];
@@ -132,8 +134,11 @@ function init_coder(meta_id) {
 }
 
 function init_coders(schema) {
-	for (var i = schema.meta.length - 1; i >= 0; i--) {
-		init_coder(plain_id(schema.meta[i]));
+	var meta = schema.meta = schema.meta || [],
+		i = schema.fields.length - 1;
+	for (; i >= 0; i--) {
+		meta[i] = meta[i] || 0;
+		init_coder(plain_id(meta[i]));
 	}
 }
 
@@ -159,9 +164,12 @@ function stringify(data, schema_id, is_subarray) {
 	var p_schema_id = plain_id(schema_id),
 		schema = SCHEMAS[p_schema_id],
 		fields = schema.fields,
-		i, j, obj,
+		i = 0, j, obj,
 		result = [];
 
+	if (data instanceof Array && schema_id[0] != "[") {
+		schema_id = "[]" + schema_id;
+	}
 	if (!is_subarray) {
 		result[0] = schema_id;
 	}
@@ -171,7 +179,7 @@ function stringify(data, schema_id, is_subarray) {
 	var data_length = data.length,
 		fields_length = fields.length;
 
-	for (i = 0; i < data_length; i++) {
+	for (; i < data_length; i++) {
 		obj = data[i];
 		for (j = 0; j < fields_length; j++) {
 			result.push(process_val(
@@ -215,21 +223,22 @@ function parse(raw, schema_id, recurse) {
 }
 
 /**
- * Initialize a schema from a javascript object, a JSON or a KSON
- * encoded schema string.
+ * Initialize a schema from
+ *  - a javascript object
+ *  - a JSON encoded schema string
+ *  - a KSON encoded schema string.
  */
 function addSchema(schema) {
 	if (typeof schema === 'string') {
 		schema = parse(schema);
 	}
-	if (typeof schema.id == 'undefined') {
-		// assume array of schemas
+	if (schema instanceof Array) {
 		for (var i = 0; i < schema.length; i++) {
 			addSchema(schema[i]);
 		}
 	} else {
-		SCHEMAS[schema.id] = schema;
 		init_coders(schema);
+		SCHEMAS[schema.id] = schema;
 	}
 }
 
