@@ -36,7 +36,6 @@ except ImportError:
     sys.path.insert(0, abspath(join(dirname(__file__), pardir)))
 
 from kson import __version__, SCHEMAS
-from kson import dumps, loads, load_schemas, detect_schemas
 
 
 def read(opts):
@@ -81,17 +80,19 @@ def load_opts_schemas(opts):
 
     schemas = []
     for p in paths:
-        schemas += load_schemas(p)
+        schemas += kson.load_schemas(p)
     return schemas
 
 
 def introspect(opts, in_data, schema_id=None):
-    sid, schemas = detect_schemas(read(opts), id_prefix=opts['--schema_id'])
+    sid, schemas = kson.detect_schemas(
+        read(opts), id_prefix=opts['--schema_id']
+    )
 
     if opts['--json']:
         schema_data = json.dumps(schemas, indent=4)
     else:
-        schema_data = dumps(schemas, 'schema')
+        schema_data = kson.dumps(schemas, 'schema')
 
     write(opts, schema_data)
     return 0
@@ -143,7 +144,7 @@ def convert(opts):
         in_data = json.loads(in_data)
 
     if opts['k2j'] or opts['k2k']:
-        in_data = loads(in_data, in_schema['id'])
+        in_data = kson.loads(in_data, in_schema['id'])
 
     indent = 4 if opts['--pretty'] else None
 
@@ -151,7 +152,7 @@ def convert(opts):
         out_data = json.dumps(in_data, indent=indent)
 
     if opts['j2k'] or opts['k2k']:
-        out_data = dumps(in_data, out_schema['id'], indent=indent)
+        out_data = kson.dumps(in_data, out_schema['id'], indent=indent)
 
     write(opts, out_data)
     return 0

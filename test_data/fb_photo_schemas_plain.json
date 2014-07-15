@@ -37,7 +37,7 @@
         ],
         "meta": [
             0, "fb-comment-user", 0, "[]fb-comment-tag", 0,
-            0, 0, 0 
+            0, 0, 0
         ]
     },
     {
@@ -53,7 +53,7 @@
     {
         "id": "fb-photo-source",
         "fields": ["category", "name", "id"],
-        "meta": [0, 0, 0],
+        "meta": [0, 0, 0]
     },
     {
         "id": "fb-cursors",
@@ -66,7 +66,7 @@
             "id", "from", "picture", "source", "height", "width",
             "images", "link", "icon", "created_time", "updated_time",
             "comments", "likes"
-        ], 
+        ],
         "meta": [
             0, "fb-photo-source", 0, 0, 0, 0,
             "[]fb-photo-image", 0, 0, 0, 0,

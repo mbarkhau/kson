@@ -48,8 +48,15 @@
 // for the actual decoding.
 var CODERS = {
 		'enum': function(args) {
+			var i = args.unshift(0), arg_indexes = {};
+			for (;i--;) {
+				arg_indexes[args[i]] = i;
+			}
 			return function (val, enc) {
-				return enc ? args.indexOf(val) : args[val];
+				return (enc ?
+					arg_indexes[val] || val:
+					args[val] || val
+				);
 			};
 		},
 		'prefix': function (args) {
@@ -84,7 +91,7 @@ function base_coder(args, codec_id) {
 			codec_id == 'bool'    ? (enc ? val && 1 || 0 : val && true || false) :
 			codec_id == 'int36'   ? (enc ? val.toString(36) : parseInt(val, 36)) :
 			codec_id == 'date'    ? (enc ? Math.round(val / 1000) : new Date(val * 1000)) :
-			codec_id == 'isodate' ? (enc ? d.toISOString(): new Date(Date.parse(val))) :
+			codec_id == 'isodate' ? (enc ? val.toISOString(): new Date(Date.parse(val))) :
 			val
 		);
 	};
@@ -92,6 +99,7 @@ function base_coder(args, codec_id) {
 
 function coder_fn(coders) {
 	return function (val, dir) {
+		// dir < 0 : encode, dir > 0 : decode
 		var len = coders.length,
 			i = dir > 0 ? 0 : len - 1,
 			end = dir > 0 ? len : -1
@@ -143,6 +151,7 @@ function init_coders(schema) {
 }
 
 function process_val(val, meta_id, recurse, dir) {
+	// dir < 0 : encode, dir > 0 : decode
 	var i, p_meta_id = plain_id(meta_id),
 		coder = CODERS[p_meta_id];
 
@@ -167,7 +176,7 @@ function stringify(data, schema_id, is_subarray) {
 		i = 0, j, obj,
 		result = [];
 
-	if (data instanceof Array && schema_id[0] != "[") {
+	if ((data instanceof Array) && schema_id[0] != "[") {
 		schema_id = "[]" + schema_id;
 	}
 	if (!is_subarray) {
@@ -223,12 +232,15 @@ function parse(raw, schema_id, recurse) {
 }
 
 /**
- * Initialize a schema from
+ * Initialize a schema or an array of schemas from
  *  - a javascript object
  *  - a JSON encoded schema string
  *  - a KSON encoded schema string.
  */
 function addSchema(schema) {
+	// TODO: with circular schema definitions
+	//		we may want to insert the prototype automatically
+	//		or at least raise an explicit error.
 	if (typeof schema === 'string') {
 		schema = parse(schema);
 	}
@@ -237,8 +249,8 @@ function addSchema(schema) {
 			addSchema(schema[i]);
 		}
 	} else {
-		init_coders(schema);
 		SCHEMAS[schema.id] = schema;
+		init_coders(schema);
 	}
 }
 

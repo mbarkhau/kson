@@ -187,10 +187,10 @@ def test_codec_round_trip():
     date = datetime(1955, 11, 5, 0, 0, 0)
     raw = kson.dumps({
         'c_field': date,
-        'c_arr': ["a", "a", "b", "b", "c", "a", "b", "a"]
+        'c_arr': ["a", "a", "b", "b", "c", "a", "b", "a", "no enum"]
     }, "codec_test")
 
-    assert raw == '["codec_test","-7dzxc0",[0,0,1,1,2,0,1,0]]'
+    assert raw == '["codec_test","-7dzxc0",[1,1,2,2,3,1,2,1,"no enum"]]'
     assert kson.loads(raw)['c_field'] == date
 
 

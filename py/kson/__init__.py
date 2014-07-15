@@ -38,8 +38,12 @@ __version__ = "0.1.0"
 
 PY2 = sys.version < '3'
 
-default_json_dumps = json.dumps
 default_json_loads = json.loads
+
+
+def default_json_dumps(*args, **kwargs):
+    kwargs['separators'] = (",", ":")
+    return json.dumps(*args, **kwargs)
 
 try:
     import ujson
@@ -191,11 +195,19 @@ def bool_codec(args):
 
 @add_codec('enum')
 def enum_codec(args):
+    args = args[:]
+    args.insert(0, 0)
+
     def encoder(val):
-        return args.index(val)
+        try:
+            return args.index(val)
+        except ValueError:
+            return val
 
     def decoder(raw):
-        return args[raw]
+        if isinstance(raw, int):
+            return args[raw]
+        return raw
 
     return encoder, decoder
 

@@ -79,7 +79,7 @@ tests.self_ref_schema = function() {
 
 tests.circular_schemas = function() {
     KSON.addSchema('["[]schema",' +
-        '"a-schema", [], [],' +
+        '"a-schema", [], [],' +  // prototype
         '"b-schema", ["a_field", "val"], ["[]a-schema", 0],' +
         '"a-schema", ["b_field", "val"], ["b-schema", 0]' +
     ']');
@@ -154,10 +154,10 @@ tests.codec_round_trip = function() {
     var date = new Date(Date.UTC(1955, 10, 5, 0, 0, 0, 0)),
         data = {
         c_field: date,
-        c_arr: ["a", "a", "b", "b", "c", "a", "b", "a"]
+        c_arr: ["a", "a", "b", "b", "c", "a", "b", "a", "non enum"]
     };
     var raw = KSON.stringify(data, "codec_test");
-    assert(raw == '["codec_test","-7dzxc0",[0,0,1,1,2,0,1,0]]');
+    assert(raw == '["codec_test","-7dzxc0",[1,1,2,2,3,1,2,1,"non enum"]]');
     assert(JSON.stringify(KSON.parse(raw)) == JSON.stringify(data));
     assert(+KSON.parse(raw).c_field == +date)
 };
