@@ -1,6 +1,7 @@
 *.swp
 *.swo
 *.pyc
+py/.cache
 py/__pycache__
 node-*
 *.sublime*
