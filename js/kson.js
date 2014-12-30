@@ -27,7 +27,7 @@
  * KSON: Keyless Schemafied Object Notation
  *
  * A serialization format with two goals in mind:
- *	1. Easily parsable using minimal javascript.
+ *	1. Easily parsable using only a small javascript library.
  *	2. Reduce serialized size compared to JSON.
  *
  * 1. is accomplished by using the (comparativly fast) JSON parse/stringify
@@ -43,16 +43,30 @@
 
 "use strict";
 
-// Encoder/decoder functions are Factory functions that are initialized
-// when the schema is loaded. They return function closures that are used
-// for the actual decoding.
-var CODERS = {
+var SCHEMAS = {
+		// default schema (meta) schema
+		// needed to parse schemas in KSON format
+		schema: {
+			id: 'schema',
+			fields: ['id', 'fields', 'meta'],
+			meta: [0, "[]", "[]"]
+		}
+	},
+	// Encoder/decoder functions are Factory functions that are
+	// initialized when a schema is loaded. They return function
+	// closures that are used for the actual encoding/decoding.
+	CODERS = {
 		'enum': function(args) {
-			var i = args.unshift(0), arg_indexes = {};
+			var i = args.unshift(0),
+				arg_indexes = {};
 			for (;i--;) {
 				arg_indexes[args[i]] = i;
 			}
 			return function (val, enc) {
+				// If the value is not enumerated in the definition
+				// the value is used as is. This is an issue if the
+				// field value is an int within the range of the
+				// enumerated values as it will be decoded incorrectly.
 				return (enc ?
 					arg_indexes[val] || val:
 					args[val] || val
@@ -71,108 +85,127 @@ var CODERS = {
 				return enc ? val.replace(suffix, "") : val + args[0];
 			};
 		}
-	},
-	SCHEMAS = {
-		schema: {
-			id: 'schema',
-			fields: ['id', 'fields', 'meta'],
-			meta: [0, "[]", "[]"]
-		}
-	},
-	plain_id = function(id) {
-		return id[0] == "[" ? id.slice(2) : id;
-	};
+		// TODO: add build options to include various coders
+		// I don't think this one will be used often enough to warrant
+		// inclusion in the default build.
 
+		// 'offsetint': function (args) {
+		// 	var offset = parseInt(args[0], 10);
+		// 	return function (val, enc) {
+		// 		return enc ? val - offset : val + offset;
+		// 	};
+		// },
+	},
+	// This holds the results of calls to 'coder_fn' based
+	// on configurations used by schemas.
+	meta_coders = {};
+
+
+function plain_id(id) {
+	return id[0] == "[" ? id.slice(2) : id;
+}
 
 function base_coder(args, codec_id) {
 	return function (val, enc) {
 		return (
-			val == null           ? val :
-			codec_id == 'bool'    ? (enc ? val && 1 || 0 : val && true || false) :
-			codec_id == 'int36'   ? (enc ? val.toString(36) : parseInt(val, 36)) :
-			codec_id == 'date'    ? (enc ? Math.round(val / 1000) : new Date(val * 1000)) :
-			codec_id == 'isodate' ? (enc ? val.toISOString(): new Date(Date.parse(val))) :
-			val
+			val == null ?
+				val
+			: codec_id == 'bool' ?
+				(enc ? val && 1 || 0			: val && true || false)
+			// Numbers less than 100 000 000 are shorter or equivalent
+			// in length to a base 36 encoded number in base 10, because
+			// base 36 requires two extra bytes for the quotes. One could
+			// do a decoder which will parse strings as base36 and numbers
+			// are just returned as is, and an encoder which will only
+			// .toString(36) for values > 10^8
+			//: codec_id == 'int36' ?
+			//	(enc ? val.toString(36) 		: parseInt(val, 36))
+			: codec_id == 'date' ?
+				(enc ? Math.round(val / 1000) 	: new Date(val * 1000))
+			: codec_id == 'isodate' ?
+				(enc ? val.toISOString() 		: new Date(Date.parse(val)))
+			: val
 		);
 	};
 }
 
-function coder_fn(coders) {
-	return function (val, dir) {
-		// dir < 0 : encode, dir > 0 : decode
-		var len = coders.length,
-			i = dir > 0 ? 0 : len - 1,
-			end = dir > 0 ? len : -1
 
-		for (; i != end; i += dir) {
-			val = coders[i](val, dir != 1);
+// Parses the coder definitions
+function init_meta_coders(schema) {
+	function init_meta_coder(meta_id) {
+		function coder_fn(coders) {
+			return function (val, dir) {
+				// dir < 0 : encoed
+				// dir > 0 : decode
+				var len = coders.length,
+					cur = dir > 0 ? 0 : len - 1,
+					end = dir > 0 ? len : -1
+
+				for (; cur != end; cur += dir) {
+					val = coders[cur](val, dir != 1);
+				}
+				return val;
+			};
 		}
-		return val;
-	};
-}
 
-function init_coder(meta_id) {
-	if (!meta_id || SCHEMAS[meta_id]) {
-		return;
+		function parse_coders() {
+			// multiple coders for same field are separated by "|" (pipe characters)
+			var metas = meta_id.match(/(\\.|[^\|])+/g),
+				coder_id, args, coders = [],
+				i = metas.length, j;
+
+			for (; i--;) {
+				coder_id = metas[i];
+				args = coder_id.match(/(\\.|[^:])+/g);
+				coder_id = args[0];
+
+				// strip off coder id leaving only coder arguments
+				args = args.slice(1);
+				// remove escape chars
+				for (j = args.length; j--;) {
+					args[j] = args[j].replace("\\", "");
+				}
+
+				coders.push((CODERS[coder_id] || base_coder)(args, coder_id));
+			}
+			return coders;
+		}
+		if (
+			meta_id 				// 0 placeholder (no coder)
+			&& !SCHEMAS[meta_id]	// schema/not a coder
+		) {
+			meta_coders[meta_id] = coder_fn(parse_coders(meta_id));
+		}
 	}
 
-	var metas = meta_id.match(/(\\.|[^\|])+/g),
-		coder_id, args, coders = [],
-		i = metas.length - 1, j;
-
-	for (; i >= 0; i--) {
-		coder_id = metas[i];
-		args = coder_id.match(/(\\.|[^:])+/g);
-		coder_id = args[0];
-
-		if (!coder_id || SCHEMAS[coder_id]) {
-			return;
-		}
-
-		args = args.slice(1);
-		// remove escape chars
-		for (j = args.length - 1; j >= 0; j--) {
-			args[j] = args[j].replace("\\", "");
-		}
-
-		coders.push((CODERS[coder_id] || base_coder)(args, coder_id));
-	}
-
-	CODERS[meta_id] = coder_fn(coders);
-}
-
-function init_coders(schema) {
-	var meta = schema.meta = schema.meta || [],
-		i = schema.fields.length - 1;
-	for (; i >= 0; i--) {
-		meta[i] = meta[i] || 0;
-		init_coder(plain_id(meta[i]));
+	var meta = schema['meta'] = schema['meta'] || [],
+		i = schema['fields'].length;
+	for (;i--;) {
+		(meta[i] = meta[i] || 0) && init_meta_coder(plain_id(meta[i]));
 	}
 }
 
 function process_val(val, meta_id, recurse, dir) {
 	// dir < 0 : encode, dir > 0 : decode
 	var i, p_meta_id = plain_id(meta_id),
-		coder = CODERS[p_meta_id];
+		coder = meta_coders[p_meta_id];
 
 	if (coder && p_meta_id != meta_id) {
 		val = val.slice(0); // copy so original reference isn't modified
-		for (i = val.length - 1; i >= 0; i--) {
+		for (i = val.length; i--;) {
 			val[i] = coder(val[i], dir);
 		}
 		return val;
 	}
 	return (
-		val == null ? val :
-		SCHEMAS[p_meta_id] ? recurse(val, meta_id, 1) :
-		coder ? coder(val, dir) : val
+		val == null			? val :
+		SCHEMAS[p_meta_id]	? recurse(val, meta_id, 1) :
+		coder				? coder(val, dir) : val
 	);
 }
 
 function stringify(data, schema_id, is_subarray) {
 	var p_schema_id = plain_id(schema_id),
-		schema = SCHEMAS[p_schema_id],
-		fields = schema.fields,
 		i = 0, j, obj,
 		result = [];
 
@@ -185,14 +218,16 @@ function stringify(data, schema_id, is_subarray) {
 	if (p_schema_id == schema_id) {
 		data = [data];
 	}
-	var data_length = data.length,
+	var schema = SCHEMAS[p_schema_id],
+		fields = schema['fields'],
+		data_length = data.length,
 		fields_length = fields.length;
 
 	for (; i < data_length; i++) {
 		obj = data[i];
 		for (j = 0; j < fields_length; j++) {
 			result.push(process_val(
-				obj[fields[j]], schema.meta[j], stringify, -1
+				obj[fields[j]], schema['meta'][j], stringify, -1
 			));
 		}
 	}
@@ -201,7 +236,6 @@ function stringify(data, schema_id, is_subarray) {
 
 function parse(raw, schema_id, recurse) {
 	var data = (typeof raw == 'string') ? JSON.parse(raw) : raw,
-		data_length = data.length,
 		result = [], tmp_obj,
 		i = recurse ? 0 : 1, j;
 
@@ -211,14 +245,15 @@ function parse(raw, schema_id, recurse) {
 
 	var p_schema_id = plain_id(schema_id),
 		schema = SCHEMAS[p_schema_id],
-		fields = schema.fields,
+		fields = schema['fields'],
+		data_length = data.length,
 		fields_length = fields.length;
 
 	for (; i < data_length; i += fields_length) {
 		tmp_obj = {};
 		for (j = 0; j < fields_length; j++) {
 			tmp_obj[fields[j]] = process_val(
-				data[i + j], schema.meta[j], parse, 1
+				data[i + j], schema['meta'][j], parse, 1
 			);
 		}
 
@@ -238,19 +273,21 @@ function parse(raw, schema_id, recurse) {
  *  - a KSON encoded schema string.
  */
 function addSchema(schema) {
-	// TODO: with circular schema definitions
-	//		we may want to insert the prototype automatically
+	// TODO: with circular schema definitions it may be
+	//		better to insert the prototype automatically
 	//		or at least raise an explicit error.
 	if (typeof schema === 'string') {
 		schema = parse(schema);
 	}
 	if (schema instanceof Array) {
-		for (var i = 0; i < schema.length; i++) {
+		// Order is important here
+		// (independent schemas must be loaded first)
+		for (var i = schema.length; i--;) {
 			addSchema(schema[i]);
 		}
 	} else {
-		SCHEMAS[schema.id] = schema;
-		init_coders(schema);
+		SCHEMAS[schema['id']] = schema;
+		init_meta_coders(schema);
 	}
 }
 

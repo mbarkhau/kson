@@ -97,6 +97,10 @@ p {
   margin: 10px 0 15px 0;
 }
 
+b {
+  font-weight: bold;
+}
+
 footer p {
   color: #f2f2f2;
 }
@@ -156,6 +160,7 @@ p img {
   text-align: center;
   border: none;
 }
+/*
 
 pre, code {
   width: 100%;
@@ -188,6 +193,7 @@ pre code {
   box-shadow: none;
 }
 
+*/
 blockquote {
   color: #666;
   margin-bottom: 20px;
@@ -264,7 +270,7 @@ Full-Width Styles
 
 .inner {
   position: relative;
-  max-width: 640px;
+  width: 90%;
   padding: 20px 10px;
   margin: 0 auto;
 }
@@ -366,54 +372,6 @@ Full-Width Styles
   background: #212121;
 }
 
-
-/*******************************************************************************
-Custom Styles
-*******************************************************************************/
-
-header {
-  height: 160px;
-  position: relative;
-}
-
-#kson_logo {
-  display: block;
-  position: relative;
-  left: 0px;
-  top: 0px;
-  background: url(../images/kson-logo-128.png);
-  width: 128px;
-  height: 128px;
-}
-
-#project_tagline {
-  position: relative;
-  left: 170px;
-  bottom: 85px;
-  font-size: 22px;
-  width: 220px;
-}
-
-#main_content {
-  height: 600px;
-}
-
-#input_pane, #output_pane {
-  width: 310px;
-  height: 500px;
-  background: #ccc;
-  margin-top: 20px;
-}
-
-#input_pane {
-  float: left;
-}
-
-#output_pane {
-  float: left;
-  margin-left: 20px;
-}
-
 /*******************************************************************************
 Small Device Styles
 *******************************************************************************/
@@ -481,4 +439,195 @@ Small Device Styles
     font-size: 11px;
   }
 
+}
+
+/*******************************************************************************
+Custom Styles
+*******************************************************************************/
+
+header {
+  height: 160px;
+  position: relative;
+}
+
+code {
+  display: block;
+  white-space: pre;
+}
+
+#kson_logo {
+  display: block;
+  position: relative;
+  left: 0px;
+  top: 0px;
+  background: url(../images/kson-logo-128.png);
+  width: 128px;
+  height: 128px;
+}
+
+#project_tagline {
+  position: relative;
+  left: 170px;
+  bottom: 85px;
+  font-size: 22px;
+  width: 220px;
+}
+
+#main_content p {
+    max-width: 600px;
+}
+
+
+/*******************************************************************************
+Example widget styles
+*******************************************************************************/
+.kson-example {
+  margin-top: 50px;
+  height: 520px;
+  position: relative;
+}
+.kson-example > .ke-schema-wrap,
+.kson-example > .ke-data-wrap {
+  display: block;
+  margin: 0;
+  padding: 0;
+  width: 50%;
+  height: 430px;
+  position: absolute;
+}
+
+.kson-example .ke-schema-wrap {
+  top: 0px;
+  left: 0;
+}
+.kson-example .ke-data-wrap {
+  top: 0px;
+  left: 50%;
+}
+.kson-example .ke-controls {
+  position: absolute;
+  z-index: 5;
+  width: 110px;
+  height: 50px;
+  right: 25px;
+  bottom: 105px;
+}
+
+.ke-controls button {
+  width: 110px;
+  display: inline;
+}
+
+.ke-infotag {
+  position: absolute; 
+  top: 20px; 
+  color: #BBB;
+  z-index: 3;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.ke-it-schema {
+  right: 50%;
+  margin-right: 30px;
+}
+.ke-it-state {
+  right: 0px;
+  margin-right: 25px;
+}
+
+/*******************************************************************************
+Custom Codemirror Styles
+*******************************************************************************/
+
+.kson-example .CodeMirror {
+  width: 100%;
+  height: 430px;
+}
+
+.ke-schema-wrap .CodeMirror {
+  /*margin-left: -5px;*/
+}
+
+.ke-data-wrap .CodeMirror {
+  /*margin-left: 5px;*/
+}
+
+/*******************************************************************************
+Statistic/Benchmark Styles
+*******************************************************************************/
+
+.ke-stats {
+  position: absolute;
+  width: 100%;
+  height: 80px;
+  bottom: 0;
+}
+/*
+              <div class="ke-stat-bar" style="width: 300px;">
+                <div class="ke-stat-label">KSON.stringify</div>
+                <div class="ke-stat-val"></div>
+                <div class="ke-stat-err"></div>
+              </div>
+*/
+.ke-bench {
+  position: relative;
+  width: 50%;
+  height: 120px;
+}
+
+.ke-stat-bar {
+  position: relative;
+  width: 0;
+  height: 35px;
+  -webkit-transition: width 100ms;
+  transition: width 100ms;
+}
+
+.ke-stat-bar-val {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  height: 12px;
+  width: 100%;
+  background: #999;
+}
+
+.ke-stat-bar-err {
+  display: none;
+  position: absolute;
+  width: 0
+  top: 7px;
+  height: 15px;
+  border: 1px solid black;
+  border-width: 0 1px 0 1px;
+}
+
+.ke-stat-bar-err::after {
+  content: "";
+  display: block;
+  height: 1px;
+  margin-top: 7px;
+  background: black;
+}
+
+.ke-stat-bar-label {
+  float: right;
+  margin-right: -180px;
+  width: 170px;
+  font-size: 13px;
+}
+
+.ke-stat-bar-label-val {
+  display: inline-block;
+  width: 50px;
+  text-align: right;
+  left: 0;
+}
+
+.ke-stat-bar-label-name {
+  display: inline-block;
+  margin-left: 15px;
 }
