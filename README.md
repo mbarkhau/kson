@@ -1,6 +1,8 @@
 KSON: Keystripped Schemafied Object Notation
 ============================================
 
+[![Join the chat at https://gitter.im/mbarkhau/kson](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mbarkhau/kson?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 KSON is a simple data interchange format based on JSON. Its serialized
 representation doesn't contain the redundant keys of typical json
 documents and more compact representations of values are possible through
