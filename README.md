@@ -23,7 +23,13 @@ Usage in javascript
       },{
         "id": "movie",
         "fields": ["title", "year", "rating", "cover", "actors"],
-        "meta": [0, 0, 0, "prefix:http\://movies.db/covers/|suffix:.jpg", "[]role"]
+        "meta": [
+          0,
+          0,
+          0,
+          "prefix:http\://movies.db/covers/|suffix:.jpg",
+          "[]role"
+        ]
       }
     ];
     KSON.addSchema(movie_schemas);
