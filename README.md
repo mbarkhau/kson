@@ -232,3 +232,11 @@ Development
     $ make minify
 
 
+TODO:
+
+  Show compressed size in stats area
+  https://github.com/nodeca/pako
+
+  Use last loaded schema as the root in examples
+
+  Add examples showing nested schemas
