@@ -1,227 +1,155 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us" dir="ltr">
+<head>
+<meta charset='utf-8' />
+<meta name="description" content="KSON : KSON: Keystripped Schemafied Object Notation" />
+<style type="text/css">
+html, body, div, span, h1, p, blockquote, a, em, img, b, u, i,
+center, label, footer, header, section {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font: inherit;
+	vertical-align: baseline;
+}
+footer, header, section {
+    max-width: 1100px;
+	display: block;
+}
+header {
+	height: 160px;
+}
+#main_content {
+	min-height: 1200px;
+}
+body {
+	box-sizing: border-box;
+	color: #000;
+	font: 17px/1.7em "Open Sans", Tahoma, Verdana, Segoe, sans-serif;
+}
+h1 {
+	margin: 10px 0;
+	color: #111;
+	font-weight: 700;
+	letter-spacing: -1px;
+}
+b {font-weight: bold; font-size: 1.03em;}
+p {
+	margin: 10px auto 15px auto;
+	text-align: justify;
+	max-width: 40em;
+}
+a {
+	color: #07D;
+    text-decoration: none;
+}
+footer p {color: #FFF;}
 
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="KSON : KSON: Keystripped Schemafied Object Notation" />
+.outer {width: 100%;}
+.inner {
+	margin: 0 auto;
+	width: 90%;
+	position: relative;
+	padding: 20px 10px;
+}
+#header_wrap .inner {
+	padding: 50px 10px 30px 10px;
+}
 
-    <link rel="stylesheet" type="text/css" media="screen" href="css/stylesheet.css">
+#forkme_banner {
+	display: block;
+	position: absolute;
+	top:0;
+	right: 10px;
+	visibility: hidden;
+}
 
-    <meta name="viewport" content="initial-scale=1.0">
-    <title>KSON - Keystripped Schemafied Object Notation</title>
-  </head>
+#project_tagline {
+    color: #FFF;
+    letter-spacing: 0;
+    font-size: 23px;
+    font-weight: 300;
+    background: none;
+    text-shadow: #111 0px 0px 10px;
+    position: relative;
+    left: 170px;
+    bottom: 85px;
+    width: 250px;
+}
 
-  <body>
+#kson_logo {
+    display: block;
+    position: relative;
+    left: 0px;
+    top: 0px;
+    width: 128px;
+    height: 128px;
+	background: #ED4;
+}
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-            <a id="forkme_banner" href="https://github.com/mbarkhau/kson">View on GitHub</a>
+#downloads {
+	visibility: hidden;
+}
 
-            <a id="kson_logo" href="https://mbarkhau.github.io/kson"></a>
-            <h1 id="project_tagline">Keystripped Schemafied Object Notation</h1>
+#header_wrap {
+	background: #222;
+    background: -webkit-linear-gradient(top, #333, #222);
+}
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/mbarkhau/kson/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/mbarkhau/kson/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+#main_content_wrap {
+	background: #FFF;
+	border-top: 1px solid #111;
+}
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <p class="">
-          <b>KSON is minification for your JSON data.</b>
-          JSON is readable but often verbose and repetitive. KSON can
-          minify your JSON data by extracting repeated keys into a schema
-          which only has to be loaded once. Your data can be compressed
-          even further by leveraging domain knowledge and using KSON's
-          flexible codec system.
-        </p>
-        <p>Since KSON builds on JSON, it can parse and serialize data
-          using native browser functions and the kson.min.js is only
-          2KB small (less than 1K gzipped).
-        </p>
+#main_content {
+	padding-top: 40px;
+	max-width: 1100px;
+}
+section > div {
+	visibility: hidden;
+}
+</style>
 
-        <div class="kson-example">
-          <div class="ke-schema-wrap"></div>
-          <div class="ke-data-wrap"></div>
-          <span class="ke-infotag ke-it-schema">Schema</span>
-          <span class="ke-infotag ke-it-state">JSON</span>
-          <div class="ke-controls">
-            <button class="ke-ctrl-convert">KSON.stringify</button>
-            <button class="ke-ctrl-bench">Benchmark</button>
-          </div>
-          <div class="ke-stats">
-            <div class="ke-bench">
-              <div class="ke-stat-bar-label">
-                <div class="ke-stat-bar-label-val"></div>
-                <div class="ke-stat-bar-label-name"></div>
-              </div>
-              <div class="ke-stat-bar">
-                <div class="ke-stat-bar-val"></div>
-                <div class="ke-stat-bar-err"></div>
-              </div>
-              <div class="ke-stat-bar-label">
-                <div class="ke-stat-bar-label-val"></div>
-                <div class="ke-stat-bar-label-name"></div>
-              </div>
-              <div class="ke-stat-bar">
-                <div class="ke-stat-bar-val"></div>
-                <div class="ke-stat-bar-err"></div>
-              </div>
-              <div class="ke-stat-bar-label">
-                <div class="ke-stat-bar-label-val"></div>
-                <div class="ke-stat-bar-label-name"></div>
-              </div>
-              <div class="ke-stat-bar">
-                <div class="ke-stat-bar-val"></div>
-                <div class="ke-stat-bar-err"></div>
-              </div>
-              <div class="ke-stat-bar-label">
-                <div class="ke-stat-bar-label-val"></div>
-                <div class="ke-stat-bar-label-name"></div>
-              </div>
-              <div class="ke-stat-bar">
-                <div class="ke-stat-bar-val"></div>
-                <div class="ke-stat-bar-err"></div>
-              </div>
-            </div>
-            <div class="ke-data-bar">
-            </div>
-          </div>
-        </div>
+<meta name="viewport" content="initial-scale=1.0">
+<title>KSON - Keystripped Schemafied Object Notation</title>
+</head>
 
-        <div class="kson-example">
-          <div class="ke-schema-wrap"></div>
-          <div class="ke-data-wrap"></div>
-          <span class="ke-infotag ke-it-schema">Schema</span>
-          <span class="ke-infotag ke-it-state">JSON</span>
-          <div class="ke-controls">
-            <button class="ke-ctrl-convert">KSON.stringify</button>
-            <button class="ke-ctrl-bench">Benchmark</button>
-          </div>
-          <div class="ke-stats"></div>
-        </div>
+<body>
 
-        <div class="kson-example">
-          <div class="ke-schema-wrap"></div>
-          <div class="ke-data-wrap"></div>
-          <span class="ke-infotag ke-it-schema">Schema</span>
-          <span class="ke-infotag ke-it-state">JSON</span>
-          <div class="ke-controls">
-            <button class="ke-ctrl-convert">KSON.stringify</button>
-            <button class="ke-ctrl-bench">Benchmark</button>
-          </div>
-          <div class="ke-stats"></div>
-        </div>
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+	<header class="inner">
+		<a id="forkme_banner" href="https://github.com/mbarkhau/kson">View on GitHub</a>
 
-        <div class="kson-example">
-          <div class="ke-schema-wrap"></div>
-          <div class="ke-data-wrap"></div>
-          <span class="ke-infotag ke-it-schema">Schema</span>
-          <span class="ke-infotag ke-it-state">JSON</span>
-          <div class="ke-controls">
-            <button class="ke-ctrl-convert">KSON.stringify</button>
-            <button class="ke-ctrl-bench">Benchmark</button>
-          </div>
-          <div class="ke-stats"></div>
-        </div>
+		<a id="kson_logo" href="https://mbarkhau.github.io/kson"></a>
+		<h1 id="project_tagline">Keystripped Schemafied Object Notation</h1>
 
-        <div class="kson-example">
-          <div class="ke-schema-wrap"></div>
-          <div class="ke-data-wrap"></div>
-          <span class="ke-infotag ke-it-schema">Schema</span>
-          <span class="ke-infotag ke-it-state">JSON</span>
-          <div class="ke-controls">
-            <button class="ke-ctrl-convert">KSON.stringify</button>
-            <button class="ke-ctrl-bench">Benchmark</button>
-          </div>
-          <div class="ke-stats"></div>
-        </div>
+		<section id="downloads">
+			<a class="zip_download_link" href="https://github.com/mbarkhau/kson/zipball/master">Download this project</a>
+		</section>
+	</header>
+</div>
 
-    <!--
-<code>
-  // input 290 bytes (95-108 bytes per entry)
-  [
-    {"id": 1, "title": "Futurama: Bender's Big Score", "year": 2007,
-     "cover: "http://example.com/movie_covers/1.jpg"},
-    {"id": 5, "title": "Toy Story", "year": 1995,
-     "cover": "http://example.com/movie_covers/5.jpg"},
-    {"id": 8, "title": "Forrest Gump", "year": 1994,
-     "cover": "http://example.com/movie_covers/8.jpg"}
-  ]
-
-  // schema
-  {
-    "id": "movie-schema-v1":
-    "fields": ["id", "title", "year", "cover"]
-  }
-
-  // output 220 bytes (59-78 bytes per entry)
-  ["[]movie-schema-v1",
-    1, "Futurama: Bender's Big Score", 2007,
-    "http://example.com/movie_covers/1.jpg",
-    5, "Toy Story", 1995,
-    "http://example.com/movie_covers/5.jpg",
-    8, "Forrest Gump", 1994,
-    "http://example.com/movie_covers/8.jpg"
-  ]
-  </code>
-
-  <p>A great deal savings can be made with domain knowledge of the data being encoded. In this case we can see that the url for the cover always has a common prefix and suffix.</p>
-
-  <code>
-  // schema with filters
-  {
-    "id": "movie-schema-v2",
-    "fields": ["id", "title", "year", "cover"],
-    "meta": {
-      "year": "offsetint:1990",
-      "cover": "prefix:http\\://example.com/movie_covers/|suffix:.jpg"
-    }
-  }
-
-  // output 104 bytes (20-40 bytes per entry)
-  ["[]movie-schema-v2",
-    1, "Futurama: Bender's Big Score", 17, "1",
-    5, "Toy Story", 5, "5",
-    8, "Forrest Gump", 4, "8"
-  ]
-  </code>
-
-<p>Of course any savings made in faster transmission times of smaller documents have to be weighed against the overhead of having to transmit the library to encode and decode the data, as well as the time to perform the encoding and decoding.
-
-Since any KSON document is a JSON document, much of parsing and serialization is by existing native libraries. Any benefits of transmitting less data would be reduced by having to transmit a library to encode and decode this data. KSON offers a compromise by not as small as possible. The minified and gzipped javascript library uses &lt; 1K.
+<div id="main_content_wrap" class="outer">
+<section id="main_content" class="inner">
+<p>
+	<b>KSON is minification for your JSON.</b> At the price of readability and a more com&shy;plex tool chain, you can use KSON greatly reduce the size of your ser&shy;ialized data. Compared to other ser&shy;ialization lib&shy;raries, which also offer more compact ser&shy;ialization than JSON, <a href="https://github.com/mbarkhau/kson/blob/master/js/kson.min.js">kson.min.js</a> has a min&shy;imal over&shy;head of only 2KB.
 </p>
-        <select id="example_selector"> </select>
-        <textarea id="input_pane"></textarea>
-        <pre id="output_pane"> </pre>
-      </section>
--->
-
-<!--
-TODO: pitfalls (name clashes between coders and schema id)
-TODO: display js errors
--->
-    </div>
-
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">KSON maintained by <a href="https://github.com/mbarkhau">mbarkhau</a></p>
-      </footer>
-    </div>
-
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js" async></script>
-    <script type="text/javascript" src="js/codemirror.js" async></script>
-    <link rel="stylesheet" href="css/codemirror.css">
-    <script type="text/javascript" src="js/kson.js" async></script>
-    <script type="text/javascript" src="js/examples.js" async></script>
-    <script type="text/javascript" src="js/main.js" async></script>
-    <script type="text/javascript" src="js/lodash.js" async></script>
-    <script type="text/javascript" src="js/benchmark.js" async></script>
-
-  </body>
+<p>
+	Compared to other serialization libraries however, the over&shy;head is min&shy;imal. Minified kson.js is only 2KB small (less than 1K gzipped). As for speed, since KSON builds on JSON, most of parsing is done using native browser func&shy;tions.
+</p>
+<p>
+	The most obvious redundancy in an array of objects encoded with JSON are the keys on each object. These which only has to be loaded once. Your data can be compressed even further by leveraging domain knowledge and using KSON's flexible codec system.
+</p>
+<div id="editors"></div>
+</section>
+</div>
+<div id="footer_wrap" class="outer">
+	<footer class="inner">
+		<p class="copyright">KSON maintained by <a href="https://github.com/mbarkhau">mbarkhau</a></p>
+	</footer>
+</div>
+<link rel="stylesheet" type="text/css" href="css/stylesheet.css">
+<script type="text/javascript" src="js/main.js"></script>
+</body>
 </html>
