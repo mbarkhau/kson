@@ -112,7 +112,7 @@ function date_str_param_coder(args) {
 global.KSON_EXAMPLES = [
 	{
 		"description": "Federal US Holidays",
-		"root_schema_id": "event-v1",
+		"root_id": "event-v1",
 		"schemas": {
 			"id": "event-v1",
 			"fields": ["day", "fixed", "name"]
@@ -124,7 +124,7 @@ global.KSON_EXAMPLES = [
 			"Federal US Holidays",
 			"(with encoded fixed attribute)"
 		],
-		"root_schema_id": "event-v2",
+		"root_id": "event-v2",
 		"schemas": {
 			"id": "event-v2",
 			"fields": ["day", "fixed", "name"],
@@ -137,7 +137,7 @@ global.KSON_EXAMPLES = [
 			"Federal US Holidays",
 			"(with encoded holiday names)"
 		],
-		"root_schema_id": "event-v3",
+		"root_id": "event-v3",
 		"schemas": {
 			"id": "event-v3",
 			"fields": ["day", "fixed", "name"],
@@ -150,7 +150,7 @@ global.KSON_EXAMPLES = [
 			"Federal US Holidays ",
 			"(with dates using a custom coder)"
 		],
-		"root_schema_id": "event-v4",
+		"root_id": "event-v4",
 		"schemas": {
 			"id": "event-v4",
 			"fields": ["day", "fixed", "name"],
@@ -170,7 +170,7 @@ global.KSON_EXAMPLES = [
 			"Federal US Holidays ",
 			"(with dates using a parameterized custom coder)"
 		],
-		"root_schema_id": "event-v5",
+		"root_id": "event-v5",
 		"schemas": {
 			"id": "event-v5",
 			"fields": ["day", "fixed", "name"],

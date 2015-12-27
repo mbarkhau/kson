@@ -41,7 +41,7 @@
 			init_code.push("// " + description + "\n");
 		}
 		init_code.push(
-			"var root_schema_id = \"" + ex.root_schema_id + "\";\n"
+			"var root_id = \"" + ex.root_id + "\";\n"
 		);
 
 		if (ex.coders) {
@@ -148,16 +148,16 @@
 		}
 		ctx.bench_data = data;
 
-		var kson_data = KSON.stringify(data, ctx.example.root_schema_id),
+		var kson_data = KSON.stringify(data, ctx.example.root_id),
 			json_data = JSON.stringify(data),
 			setup_code = [
 				"var data = " + json_data + ";",
-				"var root_schema_id = '" + ctx.example.root_schema_id + "';",
+				"var root_id = '" + ctx.example.root_id + "';",
 				"var json_data = '" + json_data + "';",
 				"var kson_data = '" + kson_data + "';",
 			].join("\n"),
 			fn_codes = [
-				"KSON.stringify(data, root_schema_id);",
+				"KSON.stringify(data, root_id);",
 				"JSON.stringify(data);",
 				"KSON.parse(kson_data);",
 				"JSON.parse(json_data);",
@@ -198,7 +198,7 @@
 		$(".ke-controls button.ke-ctrl-convert").click(function(e) {
 			var ctx = get_example_ctx(e);
 
-			// is expected to set the 'root_schema_id' var
+			// is expected to set the 'root_id' var
 			eval(ctx.init_code);
 
 			if (ctx.$node.data('state') == 'json') {
@@ -206,7 +206,7 @@
 				ctx.$node.find(".ke-it-state").html("KSON");
 				ctx.$node.find(".ke-ctrl-convert").html("KSON.parse");
 				var kson_data = JSON.parse(KSON.stringify(
-					JSON.parse(ctx.input_data), root_schema_id
+					JSON.parse(ctx.input_data), root_id
 				));
 				ctx.example.data_editor.setValue(json_str(kson_data));
 				update_stats(ctx, kson_data);
