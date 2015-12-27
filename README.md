@@ -240,3 +240,6 @@ TODO:
   Use last loaded schema as the root in examples
 
   Add examples showing nested schemas
+
+  Convert readme to .rst
+

@@ -291,13 +291,12 @@ section > div {
 .ke-stats p {
 	margin: 0;
 }
-.ke-stats > .ke-size-info {
-	padding: 4px;
-}
+
 
 .ke-bench {
 	position: relative;
 	height: 122px;
+	background: red;
 }
 
 .ke-stat-bar {

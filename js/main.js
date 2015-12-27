@@ -93,6 +93,32 @@
 			  '</p>',
 			'</div>',
 		'</div>',
+		'<div class="ke-bench">',
+			'<div class="ke-stat-bar">',
+				'<div class="ke-stat-bar-val">',
+				'</div>',
+				'<div class="ke-stat-bar-err">',
+				'</div>',
+			'</div>',
+			'<div class="ke-stat-bar">',
+				'<div class="ke-stat-bar-val">',
+				'</div>',
+				'<div class="ke-stat-bar-err">',
+				'</div>',
+			'</div>',
+			'<div class="ke-stat-bar">',
+				'<div class="ke-stat-bar-val">',
+				'</div>',
+				'<div class="ke-stat-bar-err">',
+				'</div>',
+			'</div>',
+			'<div class="ke-stat-bar">',
+				'<div class="ke-stat-bar-val">',
+				'</div>',
+				'<div class="ke-stat-bar-err">',
+				'</div>',
+			'</div>',
+		'</div>',
 		'<p></p>',
 	], SCRIPTS = [
 		'js/benchmark.js',
@@ -275,7 +301,6 @@
 
 	//doc.addEventListener('load', function() {
 	setTimeout(function() {
-		console.log("initalizing");
 		doc.getElementById('editors').innerHTML = CONTENT.join("\n");
 
 		for (var i = SCRIPTS.length; i--;) {
@@ -381,9 +406,12 @@
 
 	var bench_mean_ms = [];
 
-	function update_bench_results($node) {
-		$node.find(".ke-stat-bar").each(function(ids, elem) {
-			err_node.css({'width': "2%", 'right': "-1%", 'display': "block"});
+	function update_bench_results() {
+		var max_mean = Math.max.apply(null, bench_mean_ms);
+		console.log("bench", max_mean, bench_mean_ms);
+		return;
+		$(".ke-bench .ke-stat-bar").each(function(idx, elem) {
+			elem.css({'width': "2%", 'right': "-1%", 'display': "block"});
 
 			console.log("bench", name, mean_ms, err_ms, this.stats.rme);
 			console.log(ctx.bench_data.length, mean_ms / ctx.bench_data.length,
@@ -422,7 +450,7 @@
 				);
 
 				bench_mean_ms.push(mean_ms);
-				update_bench_results(ctx.$node);
+				update_bench_results();
 			}
 		})).run();
 	}
