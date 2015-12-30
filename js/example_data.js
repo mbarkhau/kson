@@ -1,7 +1,6 @@
 (function(global) {
 
-// TODO: load from json file
-HOLIDAYS = [
+var holidays = [
 	{"day": "2013-01-01", "fixed": true, "name": "New Year’s Day"},
 	{"day": "2013-01-21", "fixed": false, "name": "Birthday of Martin Luther King, Jr."},
 	{"day": "2013-02-18", "fixed": false, "name": "Washington’s Birthday"},
@@ -112,45 +111,41 @@ function date_str_param_coder(args) {
 global.KSON_EXAMPLES = [
 	{
 		"description": "Federal US Holidays",
-		"root_id": "event-v1",
 		"schemas": {
 			"id": "event-v1",
 			"fields": ["day", "fixed", "name"]
 		},
-		"data": HOLIDAYS
+		"data": holidays
 	},
 	{
 		"description": [
 			"Federal US Holidays",
 			"(with encoded fixed attribute)"
 		],
-		"root_id": "event-v2",
 		"schemas": {
 			"id": "event-v2",
 			"fields": ["day", "fixed", "name"],
 			"meta": [0, "bool", 0]
 		},
-		"data": HOLIDAYS
+		"data": holidays
 	},
 	{
 		"description": [
 			"Federal US Holidays",
 			"(with encoded holiday names)"
 		],
-		"root_id": "event-v3",
 		"schemas": {
 			"id": "event-v3",
 			"fields": ["day", "fixed", "name"],
 			"meta": [0, "bool", daynames_enum]
 		},
-		"data": HOLIDAYS
+		"data": holidays
 	},
 	{
 		"description": [
 			"Federal US Holidays ",
 			"(with dates using a custom coder)"
 		],
-		"root_id": "event-v4",
 		"schemas": {
 			"id": "event-v4",
 			"fields": ["day", "fixed", "name"],
@@ -163,14 +158,13 @@ global.KSON_EXAMPLES = [
 		"coders": [
 			{"id": "date-str", "fn": date_str_coder}
 		],
-		"data": HOLIDAYS
+		"data": holidays
 	},
 	{
 		"description": [
 			"Federal US Holidays ",
 			"(with dates using a parameterized custom coder)"
 		],
-		"root_id": "event-v5",
 		"schemas": {
 			"id": "event-v5",
 			"fields": ["day", "fixed", "name"],
@@ -183,7 +177,7 @@ global.KSON_EXAMPLES = [
 		"coders": [
 			{"id": "date-str", "fn": date_str_param_coder}
 		],
-		"data": HOLIDAYS
+		"data": holidays
 	}
 	// TODO: example with codec args in custom codec
 	// TODO: example with codec chaining
