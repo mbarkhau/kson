@@ -280,8 +280,9 @@ function addSchema(schema) {
 		schema = parse(schema);
 	}
 	if (schema instanceof Array) {
-		// Order is important here
-		// (independent schemas must be loaded first)
+		// Order is important here.
+		// Dependent schemas must be loaded after
+		// the schemas upon which they depend.
 		for (var i = schema.length; i--;) {
 			addSchema(schema[i]);
 		}

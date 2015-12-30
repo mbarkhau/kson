@@ -243,3 +243,6 @@ TODO:
 
   Convert readme to .rst
 
+  call update_stats onchange of textareas?
+
+  expand spec to documet wire format
