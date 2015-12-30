@@ -147,7 +147,7 @@ header {
 
 #main_content > p {
 	text-align: justify;
-	max-width: 40em;
+	max-width: 45em;
 }
 
 /* Custom Styles */
@@ -166,7 +166,7 @@ header {
 section > div {
 	visibility: visible;
 }
-.kson-editor {
+.ke-editor {
 	margin: 40px 0;
 	font-size: 15px;
 	height: 500px;
@@ -176,32 +176,36 @@ section > div {
 	background: #FFF;
 	border-radius: 3px;
 }
-.kson-editor > .ke-schema-wrap,
-.kson-editor > .ke-data-wrap {
+.ke-editor > .ke-schema-wrap,
+.ke-editor > .ke-data-wrap {
 	display: block;
 	margin: 0;
 	padding: 0;
 	position: absolute;
 }
-.kson-editor > .ke-schema-wrap {width: 50%; height: 500px;}
-.kson-editor .ke-schema-wrap .CodeMirror {width: 100%; height: 500px;}
-.kson-editor > .ke-data-wrap {width: 50%; height: 500px;}
-.kson-editor .ke-data-wrap .CodeMirror {width: 100%; height: 500px;}
+.ke-editor > .ke-schema-wrap {width: 50%; height: 500px;}
+.ke-editor .ke-schema-wrap .CodeMirror {width: 100%; height: 500px;}
+.ke-editor > .ke-data-wrap {width: 50%; height: 500px;}
+.ke-editor .ke-data-wrap .CodeMirror {width: 100%; height: 500px;}
 
-.kson-editor .ke-data-wrap {
+.ke-editor .ke-data-wrap {
 	top: 0px;
 	left: 0;
 }
-.kson-editor .ke-schema-wrap {
+.ke-editor .ke-schema-wrap {
 	top: 0px;
 	left: 50%;
 }
-.kson-editor .ke-controls {
+.ke-editor .ke-controls {
 	position: absolute;
 	z-index: 5;
 	width: 150px;
 	right: 52%;
 	bottom: 10px;
+}
+
+.ke-editor .ke-example-controls {
+	bottom: 86px;
 }
 
 .ke-controls .ke-ctrl {
@@ -291,7 +295,18 @@ section > div {
 .ke-stats p {
 	margin: 0;
 }
-
+.ke-stats p span {
+	display: inline-block;
+}
+.ke-stats p span:nth-child(1) {
+	width: 10em;
+}
+.ke-stats p span:nth-child(2) {
+	width: 5em;
+	text-align: right;
+}
+.ke-stats p span:nth-child(3) {
+}
 
 .ke-bench {
 	position: relative;
@@ -351,4 +366,12 @@ section > div {
 .ke-stat-bar-label-name {
 	display: inline-block;
 	margin-left: 15px;
+}
+
+/*
+ * Set initial visibility.
+ * This is changed when javascript is loaded.
+ */
+.ke-editor, .ke-stats, .ke-bench {
+	visibility: hidden;
 }

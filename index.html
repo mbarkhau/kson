@@ -38,7 +38,7 @@ b {font-weight: bold; font-size: 1.03em;}
 p {
 	margin: 10px auto 15px auto;
 	text-align: justify;
-	max-width: 40em;
+	max-width: 45em;
 }
 a {
 	color: #07D;
@@ -134,15 +134,71 @@ section > div {
 <div id="main_content_wrap" class="outer">
 <section id="main_content" class="inner">
 <p>
-	<b>KSON is minification for your JSON.</b> At the price of readability and a more com&shy;plex tool chain, you can use KSON greatly reduce the size of your ser&shy;ialized data. Compared to other ser&shy;ialization lib&shy;raries, which also offer more compact ser&shy;ialization than JSON, <a href="https://github.com/mbarkhau/kson/blob/master/js/kson.min.js">kson.min.js</a> has a min&shy;imal over&shy;head of only 2KB.
+	<b>KSON is minification for your JSON.</b> At the price of readability and com&shy;plexity, you can use KSON greatly reduce the size of your ser&shy;ialized data.
 </p>
 <p>
-	Compared to other serialization libraries however, the over&shy;head is min&shy;imal. Minified kson.js is only 2KB small (less than 1K gzipped). As for speed, since KSON builds on JSON, most of parsing is done using native browser func&shy;tions.
+	Compared to other serialization libraries, the over&shy;head is min&shy;imal. Minified <a href="https://github.com/mbarkhau/kson/blob/master/js/kson.min.js">kson.min.js</a> is only 2KB small (less than 1K gzipped). As for speed, since KSON builds on JSON, most of parsing is done using native browser func&shy;tions.
 </p>
 <p>
-	The most obvious redundancy in an array of objects encoded with JSON are the keys on each object. These which only has to be loaded once. Your data can be compressed even further by leveraging domain knowledge and using KSON's flexible codec system.
+	The most obvious redundancy in an array of objects encoded with JSON are the keys on each object. These which only has to be loaded once. Your data can be com&shy;pressed even further by leveraging domain know&shy;ledge and using KSON's flexible codec system.
 </p>
-<div id="editors"></div>
+<div id="ke-editor" class="ke-editor">
+	<div class="ke-data-wrap"></div>
+	<div class="ke-schema-wrap"></div>
+	<span class="ke-infotag ke-it-schema">Schema</span>
+	<span class="ke-infotag ke-it-state">JSON</span>
+	<div class="ke-controls ke-example-controls">
+	</div>
+	<div class="ke-controls">
+		<div class="ke-ctrl ke-ctrl-convert">KSON.stringify</div>
+		<div class="ke-ctrl ke-ctrl-derive">Derive Schema</div>
+	</div>
+</div>
+<div class="ke-stats">
+	<p>
+		<span>JSON Size per item:</span>
+		<span class="ke-json-data-bytes"></span>
+		<span>bytes/item</span>
+	</p>
+	<p>
+		<span>KSON Size per item:</span>
+		<span class="ke-kson-data-bytes"></span>
+		<span>bytes/item</span>
+	</p>
+	<p title="The point after which KSON is saving bandwidth.">
+		<span>Break-even: </span>
+		<span class="ke-breakeven-bytes"></span>
+		<span>bytes</span>
+	</p>
+	<p>
+		<span>JSON Decode Time: </span>
+		<span class="ke-time-result ke-json-decode-time"></span>
+		<span>ms</span>
+	</p>
+	<p>
+		<span>KSON Decode Time: </span>
+		<span class="ke-time-result ke-kson-decode-time"></span>
+		<span>ms</span>
+	</p>
+	<p>
+		<span>JSON Encode Time: </span>
+		<span class="ke-time-result ke-json-encode-time"></span>
+		<span>ms</span>
+	</p>
+	<p>
+		<span>KSON Encode Time: </span>
+		<span class="ke-time-result ke-kson-encode-time"></span>
+		<span>ms</span>
+	</p>
+</div>
+<div class="ke-bench">
+	<div class="ke-stat-bar">
+		<div class="ke-stat-bar-val">
+		</div>
+		<div class="ke-stat-bar-err">
+		</div>
+	</div>
+</div>
 </section>
 </div>
 <div id="footer_wrap" class="outer">
@@ -151,6 +207,7 @@ section > div {
 	</footer>
 </div>
 <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
-<script type="text/javascript" src="js/main.js"></script>
+<link rel="stylesheet" type="text/css" href="css/codemirror.css">
+<script type="text/javascript" src="js/loader.js"></script>
 </body>
 </html>
