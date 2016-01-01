@@ -142,27 +142,42 @@ section > div {
 <p>
 	The most ob&shy;vi&shy;ous re&shy;dun&shy;dancy in an array of ob&shy;jects en&shy;coded with JSON are the keys on each ob&shy;ject. These which only has to be loaded once. Your data can be com&shy;pressed even fur&shy;ther by lever&shy;ag&shy;ing do&shy;main know&shy;ledge and using KSON's flex&shy;i&shy;ble codec sys&shy;tem.
 </p>
+
+<div class="ke-controls">
+	<div class="ke-example-controls">
+	</div>
+	<div class="ke-ctrl ke-ctrl-convert">KSON.stringify</div>
+	<div class="ke-ctrl ke-ctrl-derive">Derive Schema</div>
+</div>
+
 <div id="ke-editor" class="ke-editor">
 	<div class="ke-data-wrap"></div>
 	<div class="ke-schema-wrap"></div>
 	<span class="ke-infotag ke-it-schema">Schema</span>
 	<span class="ke-infotag ke-it-state">JSON</span>
-	<div class="ke-controls ke-example-controls">
-	</div>
-	<div class="ke-controls">
-		<div class="ke-ctrl ke-ctrl-convert">KSON.stringify</div>
-		<div class="ke-ctrl ke-ctrl-derive">Derive Schema</div>
-	</div>
+</div>
+<div class="ke-controls">
+	<div class="ke-ctrl ke-ctrl-run-benchmark">Run Benchmark</div>
 </div>
 <div class="ke-stats">
 	<p>
+		<span>JSON document size:</span>
+		<span class="ke-json-doc-bytes"></span>
+		<span>bytes/item</span>
+	</p>
+	<p>
+		<span>KSON document size:</span>
+		<span class="ke-kson-doc-bytes"></span>
+		<span>bytes/item</span>
+	</p>
+	<p>
 		<span>JSON Size per item:</span>
-		<span class="ke-json-data-bytes"></span>
+		<span class="ke-json-bytes-per-item"></span>
 		<span>bytes/item</span>
 	</p>
 	<p>
 		<span>KSON Size per item:</span>
-		<span class="ke-kson-data-bytes"></span>
+		<span class="ke-kson-bytes-per-item"></span>
 		<span>bytes/item</span>
 	</p>
 	<p title="The point after which KSON is saving bandwidth.">
@@ -190,12 +205,42 @@ section > div {
 		<span class="ke-time-result ke-kson-encode-time"></span>
 		<span>ms</span>
 	</p>
-</div>
-<div class="ke-bench">
-	<div class="ke-stat-bar">
-		<div class="ke-stat-bar-val">
+	<div class="ke-bench">
+		<div class="ke-labels">
+			<div class="ke-stat-bar-label">json decode time</div>
+			<div class="ke-stat-bar-label">kson decode time</div>
+			<div class="ke-stat-bar-label">json encode time</div>
+			<div class="ke-stat-bar-label">kson encode time</div>
+			<div class="ke-stat-bar-label">json net latency</div>
+			<div class="ke-stat-bar-label">kson net latency</div>
+			<div class="ke-stat-bar-label">json total time</div>
+			<div class="ke-stat-bar-label">kson total time</div>
 		</div>
-		<div class="ke-stat-bar-err">
+		<div class="ke-bars">
+			<div class="ke-stat-bar ke-json-decode-time">
+				<div class="ke-stat-bar-val">123ms</div><div class="ke-stat-bar-err"></div>
+			</div>
+			<div class="ke-stat-bar ke-kson-decode-time">
+				<div class="ke-stat-bar-val">123ms</div><div class="ke-stat-bar-err"></div>
+			</div>
+			<div class="ke-stat-bar ke-json-encode-time">
+				<div class="ke-stat-bar-val">123ms</div><div class="ke-stat-bar-err"></div>
+			</div>
+			<div class="ke-stat-bar ke-kson-encode-time">
+				<div class="ke-stat-bar-val">123ms</div><div class="ke-stat-bar-err"></div>
+			</div>
+			<div class="ke-stat-bar ke-json-net-latency">
+				<div class="ke-stat-bar-val">123ms</div>
+			</div>
+			<div class="ke-stat-bar ke-kson-net-latency">
+				<div class="ke-stat-bar-val">123ms</div>
+			</div>
+			<div class="ke-stat-bar ke-json-net-total-latency">
+				<div class="ke-stat-bar-val">123ms</div>
+			</div>
+			<div class="ke-stat-bar ke-kson-net-total-latency">
+				<div class="ke-stat-bar-val">123ms</div>
+			</div>
 		</div>
 	</div>
 </div>

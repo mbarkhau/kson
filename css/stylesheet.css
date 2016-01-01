@@ -167,9 +167,8 @@ section > div {
 	visibility: visible;
 }
 .ke-editor {
-	margin: 40px 0;
 	font-size: 15px;
-	height: 500px;
+	height: 400px;
 	position: relative;
 	border: 1px solid #ccc;
 	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
@@ -183,29 +182,46 @@ section > div {
 	padding: 0;
 	position: absolute;
 }
-.ke-editor > .ke-schema-wrap {width: 50%; height: 500px;}
-.ke-editor .ke-schema-wrap .CodeMirror {width: 100%; height: 500px;}
-.ke-editor > .ke-data-wrap {width: 50%; height: 500px;}
-.ke-editor .ke-data-wrap .CodeMirror {width: 100%; height: 500px;}
+.ke-editor > .ke-schema-wrap {width: 50%; height: 400px;}
+.ke-editor .ke-schema-wrap .CodeMirror {width: 100%; height: 400px;}
+.ke-editor > .ke-data-wrap {width: 50%; height: 400px;}
+.ke-editor .ke-data-wrap .CodeMirror {width: 100%; height: 400px;}
 
 .ke-editor .ke-data-wrap {
 	top: 0px;
 	left: 0;
 }
+
 .ke-editor .ke-schema-wrap {
 	top: 0px;
 	left: 50%;
 }
-.ke-editor .ke-controls {
+
+.ke-controls {
+	height: 40px;
+	position: relative;
+}
+.ke-example-controls {
 	position: absolute;
-	z-index: 5;
-	width: 150px;
-	right: 52%;
-	bottom: 10px;
+	right: 320px;
 }
 
-.ke-editor .ke-example-controls {
-	bottom: 86px;
+.ke-example-controls .ke-ctrl {
+	display: block;
+	float: right;
+}
+
+.ke-controls > div {
+	display: block;
+}
+
+.ke-controls .ke-ctrl-convert {
+	position: absolute;
+	right: 160px;
+}
+.ke-controls .ke-ctrl-derive {
+	position: absolute;
+	right: 0;
 }
 
 .ke-controls .ke-ctrl {
@@ -213,20 +229,20 @@ section > div {
 	background: #EEE;
 	text-align: center;
 	width: 143px;
-	float: left;
+	margin-right: 5px;
 	margin-bottom: 8px;
 
 	border: 1px solid #CCC;
 	border-radius: 3px;
 	box-shadow: .5px 1px 3px rgba(0, 0, 0, .3);
 
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  transition: all 100ms ease;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	transition: all 100ms ease;
 }
 .ke-controls .ke-ctrl:hover {
 	background-color: #FFF;
@@ -236,25 +252,19 @@ section > div {
 	margin-bottom: 7px;
 	box-shadow: .1px 1px 3px rgba(0, 0, 0, .2);
 }
-.ke-controls .ke-ctrl.ke-ctrl-json {
+.ke-controls .ke-ctrl.ke-ctrl-active {
 	background-color: #FFF;
 	margin-top: 2px;
 	margin-bottom: 6px;
 	box-shadow: .1px 1px 2px rgba(0, 0, 0, .3);
 }
-.ke-controls .ke-ctrl.ke-ctrl-kson:active,
-.ke-controls .ke-ctrl.ke-ctrl-json:active {
+.ke-controls .ke-ctrl.ke-ctrl-active:active {
 	background-color: #FFF;
 	margin-top: 3px;
 	margin-bottom: 5px;
 	box-shadow: .5px 1px 1px rgba(0, 0, 0, .2);
 }
-.ke-controls .ke-ctrl.ke-ctrl-kson {
-	background-color: #FFF;
-	margin-top: 4px;
-	margin-bottom: 4px;
-	box-shadow: 0px 0px 0px rgba(0, 0, 0, .1);
-}
+
 .ke-controls .ke-ctrl.ke-ctrl-switcher {
 	width: 23px;
 	margin-right: 5px;
@@ -292,6 +302,14 @@ section > div {
 
 /* Statistic/Benchmark Styles */
 
+.ke-stats {
+	padding: 0 4px;
+	border: 1px solid #ccc;
+	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+	background: #FFF;
+	border-radius: 3px;
+}
+
 .ke-stats p {
 	margin: 0;
 }
@@ -299,7 +317,7 @@ section > div {
 	display: inline-block;
 }
 .ke-stats p span:nth-child(1) {
-	width: 10em;
+	width: 11em;
 }
 .ke-stats p span:nth-child(2) {
 	width: 5em;
@@ -309,34 +327,55 @@ section > div {
 }
 
 .ke-bench {
-	position: relative;
-	height: 122px;
-	background: red;
+	display: table;
+	height: 222px;
+	width: 100%;
+	font-family: monospace;
+}
+
+.ke-labels {
+	display: table-cell;
+	width: 9em;
+}
+
+.ke-bars {
+	display: table-cell;
+}
+
+.ke-stat-bar-label {
+	height: 19px;
+	font-size: 13px;
+	line-height: 15px;
 }
 
 .ke-stat-bar {
-	position: relative;
-	width: 0;
-	height: 35px;
-	-webkit-transition: width 100ms;
-	transition: width 100ms;
+	width: 100%;
+	height: 19px;
+	font-size: 11px;
+	line-height: 16px;
 }
 
+.ke-stat-bar-val,
+.ke-stat-bar-err {
+	-webkit-transition: width 300ms;
+	transition: width 300ms;
+}
+
+
 .ke-stat-bar-val {
-	position: absolute;
-	top: 3px;
-	left: 0;
-	height: 12px;
-	width: 100%;
-	background: #999;
+	display: inline-block;
+	width: 0;
+	height: 13px;
+	background: #ED4;
+	border-radius: 1px;
+	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .ke-stat-bar-err {
-	display: none;
-	position: absolute;
-	width: 0
-	top: 7px;
-	height: 15px;
+	display: inline-block;
+	width: 0;
+	margin-top: 2px;
+	height: 9px;
 	border: 1px solid black;
 	border-width: 0 1px 0 1px;
 }
@@ -345,16 +384,10 @@ section > div {
 	content: "";
 	display: block;
 	height: 1px;
-	margin-top: 7px;
+	margin-top: 4px;
 	background: black;
 }
 
-.ke-stat-bar-label {
-	float: right;
-	margin-right: 0px;
-	width: 170px;
-	font-size: 13px;
-}
 
 .ke-stat-bar-label-val {
 	display: inline-block;

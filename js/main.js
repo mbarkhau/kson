@@ -62,23 +62,28 @@
 	}
 
 	function update_stats() {
-		if (!kson_script_overhead) {
+		current_data = parse_editors();
+		if (!(kson_script_overhead && current_data)) {
 			// wait for ajax call to finish
 			return
 		}
-		current_data = parse_editors();
+
 		// TODO (mbarkhau 2015-12-30): revisit overhead calculation
 		//  	after client script compilation is implemented.
 		var kson_schema_overhead = current_data.schema_init_code.length;
 		var overhead = kson_script_overhead + kson_schema_overhead;
+		var json_doc_bytes = current_data.raw_json.length;
+		var kson_doc_bytes = current_data.raw_kson.length;
 		var itemcount = current_data.parsed.length;
-		var json_bpi = current_data.raw_json.length / itemcount;
-		var kson_bpi = current_data.raw_kson.length / itemcount;
+		var json_bpi = json_doc_bytes / itemcount;
+		var kson_bpi = kson_doc_bytes / itemcount;
 		var breakeven_itemcount = overhead / (json_bpi - kson_bpi);
 		var breakeven_bytes = json_bpi * breakeven_itemcount;
 
-		$('.ke-json-data-bytes').text(json_bpi.toFixed(2));
-		$('.ke-kson-data-bytes').text(kson_bpi.toFixed(2));
+		$('.ke-json-doc-bytes').text(json_doc_bytes);
+		$('.ke-kson-doc-bytes').text(kson_doc_bytes);
+		$('.ke-json-bytes-per-item').text(json_bpi.toFixed(2));
+		$('.ke-kson-bytes-per-item').text(kson_bpi.toFixed(2));
 		$('.ke-breakeven-bytes').text(parseInt(breakeven_bytes, 10));
 
 		$('.ke-stats').css('visibility', 'visible');
@@ -86,8 +91,9 @@
 
 	function reset_example(example) {
 		data_state = 'json';
-		$(".ke-example-controls .ke-ctrl-switcher").removeClass('ke-ctrl-json');
-		example.control_node.addClass('ke-ctrl-json');
+		$(".ke-ctrl-switcher").removeClass('ke-ctrl-active');
+		example.control_node.addClass('ke-ctrl-active');
+		$('.ke-ctrl-convert').text("KSON.stringify");
 
 		schema_editor.setValue(
 			kson_util.compile_example_init_code(example)
@@ -100,7 +106,7 @@
 
 	function init_examples() {
 		var control_container = $(".ke-example-controls");
-		for (var i = 0; i < KSON_EXAMPLES.length; i++) {
+		for (var i = KSON_EXAMPLES.length; i-- > 0;) {
 			var example = KSON_EXAMPLES[i];
 			example.control_node = $("<div>" + (i + 1) + "</div>");
 			$(example.control_node)
