@@ -1,4 +1,5 @@
 (function() {
+	var DEBUG = document.location.hostname != 'mbarkhau.github.io';
 	window.load_scripts = function (script_sources, callback_name) {
 		var loaded_scripts = {};
 
@@ -26,6 +27,9 @@
 				script.async = 'async';
 				script.type = "text/javascript";
 				script.addEventListener('load', loaded_callback);
+				if (DEBUG && src_url.slice(0, 2) == 'js') {
+					src_url += "?cb=" + Math.random();
+				}
 				script.src = src_url;
 				document.body.appendChild(script);
 			}
