@@ -5,6 +5,7 @@
 	var data_editor;
 	var schema_editor;
 	var kson_script_overhead;
+	var BENCH_DOC_SIZE = 10000;
 
 	function init_script_overhead() {
 		jQuery.ajax({
@@ -12,8 +13,11 @@
 			'url': "/js/kson.min.js",
 			'dataType': "text"			// prevents script evaluation
 		}).done(
+			// TODO (mbarkhau 2016-01-02):
+			//		use this to measure current connection
 			function(data) {
 				kson_script_overhead = data.length;
+				console.log("overhead_init");
 				update_stats();
 			}
 		);
@@ -47,17 +51,42 @@
 		}
 
 		var raw_kson = KSON.stringify(data, global.root_schema_id);
-		var raw_json = JSON.stringify(data)
+		var raw_json = JSON.stringify(data);
+
+		var bench_data = JSON.parse(JSON.stringify(data));
+		if (!bench_data instanceof Array) {
+			bench_data = [bench_data];
+		}
+		var bench_data_len = bench_data.length;
+
+		var cur_size = JSON.stringify(bench_data).length;
+		var grow_by_elems = Math.floor(
+			(BENCH_DOC_SIZE - cur_size) / (cur_size / bench_data.length)
+		);
+		for (var i = 0; i < grow_by_elems; i++) {
+			var rand_idx = Math.floor(Math.random() * bench_data_len);
+			bench_data.push(bench_data[rand_idx]);
+		}
+		if (grow_by_elems < 0) {
+			bench_data = bench_data.slice(0, bench_data_len + grow_by_elems)
+		}
 
 		return {
-			raw_kson: raw_kson,
 			raw_json: JSON.stringify(data),
-			// gz_kson: pako.deflate(kson_util.str2ab(raw_kson)),
-			// gz_json: pako.deflate(kson_util.str2ab(raw_json)),
 			pretty_json: kson_util.json_str(data),
+			// gz_json: pako.deflate(kson_util.str2ab(raw_json)),
+
+			raw_kson: raw_kson,
 			pretty_kson: kson_util.json_str(JSON.parse(raw_kson)),
+			// gz_kson: pako.deflate(kson_util.str2ab(raw_kson)),
+
 			parsed: data,
-			schema_init_code: schema_init_code
+			schema_init_code: schema_init_code,
+
+			raw_json_bench_data: JSON.stringify(bench_data),
+			raw_kson_bench_data: KSON.stringify(
+				bench_data, global.root_schema_id
+			)
 		}
 	}
 
@@ -101,6 +130,7 @@
 		data_editor.setValue(
 			kson_util.json_str(example.data)
 		);
+
 		update_stats();
 	}
 
@@ -132,6 +162,7 @@
 			editors_node.find(".ke-data-wrap")[0],
 			{mode: {name: "javascript", json: true}, lineWrapping: true}
 		);
+		window.test_test = data_editor;
 		schema_editor = CodeMirror(
 			editors_node.find(".ke-schema-wrap")[0],
 			{mode: "javascript", lineWrapping: true}
@@ -168,7 +199,7 @@
 		kson_init_editors();
 		init_examples();
 		init_controls();
-		reset_example(KSON_EXAMPLES[0]);
+		reset_example(KSON_EXAMPLES[2]);
 		init_script_overhead();
 	};
 }(this));
