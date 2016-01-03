@@ -5,6 +5,9 @@
 <meta name="description" content="KSON : KSON: Keystripped Schemafied Object Notation" />
 <link rel="shortcut icon" href="images/kson-logo-small-16.ico?cb=129" />
 <style type="text/css">
+
+/* MeyerWeb Reset */
+
 html, body, div, span, h1, p, blockquote, a, em, img, b, u, i,
 center, label, footer, header, section {
 	margin: 0;
@@ -17,21 +20,25 @@ footer, header, section {
     max-width: 1100px;
 	display: block;
 }
+body {
+	box-sizing: border-box;
+	color: #000;
+	background: #222;
+	font: 17px/1.7em "Open Sans", Tahoma, Verdana, Segoe, sans-serif;
+	-webkit-font-smoothing: antialiased;
+}
 header {
 	height: 160px;
 }
 #main_content {
 	min-height: 1200px;
 }
-body {
-	box-sizing: border-box;
-	color: #000;
-	font: 17px/1.7em "Open Sans", Tahoma, Verdana, Segoe, sans-serif;
-}
 h1 {
 	margin: 10px 0;
 	color: #111;
+	font-size: 36px;
 	font-weight: 700;
+	font-family: "Open Sans", Tahoma, Verdana, Segoe, sans-serif;
 	letter-spacing: -1px;
 }
 b {font-weight: bold; font-size: 1.03em;}
@@ -44,7 +51,6 @@ a {
 	color: #07D;
     text-decoration: none;
 }
-footer p {color: #FFF;}
 
 .outer {width: 100%;}
 .inner {
@@ -57,12 +63,45 @@ footer p {color: #FFF;}
 	padding: 50px 10px 30px 10px;
 }
 
-#forkme_banner {
-	display: block;
+#downloads {
 	position: absolute;
-	top:0;
-	right: 10px;
 	visibility: hidden;
+}
+
+#livecoding_banner,
+#forkme_banner {
+	position: absolute;
+	display: block;
+	top:0;
+	z-index: 10;
+
+	color: #FFF;
+	font-weight: 700;
+	box-shadow: 0 0 10px rgba(0,0,0,.5);
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+}
+
+#livecoding_banner {
+	right: 150px;
+	padding: 10px 65px 10px 10px;
+	background: #000;
+}
+
+#forkme_banner {
+	right: 10px;
+	padding: 10px 50px 10px 10px;
+	background-color: #08F;
+}
+
+#kson_logo {
+	display: block;
+	position: relative;
+	left: 0px;
+	top: 0px;
+	background: url(images/kson-logo-128.png) #FD3;
+	width: 128px;
+	height: 128px;
 }
 
 #project_tagline {
@@ -76,20 +115,6 @@ footer p {color: #FFF;}
     left: 170px;
     bottom: 85px;
     width: 250px;
-}
-
-#kson_logo {
-    display: block;
-    position: relative;
-    left: 0px;
-    top: 0px;
-    width: 128px;
-    height: 128px;
-	background: #ED4;
-}
-
-#downloads {
-	visibility: hidden;
 }
 
 #header_wrap {
@@ -112,7 +137,7 @@ section > div {
 </style>
 
 <meta name="viewport" content="initial-scale=1.0">
-<title>KSON - Keystripped Schemafied Object Notation</title>
+<title>KSON - Keyless Schemæ Object Notation</title>
 </head>
 
 <body>
@@ -120,10 +145,11 @@ section > div {
 <!-- HEADER -->
 <div id="header_wrap" class="outer">
 	<header class="inner">
-		<a id="forkme_banner" href="https://github.com/mbarkhau/kson">View on GitHub</a>
+		<a id="livecoding_banner" href="https://www.livecoding.tv/video/mbarkhau/playlists/kson-keyless-json/">Livecoding</a>
+		<a id="forkme_banner" href="https://github.com/mbarkhau/kson">GitHub</a>
 
 		<a id="kson_logo" href="https://mbarkhau.github.io/kson"></a>
-		<h1 id="project_tagline">Keystripped Schemafied Object Notation</h1>
+		<h1 id="project_tagline">Keyless Schemæ Object Notation</h1>
 
 		<section id="downloads">
 			<a class="zip_download_link" href="https://github.com/mbarkhau/kson/zipball/master">Download this project</a>
@@ -163,12 +189,12 @@ section > div {
 	<p>
 		<span>JSON document size:</span>
 		<span class="ke-json-doc-bytes"></span>
-		<span>bytes/item</span>
+		<span>bytes</span>
 	</p>
 	<p>
 		<span>KSON document size:</span>
 		<span class="ke-kson-doc-bytes"></span>
-		<span>bytes/item</span>
+		<span>bytes</span>
 	</p>
 	<p>
 		<span>JSON Size per item:</span>
@@ -185,61 +211,42 @@ section > div {
 		<span class="ke-breakeven-bytes"></span>
 		<span>bytes</span>
 	</p>
-	<p>
-		<span>JSON Decode Time: </span>
-		<span class="ke-time-result ke-json-decode-time"></span>
-		<span>ms</span>
-	</p>
-	<p>
-		<span>KSON Decode Time: </span>
-		<span class="ke-time-result ke-kson-decode-time"></span>
-		<span>ms</span>
-	</p>
-	<p>
-		<span>JSON Encode Time: </span>
-		<span class="ke-time-result ke-json-encode-time"></span>
-		<span>ms</span>
-	</p>
-	<p>
-		<span>KSON Encode Time: </span>
-		<span class="ke-time-result ke-kson-encode-time"></span>
-		<span>ms</span>
-	</p>
+
 	<div class="ke-bench">
 		<div class="ke-labels">
-			<div class="ke-stat-bar-label">json decode time</div>
-			<div class="ke-stat-bar-label">kson decode time</div>
 			<div class="ke-stat-bar-label">json encode time</div>
-			<div class="ke-stat-bar-label">kson encode time</div>
+			<div class="ke-stat-bar-label">json decode time</div>
 			<div class="ke-stat-bar-label">json net latency</div>
-			<div class="ke-stat-bar-label">kson net latency</div>
 			<div class="ke-stat-bar-label">json total time</div>
+			<div class="ke-stat-bar-label">kson encode time</div>
+			<div class="ke-stat-bar-label">kson decode time</div>
+			<div class="ke-stat-bar-label">kson net latency</div>
 			<div class="ke-stat-bar-label">kson total time</div>
 		</div>
 		<div class="ke-bars">
-			<div class="ke-stat-bar ke-json-decode-time">
-				<div class="ke-stat-bar-val">123ms</div><div class="ke-stat-bar-err"></div>
-			</div>
-			<div class="ke-stat-bar ke-kson-decode-time">
-				<div class="ke-stat-bar-val">123ms</div><div class="ke-stat-bar-err"></div>
-			</div>
 			<div class="ke-stat-bar ke-json-encode-time">
-				<div class="ke-stat-bar-val">123ms</div><div class="ke-stat-bar-err"></div>
+				<div class="ke-stat-bar-val">ms</div><div class="ke-stat-bar-err"></div>
 			</div>
-			<div class="ke-stat-bar ke-kson-encode-time">
-				<div class="ke-stat-bar-val">123ms</div><div class="ke-stat-bar-err"></div>
+			<div class="ke-stat-bar ke-json-decode-time">
+				<div class="ke-stat-bar-val">ms</div><div class="ke-stat-bar-err"></div>
 			</div>
 			<div class="ke-stat-bar ke-json-net-latency">
-				<div class="ke-stat-bar-val">123ms</div>
-			</div>
-			<div class="ke-stat-bar ke-kson-net-latency">
-				<div class="ke-stat-bar-val">123ms</div>
+				<div class="ke-stat-bar-val">ms</div>
 			</div>
 			<div class="ke-stat-bar ke-json-net-total-latency">
-				<div class="ke-stat-bar-val">123ms</div>
+				<div class="ke-stat-bar-val">ms</div>
+			</div>
+			<div class="ke-stat-bar ke-kson-encode-time">
+				<div class="ke-stat-bar-val">ms</div><div class="ke-stat-bar-err"></div>
+			</div>
+			<div class="ke-stat-bar ke-kson-decode-time">
+				<div class="ke-stat-bar-val">ms</div><div class="ke-stat-bar-err"></div>
+			</div>
+			<div class="ke-stat-bar ke-kson-net-latency">
+				<div class="ke-stat-bar-val">ms</div>
 			</div>
 			<div class="ke-stat-bar ke-kson-net-total-latency">
-				<div class="ke-stat-bar-val">123ms</div>
+				<div class="ke-stat-bar-val">ms</div>
 			</div>
 		</div>
 	</div>

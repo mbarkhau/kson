@@ -1,39 +1,7 @@
 /* Slate Theme for GitHub Pages by Jason Costello, @jsncostello */
 
-/* MeyerWeb Reset */
-
-html, body, div, span, applet, object, iframe,
-h1, p, blockquote, a, em, img, b, u, i,
-center, label, footer, header, section {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font: inherit;
-	vertical-align: baseline;
-}
-footer, header, section {display: block;}
-
 /* Theme Styles */
-body {
-	box-sizing: border-box;
-	color: #000;
-	background: #222;
-	font: 17px/1.7em "Open Sans", Tahoma, Verdana, Segoe, sans-serif;
-	-webkit-font-smoothing: antialiased;
-}
 
-h1 {
-	margin: 10px 0;
-	font-weight: 700;
-	color: #111;
-	font-family: "Open Sans", Tahoma, Verdana, Segoe, sans-serif;
-	letter-spacing: -1px;
-}
-
-h1 {font-size: 36px; font-weight: 700;}
-
-p {margin: 10px auto 15px auto;}
-b {font-weight: bold; font-size: 1.03em;}
 footer p {color: #FFF;}
 
 a {color: #07D; text-decoration: none;}
@@ -79,43 +47,22 @@ header {
 	padding: 50px 10px 30px 10px;
 }
 
-#forkme_banner {
-	display: block;
-	position: absolute;
-	top:0;
-	right: 10px;
-	z-index: 10;
-	padding: 10px 50px 10px 10px;
-	color: #FFF;
-	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAM1BMVEUAAAD///////////////////////////////////////////////////////////////+3leKCAAAAEHRSTlMAv2DP7xCAQN8wnyCvj1BwndsiLgAAASZJREFUKM+NkllyxCAMRNl3sO5/2rTEMAaSj7TLCzx3SwWo/8qURCzd8y/mg6NXOp40s9G1YGLolqDm91xMJLNGtWBo60HDHlYtspY/49vUPS36Av+nK9Q1qpEdmI/Ro0uMywoM8iG90VIQU2Wzo6QY7woIIiqzL+7ZHlhjRpPDs8nT0CkjU5FT2zTfdi81ZocX5cRpnKXplhRHhlRQ7qL2xQWLYW9sQrAT62fEfuEWHnTeETEXt5xmj62QruDLqma1n4cCyqDKT0UN3H70mWuqksWesZrthswqkJSoczYUpRRasAQDbqHju+GduZw2zZfg7Dhzyoq/Zv3Fw0n0lAd3GC1cC20UvHFL3SVALiF/73ociT4vndUp/6R3RaP6Q9UEVtyP9A8KAxqyp7DqowAAAABJRU5ErkJggg==) #0090ff no-repeat 95% 50%;
-	font-weight: 700;
-	box-shadow: 0 0 10px rgba(0,0,0,.5);
-	border-bottom-left-radius: 2px;
-	border-bottom-right-radius: 2px;
-	visibility: visible;
+#livecoding_banner {
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAAeCAMAAACGwcfRAAAAnFBMVEUAAAD+/v7+/v7+/v7////+/v7////+/v7////+/v7////+/v7+/v7+/v7+/v7////////////+/v7+/v7+/v7////////+/v7+/v7+/v7////+/v7+/v7+/v7////////////+/v7+/v7+/v7+/v7+/v7////////+/v7+/v7+/v7+/v7+/v7////+/v7+/v7+/v7+/v7+/v7////8Y6QAAAAAM3RSTlMAlrncAfwE+fHmFe7qo29gGg302ckIzbSnmnl1UEhCMRDSrI9qXUA6LSgh1cVkvYaEg1oy7CZdAAABTklEQVQ4y42TV5KDMBBEBWiQRM5gTHDO3jT3v9saWIzxFqG/RqpXdDeSiM1xjviecF+aI4UTlMgcSThAhqlF55H3ZnuaVH12mSIbzwxNMuquHhKrxgM4EVM60QHSWSoIu2oqMCYkQQjs1X+S5htALpW0mmU4PAzyDUNvUfZJJ1WQyT9hs1tC0PhqVgQY3FcduWLopw5plWD2LHjeClz3SCW9tPkvcKVP8rQ1MHpx15Y+wsfe/Ytktx2tNTxquf1Gh6TKf6TEYaLOq2Zx1fFM37rXH74CWuQbl/Vyg3Czw4E/T4/mztX1JsRiex4/TQs/u3MdI0PhafPup92uJ8ky16bI6dchDHmODEGKSOkkkHm6bgihczSUV0VF3yPDvfoQVVUNTDIiKntuO8fcHSGPsHjOOX4Ng5rPne5N3VgxBO4MXEudYmRDUU18l05e9AtFVSpZbBLMGQAAAABJRU5ErkJggg==) #000 no-repeat 90% 55%;
 }
 
-#project_tagline {
-	color: #FFF;
-	letter-spacing: 0;
-	font-size: 23px;
-	font-weight: 300;
-	background: none;
-	text-shadow: #111 0px 0px 10px;
-	position: relative;
-	left: 170px;
-	bottom: 85px;
-	width: 250px;
+#forkme_banner {
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAM1BMVEUAAAD///////////////////////////////////////////////////////////////+3leKCAAAAEHRSTlMAv2DP7xCAQN8wnyCvj1BwndsiLgAAASZJREFUKM+NkllyxCAMRNl3sO5/2rTEMAaSj7TLCzx3SwWo/8qURCzd8y/mg6NXOp40s9G1YGLolqDm91xMJLNGtWBo60HDHlYtspY/49vUPS36Av+nK9Q1qpEdmI/Ro0uMywoM8iG90VIQU2Wzo6QY7woIIiqzL+7ZHlhjRpPDs8nT0CkjU5FT2zTfdi81ZocX5cRpnKXplhRHhlRQ7qL2xQWLYW9sQrAT62fEfuEWHnTeETEXt5xmj62QruDLqma1n4cCyqDKT0UN3H70mWuqksWesZrthswqkJSoczYUpRRasAQDbqHju+GduZw2zZfg7Dhzyoq/Zv3Fw0n0lAd3GC1cC20UvHFL3SVALiF/73ociT4vndUp/6R3RaP6Q9UEVtyP9A8KAxqyp7DqowAAAABJRU5ErkJggg==) #08F no-repeat 90% 50%;
 }
 
 #downloads {
 	position: absolute;
+	visibility: visible;
 	width: 110px;
 	z-index: 10;
 	bottom: -40px;
 	right: 0;
 	height: 70px;
-	visibility: visible;
 }
 
 .zip_download_link {
@@ -148,18 +95,6 @@ header {
 #main_content > p {
 	text-align: justify;
 	max-width: 45em;
-}
-
-/* Custom Styles */
-
-#kson_logo {
-	display: block;
-	position: relative;
-	left: 0px;
-	top: 0px;
-	background: url(../images/kson-logo-128.png) #ED4;
-	width: 128px;
-	height: 128px;
 }
 
 /* Example widget styles */
@@ -198,7 +133,8 @@ section > div {
 }
 
 .ke-controls {
-	height: 40px;
+	margin: 1em;
+	height: 32px;
 	position: relative;
 }
 .ke-example-controls {
@@ -220,6 +156,11 @@ section > div {
 	right: 160px;
 }
 .ke-controls .ke-ctrl-derive {
+	position: absolute;
+	right: 0;
+}
+
+.ke-controls .ke-ctrl-run-benchmark {
 	position: absolute;
 	right: 0;
 }
