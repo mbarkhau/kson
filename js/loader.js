@@ -1,8 +1,10 @@
 (function() {
 	var DEBUG = document.location.hostname != 'mbarkhau.github.io';
-	window.load_scripts = function (script_sources, callback_name) {
-		var loaded_scripts = {};
 
+	var added_scripts = {};
+	var loaded_scripts = {};
+
+	window.load_scripts = function (script_sources, callback_name) {
 		for (var i = 0; i < script_sources.length; i++) {
 			var src_url = script_sources[i];
 			var loaded_callback = (function (src_url) {
@@ -14,23 +16,34 @@
 							all_loaded && loaded_scripts[script_sources[i]]
 						);
 					};
-					console.log(all_loaded, callback_name, loaded_scripts);
+					// console.log(all_loaded, callback_name, loaded_scripts);
 					if (all_loaded) {
 						window[callback_name]();
 					}
 				};
 			})(src_url);
+
 			if (loaded_scripts[src_url]) {
 				loaded_callback();
-			} else {
+			}
+
+			if (added_scripts[src_url] && !loaded_scripts[src_url]) {
+				added_scripts[src_url].addEventListener(
+					'load', loaded_callback
+				);
+			}
+
+			if (!added_scripts[src_url]) {
 				var script = document.createElement('script');
+				added_scripts[src_url] = script;
 				script.async = 'async';
 				script.type = "text/javascript";
 				script.addEventListener('load', loaded_callback);
 				if (DEBUG && src_url.slice(0, 2) == 'js') {
-					src_url += "?cb=" + Math.random();
+					script.src = src_url + "?cb=" + Math.random();
+				} else {
+					script.src = src_url;
 				}
-				script.src = src_url;
 				document.body.appendChild(script);
 			}
 		};
