@@ -10,7 +10,7 @@
 	function init_script_overhead() {
 		jQuery.ajax({
 			'method': 'GET',
-			'url': "/js/kson.min.js",
+			'url': "js/kson.min.js",
 			'dataType': "text"			// prevents script evaluation
 		}).done(
 			// TODO (mbarkhau 2016-01-02):
