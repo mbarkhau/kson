@@ -125,8 +125,8 @@
 
 		var fn_codes = [
 			"KSON.stringify(parsed, root_schema_id);",
-			"KSON.parse(raw_kson);",
 			"JSON.stringify(parsed);",
+			"KSON.parse(raw_kson);",
 			"JSON.parse(raw_json);",
 		];
 
@@ -134,8 +134,8 @@
 		$('.ke-time-result').text("-");
 
 		var s3 = mk_bench_step(setup, fn_codes[3], 'json-decode-time');
-		var s2 = mk_bench_step(setup, fn_codes[2], 'json-encode-time', s3);
-		var s1 = mk_bench_step(setup, fn_codes[1], 'kson-decode-time', s2);
+		var s2 = mk_bench_step(setup, fn_codes[2], 'kson-decode-time', s3);
+		var s1 = mk_bench_step(setup, fn_codes[1], 'json-encode-time', s2);
 		var s0 = mk_bench_step(setup, fn_codes[0], 'kson-encode-time', s1);
 		setTimeout(s0, 50);   // start the chain
 	}
