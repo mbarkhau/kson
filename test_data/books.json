@@ -1,0 +1,640 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 541,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "CatKQL9-oi4C",
+   "etag": "rtJWitz6sCM",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/CatKQL9-oi4C",
+   "volumeInfo": {
+    "title": "Web Services mit REST",
+    "authors": [
+     "Leonard Richardson",
+     "Sam Ruby"
+    ],
+    "publisher": "O'Reilly Germany",
+    "publishedDate": "2007-10",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "3897217279"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9783897217270"
+     }
+    ],
+    "pageCount": 482,
+    "printType": "BOOK",
+    "categories": [
+     "Web services"
+    ],
+    "contentVersion": "preview-1.0.0",
+    "imageLinks": {
+     "smallThumbnail": "http://bks1.books.google.de/books?id=CatKQL9-oi4C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://bks1.books.google.de/books?id=CatKQL9-oi4C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "de",
+    "previewLink": "http://books.google.de/books?id=CatKQL9-oi4C&pg=PT72&dq=json&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.de/books?id=CatKQL9-oi4C&dq=json&hl=&source=gbs_api",
+    "canonicalVolumeLink": "http://books.google.de/books/about/Web_Services_mit_REST.html?hl=&id=CatKQL9-oi4C"
+   },
+   "saleInfo": {
+    "country": "DE",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "DE",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://books.google.de/books/reader?id=CatKQL9-oi4C&hl=&printsec=frontcover&output=reader&source=gbs_api",
+    "accessViewStatus": "SAMPLE"
+   },
+   "searchInfo": {
+    "textSnippet": "In einer echten Anwendung würden Sie <b>json</b>.js lokal abspeichern, statt es jedes <br>  Mal von <b>json</b>.org herunterzuladen. --&gt; &lt;script type=&quot;text/javascript&quot; src=&quot;http://<br>  www.<b>json</b>.org/<b>json</b>.js&quot;&gt; &lt;/script&gt; &lt;script type=&quot;text/javascript&quot;&gt; array = [3, &quot;drei&quot;] <b>...</b>"
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "nxbspNIb8swC",
+   "etag": "WA9lMG0VyOI",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/nxbspNIb8swC",
+   "volumeInfo": {
+    "title": "Rieber, Dynamische Webseiten in der Praxis; PR",
+    "authors": [
+     "Philipp Rieber"
+    ],
+    "publisher": "Hüthig Jehle Rehm",
+    "publishedDate": "2007",
+    "description": "Auf der CD-ROM-Beil.: Kompletter Quellcode des Beispiel-Projekts, alle Beispielscripte des Crashkurses, Apache, PHP, MySQL, phpMyAdmin, Postfix, swiftmailer, JUpload.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "3826617827"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9783826617829"
+     }
+    ],
+    "pageCount": 800,
+    "printType": "BOOK",
+    "contentVersion": "0.1.1.0.preview.0",
+    "imageLinks": {
+     "smallThumbnail": "http://bks9.books.google.de/books?id=nxbspNIb8swC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://bks9.books.google.de/books?id=nxbspNIb8swC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "de",
+    "previewLink": "http://books.google.de/books?id=nxbspNIb8swC&pg=PA658&dq=json&hl=&cd=2&source=gbs_api",
+    "infoLink": "http://books.google.de/books?id=nxbspNIb8swC&dq=json&hl=&source=gbs_api",
+    "canonicalVolumeLink": "http://books.google.de/books/about/Rieber_Dynamische_Webseiten_in_der_Praxi.html?hl=&id=nxbspNIb8swC"
+   },
+   "saleInfo": {
+    "country": "DE",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "DE",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://books.google.de/books/reader?id=nxbspNIb8swC&hl=&printsec=frontcover&output=reader&source=gbs_api",
+    "accessViewStatus": "SAMPLE"
+   },
+   "searchInfo": {
+    "textSnippet": "Beispielsweise mit einem Login-System, eigenen Schriftfarben für jeden Chat-<br>  Teilnehmer, einer Datenbank statt einer Textdatei als zentralem <br>  Nachrichtenspeicher, einer Konversations-History usw. 25.4 <b>JSON</b> Kurz nach <br>  Beginn des großen <b>...</b>"
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "A-pfhNsgm8AC",
+   "etag": "UBzHX+PbSEc",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/A-pfhNsgm8AC",
+   "volumeInfo": {
+    "title": "JavaScript Missing Manual",
+    "authors": [
+     "David Sawyer McFarland",
+     "Stefan Fröhlich"
+    ],
+    "publisher": "O'Reilly Germany",
+    "publishedDate": "2008-12",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "3897218798"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9783897218796"
+     }
+    ],
+    "pageCount": 576,
+    "printType": "BOOK",
+    "categories": [
+     "JavaScript (Computer program language)"
+    ],
+    "contentVersion": "preview-1.0.0",
+    "imageLinks": {
+     "smallThumbnail": "http://bks7.books.google.de/books?id=A-pfhNsgm8AC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://bks7.books.google.de/books?id=A-pfhNsgm8AC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "de",
+    "previewLink": "http://books.google.de/books?id=A-pfhNsgm8AC&pg=PA457&dq=json&hl=&cd=3&source=gbs_api",
+    "infoLink": "http://books.google.de/books?id=A-pfhNsgm8AC&dq=json&hl=&source=gbs_api",
+    "canonicalVolumeLink": "http://books.google.de/books/about/JavaScript_Missing_Manual.html?hl=&id=A-pfhNsgm8AC"
+   },
+   "saleInfo": {
+    "country": "DE",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "DE",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://books.google.de/books/reader?id=A-pfhNsgm8AC&hl=&printsec=frontcover&output=reader&source=gbs_api",
+    "accessViewStatus": "SAMPLE"
+   },
+   "searchInfo": {
+    "textSnippet": "<b>JSON</b> Ein weiteres gebräuchliches Format für die Datenkommunikation mit dem <br>  Server heißt <b>JSON</b>: JavaScript Object <b>...</b> <b>JSON</b> ist ein Datenformat, das in <br>  JavaScript geschrieben und insofern mit XML vergleichbar ist (siehe Kasten auf <br>  Seite <b>...</b>"
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "_jQtCL5_vAcC",
+   "etag": "6uLM3W8n3s0",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/_jQtCL5_vAcC",
+   "volumeInfo": {
+    "title": "RESTful Java with JAX-RS",
+    "authors": [
+     "Bill Burke"
+    ],
+    "publisher": "O'Reilly Media",
+    "publishedDate": "2010-01-25",
+    "description": "Learn how to design and develop distributed web services in Java using RESTful architectural principals and the JAX-RS specification in Java EE 6. With this hands-on reference, you'll focus on implementation rather than theory, and discover why the RESTful method is far better than technologies like CORBA and SOAP. It's easy to get started with services based on the REST architecture. RESTful Java with JAX-RS includes a technical guide that explains REST and JAX-RS, how they work, and when to use them. With the RESTEasy workbook that follows, you get step-by-step instructions for installing, configuring, and running several working JAX-RS examples using the JBoss RESTEasy implementation of JAX-RS. Work on the design of a distributed RESTful interface, and develop it in Java as a JAX-RS service Dispatch HTTP requests in JAX-RS, and learn how to extract information from them Deploy your web services within Java Enterprise Edition using the Application class, Default Component Model, EJB Integration, Spring Integration, and JPA Discover several options for securing your web services Learn how to implement RESTful design patterns using JAX-RS Write RESTful clients in Java using libraries and frameworks such as java.net.URL, Apache HTTP Client, and RESTEasy Proxy",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "144938305X"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9781449383053"
+     }
+    ],
+    "pageCount": 314,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 5,
+    "ratingsCount": 1,
+    "contentVersion": "0.2.0.0.preview.3",
+    "imageLinks": {
+     "smallThumbnail": "http://bks5.books.google.de/books?id=_jQtCL5_vAcC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://bks5.books.google.de/books?id=_jQtCL5_vAcC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.de/books?id=_jQtCL5_vAcC&pg=PA82&dq=json&hl=&cd=4&source=gbs_api",
+    "infoLink": "http://books.google.de/books?id=_jQtCL5_vAcC&dq=json&hl=&source=gbs_api",
+    "canonicalVolumeLink": "http://books.google.de/books/about/RESTful_Java_with_JAX_RS.html?hl=&id=_jQtCL5_vAcC"
+   },
+   "saleInfo": {
+    "country": "DE",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "DE",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": true
+    },
+    "pdf": {
+     "isAvailable": true
+    },
+    "webReaderLink": "http://books.google.de/books/reader?id=_jQtCL5_vAcC&hl=&printsec=frontcover&output=reader&source=gbs_api",
+    "accessViewStatus": "SAMPLE"
+   },
+   "searchInfo": {
+    "textSnippet": "Although not required by the JAX-RS specification, many JAX-RS <br>  implementations use Jettison to support marshalling JAXB annotated classes to <br>  and from <b>JSON</b>. <b>JSON</b> is a much simpler format than XML. Objects are enclosed <br>  in curly <b>...</b>"
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "Va-HxHRndAUC",
+   "etag": "iqY9QKayBXQ",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/Va-HxHRndAUC",
+   "volumeInfo": {
+    "title": "Python 3 - Intensivkurs",
+    "subtitle": "",
+    "authors": [
+     "Mark Pilgrim"
+    ],
+    "publisher": "Springer DE",
+    "publishedDate": "2010-01-01",
+    "description": "Python ist eine übersichtliche Programmiersprache, die objektorientierte und strukturierte Programmierung ermöglicht sowie Aspekt-orientierte und funktionale Features besitzt. In den letzten Jahren kamen immer mehr Python-programmierte Anwendungen hinzu. Mit Python 3 steht nun eine Version zur Verfügung, die wesentliche Änderungen zu früheren Versionen enthält.In Python 3 - Intensivkurs gibt der amerikanische Python-Spezialist Mark Pilgrim eine praxisorientierte Einführung, die die Werkzeuge und Programmiermöglichkeiten von Python 3 umfassend erläutert. Jedes Kapitel beginnt mit einem lauffähigen Codebeispiel, das ausführlich analysiert wird. Dabei steht die unmittelbare praktische Anwendung und die Realisierung von Projekten im Vordergrund. Eine ausführliche Fallstudie zeigt die Portierung von Python 2 zu Python 3. Von Florian Wollenschein kongenial übersetzt, bietet dieses Fachbuch Einsteigern ebenso wie versierten Programmierern und Entwicklern eine umfassende Darstellung aller Features von Python.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "3642043771"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9783642043772"
+     }
+    ],
+    "pageCount": 351,
+    "printType": "BOOK",
+    "categories": [
+     "COMPUTERS"
+    ],
+    "contentVersion": "0.2.4.0.preview.3",
+    "imageLinks": {
+     "smallThumbnail": "http://bks3.books.google.de/books?id=Va-HxHRndAUC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://bks3.books.google.de/books?id=Va-HxHRndAUC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "de",
+    "previewLink": "http://books.google.de/books?id=Va-HxHRndAUC&pg=PA223&dq=json&hl=&cd=5&source=gbs_api",
+    "infoLink": "http://books.google.de/books?id=Va-HxHRndAUC&dq=json&hl=&source=gbs_api",
+    "canonicalVolumeLink": "http://books.google.de/books/about/Python_3_Intensivkurs.html?hl=&id=Va-HxHRndAUC"
+   },
+   "saleInfo": {
+    "country": "DE",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 44.99,
+     "currencyCode": "EUR"
+    },
+    "retailPrice": {
+     "amount": 44.99,
+     "currencyCode": "EUR"
+    },
+    "buyLink": "http://books.google.de/books?id=Va-HxHRndAUC&dq=json&hl=&buy=&source=gbs_api"
+   },
+   "accessInfo": {
+    "country": "DE",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.de/books/download/Python_3_Intensivkurs-sample-epub.acsm?id=Va-HxHRndAUC&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "pdf": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.de/books/download/Python_3_Intensivkurs-sample-pdf.acsm?id=Va-HxHRndAUC&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "webReaderLink": "http://books.google.de/books/reader?id=Va-HxHRndAUC&hl=&printsec=frontcover&output=reader&source=gbs_api",
+    "accessViewStatus": "SAMPLE"
+   },
+   "searchInfo": {
+    "textSnippet": "„<b>JSON</b>“ steht für „JavaScript Object Notation“; doch lassen Sie sich von dem <br>  Namen nicht täuschen – <b>JSON</b> ist <b>...</b> Wie das pickle- Modul besitzt auch das <b>json</b>-<br>  Modul Funktionen zum Serialisieren von Datenstrukturen, Speichern der <b>...</b>"
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "DjeQbDuoS4wC",
+   "etag": "ORfD2/Q2LkE",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/DjeQbDuoS4wC",
+   "volumeInfo": {
+    "title": "Ajax in Action",
+    "subtitle": "",
+    "authors": [
+     "Darren James, Eric Pascarello, Dave Crane",
+     "Dave Crane",
+     "Eric Pascarello",
+     "Darren James"
+    ],
+    "publisher": "Pearson Deutschland GmbH",
+    "publishedDate": "2006",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "3827324149"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9783827324146"
+     }
+    ],
+    "pageCount": 687,
+    "printType": "BOOK",
+    "averageRating": 4,
+    "ratingsCount": 8,
+    "contentVersion": "0.0.1.0.preview.0",
+    "imageLinks": {
+     "smallThumbnail": "http://bks8.books.google.de/books?id=DjeQbDuoS4wC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://bks8.books.google.de/books?id=DjeQbDuoS4wC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "de",
+    "previewLink": "http://books.google.de/books?id=DjeQbDuoS4wC&pg=PA223&dq=json&hl=&cd=6&source=gbs_api",
+    "infoLink": "http://books.google.de/books?id=DjeQbDuoS4wC&dq=json&hl=&source=gbs_api",
+    "canonicalVolumeLink": "http://books.google.de/books/about/Ajax_in_Action.html?hl=&id=DjeQbDuoS4wC"
+   },
+   "saleInfo": {
+    "country": "DE",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "DE",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://books.google.de/books/reader?id=DjeQbDuoS4wC&hl=&printsec=frontcover&output=reader&source=gbs_api",
+    "accessViewStatus": "SAMPLE"
+   },
+   "searchInfo": {
+    "textSnippet": "Die Methode showPopupO fehlt hier, da sie mit der in Listing 5.7 identisch ist. <br>  Wie sieht <b>JSON</b> aber tatsächlich aus? Listing 5.10 zeigt unsere Daten für den <br>  Planeten Erde als <b>JSON</b>-String. Listing 5.10: earth.<b>json</b> I &quot;planet&quot;: ( &quot;name&quot;: &quot;earth<br>  &quot;, <b>...</b>"
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "TXxpuZQuktQC",
+   "etag": "4+UUY3oWYlE",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/TXxpuZQuktQC",
+   "volumeInfo": {
+    "title": "Das Website Handbuch",
+    "subtitle": "Komplett in Farbe, Programmierung und Design",
+    "authors": [
+     "Christian Wenz",
+     "Tobias Hauser",
+     "Florence Maurice"
+    ],
+    "publisher": "Pearson Deutschland GmbH",
+    "publishedDate": "2010-12",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "3827246962"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9783827246967"
+     }
+    ],
+    "pageCount": 960,
+    "printType": "BOOK",
+    "contentVersion": "0.2.0.0.preview.0",
+    "imageLinks": {
+     "smallThumbnail": "http://bks8.books.google.de/books?id=TXxpuZQuktQC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://bks8.books.google.de/books?id=TXxpuZQuktQC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "de",
+    "previewLink": "http://books.google.de/books?id=TXxpuZQuktQC&pg=PA581&dq=json&hl=&cd=7&source=gbs_api",
+    "infoLink": "http://books.google.de/books?id=TXxpuZQuktQC&dq=json&hl=&source=gbs_api",
+    "canonicalVolumeLink": "http://books.google.de/books/about/Das_Website_Handbuch.html?hl=&id=TXxpuZQuktQC"
+   },
+   "saleInfo": {
+    "country": "DE",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "DE",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://books.google.de/books/reader?id=TXxpuZQuktQC&hl=&printsec=frontcover&output=reader&source=gbs_api",
+    "accessViewStatus": "SAMPLE"
+   },
+   "searchInfo": {
+    "textSnippet": "13.1 <b>JSON</b> In Kapitel 6 wurde <b>JSON</b> kurz vorgestellt. Die JavaScript Object <br>  Notation ist ein spezielles Format, mit dem Ajax-Anwendungen sehr einfach <br>  JavaScript-Arrays und -Objekte zwischen Client und Server austauschen kann. <br>  Die gute <b>...</b>"
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "KyAHa6gmgUsC",
+   "etag": "02XYuI8MpDo",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/KyAHa6gmgUsC",
+   "volumeInfo": {
+    "title": "JavaScript",
+    "subtitle": "Das umfassende Referenzwerk",
+    "authors": [
+     "David Flanagan"
+    ],
+    "publisher": "O'Reilly Germany",
+    "publishedDate": "2007-04",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "3897214911"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9783897214910"
+     }
+    ],
+    "pageCount": 1112,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 4.5,
+    "ratingsCount": 3,
+    "contentVersion": "0.1.0.0.preview.0",
+    "imageLinks": {
+     "smallThumbnail": "http://bks1.books.google.de/books?id=KyAHa6gmgUsC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://bks1.books.google.de/books?id=KyAHa6gmgUsC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "de",
+    "previewLink": "http://books.google.de/books?id=KyAHa6gmgUsC&pg=PA539&dq=json&hl=&cd=8&source=gbs_api",
+    "infoLink": "http://books.google.de/books?id=KyAHa6gmgUsC&dq=json&hl=&source=gbs_api",
+    "canonicalVolumeLink": "http://books.google.de/books/about/JavaScript.html?hl=&id=KyAHa6gmgUsC"
+   },
+   "saleInfo": {
+    "country": "DE",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "DE",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://books.google.de/books/reader?id=KyAHa6gmgUsC&hl=&printsec=frontcover&output=reader&source=gbs_api",
+    "accessViewStatus": "SAMPLE"
+   },
+   "searchInfo": {
+    "textSnippet": "Das umfassende Referenzwerk David Flanagan. Die Datencodierung als <br>  JavaScript-Objekt- und -Array-Literale wird als <b>JSON</b> oder JavaScript Object <br>  Notation4 bezeichnet. Hier sehen Sie XML- und <b>JSON</b>-Codierungen der <br>  gleichen Daten: &lt;!"
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "tZGWBFZJgnAC",
+   "etag": "prFjdz8xHi8",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/tZGWBFZJgnAC",
+   "volumeInfo": {
+    "title": "Das Google Web Toolkit: GWT",
+    "authors": [
+     "Michael Seemann"
+    ],
+    "publisher": "O'Reilly Germany",
+    "publishedDate": "2007",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "3897217198"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9783897217195"
+     }
+    ],
+    "pageCount": 253,
+    "printType": "BOOK",
+    "categories": [
+     "Google Web toolkit"
+    ],
+    "averageRating": 4.5,
+    "ratingsCount": 2,
+    "contentVersion": "preview-1.0.0",
+    "imageLinks": {
+     "smallThumbnail": "http://bks5.books.google.de/books?id=tZGWBFZJgnAC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://bks5.books.google.de/books?id=tZGWBFZJgnAC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "de",
+    "previewLink": "http://books.google.de/books?id=tZGWBFZJgnAC&pg=PA227&dq=json&hl=&cd=9&source=gbs_api",
+    "infoLink": "http://books.google.de/books?id=tZGWBFZJgnAC&dq=json&hl=&source=gbs_api",
+    "canonicalVolumeLink": "http://books.google.de/books/about/Das_Google_Web_Toolkit_GWT.html?hl=&id=tZGWBFZJgnAC"
+   },
+   "saleInfo": {
+    "country": "DE",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "DE",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://books.google.de/books/reader?id=tZGWBFZJgnAC&hl=&printsec=frontcover&output=reader&source=gbs_api",
+    "accessViewStatus": "SAMPLE"
+   },
+   "searchInfo": {
+    "textSnippet": "<b>JSON</b> (JavaScript Object Notation – http://www.<b>json</b>.org/) ist ein einfaches <br>  Datenaustauschformat, das primitive Datentypen, <b>...</b> Das GWT enthält einige <br>  Klassen, die den Umgang mit <b>JSON</b> in Java ermöglichen und zur Laufzeit in <br>  JavaScript <b>...</b>"
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "YGW81pNV4Z0C",
+   "etag": "T0yPeBFTtTM",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/YGW81pNV4Z0C",
+   "volumeInfo": {
+    "title": "Ajax Hacks",
+    "authors": [
+     "Bruce W Perry"
+    ],
+    "publisher": "O'Reilly Germany",
+    "publishedDate": "2006",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "3897214679"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9783897214675"
+     }
+    ],
+    "pageCount": 445,
+    "printType": "BOOK",
+    "categories": [
+     "JavaScript (Computer program language)"
+    ],
+    "contentVersion": "0.0.1.0.preview.0",
+    "imageLinks": {
+     "smallThumbnail": "http://bks0.books.google.de/books?id=YGW81pNV4Z0C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://bks0.books.google.de/books?id=YGW81pNV4Z0C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "de",
+    "previewLink": "http://books.google.de/books?id=YGW81pNV4Z0C&pg=PA32&dq=json&hl=&cd=10&source=gbs_api",
+    "infoLink": "http://books.google.de/books?id=YGW81pNV4Z0C&dq=json&hl=&source=gbs_api",
+    "canonicalVolumeLink": "http://books.google.de/books/about/Ajax_Hacks.html?hl=&id=YGW81pNV4Z0C"
+   },
+   "saleInfo": {
+    "country": "DE",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "DE",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://books.google.de/books/reader?id=YGW81pNV4Z0C&hl=&printsec=frontcover&output=reader&source=gbs_api",
+    "accessViewStatus": "SAMPLE"
+   },
+   "searchInfo": {
+    "textSnippet": "<b>JSON</b>-Format. empfangen. Ajax kann Daten in der effizienten und <br>  leistungsfähigen JavaScript Object Notation empfangen. Wie wäre es <b>...</b> Nun, es <br>  ist möglich, und zwar mit einem Format namens JavaScript Object Notation (<br>  <b>JSON</b>). Dieser <b>...</b>"
+   }
+  }
+ ]
+}

@@ -1,0 +1,29 @@
+[
+    "[]schema", 
+    "movies-item", 
+    [
+        "id", 
+        "title", 
+        "rating", 
+        "year", 
+        "description", 
+        "description_plain", 
+        "cover_big", 
+        "cover_small", 
+        "genres"
+    ], 
+    [
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        "prefix:http\\://moviesdb.brm.us/files/movies/covers/big/|suffix:.jpg", 
+        "prefix:http\\://moviesdb.brm.us/files/movies/covers/small/|suffix:.jpg", 
+        "[]"
+    ], 
+    "movies-content", ["movies", "size"], ["[]movies-item", 0],
+    "movies-status", ["code", "text"], [0, 0],
+    "movies", ["status", "content"], ["movies-status", "movies-content"]
+]

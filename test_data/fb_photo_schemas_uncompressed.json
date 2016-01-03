@@ -1,0 +1,81 @@
+[
+    {
+        "id": "uc-fb-paging",
+        "fields": ["next"],
+        "meta": [0]
+    },
+    {
+        "id": "uc-fb-cursor-paging",
+        "fields": ["cursors", "next"],
+        "meta": ["uc-fb-cursors", 0 ]
+    },
+    {
+        "id": "uc-fb-comment-tag",
+        "fields": ["id", "length", "name", "offset", "type"],
+        "meta": [0, 0, 0, 0, 0]
+    },
+    {
+        "id": "uc-fb-comment-user",
+        "fields": ["id", "name"],
+        "meta": [0, 0]
+    },
+    {
+        "id": "uc-fb-photo-image",
+        "fields": ["width", "height", "source"],
+        "meta": [0, 0, 0]
+    },
+    {
+        "id": "uc-fb-like",
+        "fields": ["id", "name"],
+        "meta": [0, 0]
+    },
+    {
+        "id": "uc-fb-photo-comment",
+        "fields": [
+            "id", "from", "message", "message_tags", "can_remove",
+            "created_time", "like_count", "user_likes"
+        ],
+        "meta": [
+            0, "uc-fb-comment-user", 0, "[]uc-fb-comment-tag", 0,
+            "iso8601", 0, 0
+        ]
+    },
+    {
+        "id": "uc-fb-likes",
+        "fields": ["data", "paging"],
+        "meta": ["[]uc-fb-like", "uc-fb-paging"]
+    },
+    {
+        "id": "uc-fb-photo-comments",
+        "fields": ["data", "paging"],
+        "meta": ["[]uc-fb-photo-comment", "uc-fb-paging"]
+    },
+    {
+        "id": "uc-fb-photo-source",
+        "fields": ["category", "id", "name"],
+        "meta": [0, 0, 0]
+    },
+    {
+        "id": "uc-fb-cursors",
+        "fields": ["after", "before"],
+        "meta": [0, 0]
+    },
+    {
+        "id": "uc-fb-photo",
+        "fields": [
+            "id", "from", "picture", "source", "height", "width",
+            "images", "link", "icon", "created_time", "updated_time",
+            "comments", "likes"
+        ], 
+        "meta": [
+            0, "uc-fb-photo-source", 0, 0, 0, 0,
+            "[]uc-fb-photo-image", 0, 0, "iso8601", "iso8601",
+            "uc-fb-photo-comments", "uc-fb-likes"
+        ]
+    },
+    {
+        "id": "uc-fb-photos",
+        "fields": ["data", "paging"],
+        "meta": ["[]uc-fb-photo", "uc-fb-cursor-paging"]
+    }
+]

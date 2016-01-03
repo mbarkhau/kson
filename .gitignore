@@ -1,1 +1,13 @@
-*sublime*
+*.swp
+*.swo
+*.pyc
+py/.cache
+py/__pycache__
+node-*
+*.sublime*
+*.tar.gz
+npm*
+node_modules
+*.egg-info
+dist/
+build/

@@ -1,0 +1,81 @@
+[
+    {
+        "id": "c-fb-paging",
+        "fields": ["next"],
+        "meta": ["prefix:https\\://graph.facebook.com/"]
+    },
+    {
+        "id": "c-fb-cursor-paging",
+        "fields": ["cursors", "next"],
+        "meta": ["c-fb-cursors", 0 ]
+    },
+    {
+        "id": "c-fb-comment-tag",
+        "fields": ["id", "length", "name", "offset", "type"],
+        "meta": [0, 0, 0, 0, 0]
+    },
+    {
+        "id": "c-fb-comment-user",
+        "fields": ["id", "name"],
+        "meta": [0, 0]
+    },
+    {
+        "id": "c-fb-photo-image",
+        "fields": ["width", "height", "source"],
+        "meta": [0, 0, "prefix:http|suffix:.jpg"]
+    },
+    {
+        "id": "c-fb-like",
+        "fields": ["id", "name"],
+        "meta": [0, 0]
+    },
+    {
+        "id": "c-fb-photo-comment",
+        "fields": [
+            "id", "from", "message", "message_tags", "can_remove",
+            "created_time", "like_count", "user_likes"
+        ],
+        "meta": [
+            0, "c-fb-comment-user", 0, "[]c-fb-comment-tag", "bool",
+            "date|int36", 0, "bool"
+        ]
+    },
+    {
+        "id": "c-fb-likes",
+        "fields": ["data", "paging"],
+        "meta": ["[]c-fb-like", "c-fb-paging"]
+    },
+    {
+        "id": "c-fb-photo-comments",
+        "fields": ["data", "paging"],
+        "meta": ["[]c-fb-photo-comment", "c-fb-paging"]
+    },
+    {
+        "id": "c-fb-photo-source",
+        "fields": ["category", "id", "name"],
+        "meta": [0, 0, 0]
+    },
+    {
+        "id": "c-fb-cursors",
+        "fields": ["after", "before"],
+        "meta": [0, 0]
+    },
+    { 
+        "id": "c-fb-photo",
+        "fields": [
+            "id", "from", "picture", "source", "height", "width",
+            "images", "link", "icon", "created_time", "updated_time",
+            "comments", "likes"
+        ], 
+        "meta": [
+            0, "c-fb-photo-source", 0, 0, 0, 0,
+            "[]fb-photo-image", 0, 0, "date|int36", "date|int36",
+            "c-fb-photo-comments", "c-fb-likes"
+        ]
+    },
+    {
+        "id": "c-fb-photos",
+        "fields": ["data", "paging"],
+        "meta": ["[]c-fb-photo", "c-fb-cursor-paging"]
+    }
+]

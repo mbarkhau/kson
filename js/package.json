@@ -1,0 +1,28 @@
+{
+  "name": "kson",
+  "preferGlobal": false,
+  "version": "0.1.0",
+  "author": "Manuel Barkhau <mbarkhau@gmail.com>",
+  "description": "Keystripped Schemafied Object Notation",
+  "contributors": [],
+  "bin": {},
+  "scripts": {},
+  "main": "kson.js",
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/mbarkhau/kson.git"
+  },
+  "keywords": ["kson", "json", "parser", "schema"],
+  "dependencies" : {},
+  "analyze": false,
+  "devDependencies": {
+    "benchmark"    :  "1.0.x",
+    "microtime"    :  "0.3.x",
+    "uglify-js"    :  "2.2.x"
+  },
+  "bundledDependencies": [],  
+  "license": "BSD",
+  "engines": {
+    "node": ">=0.6"
+  }
+}
