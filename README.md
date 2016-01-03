@@ -1,5 +1,5 @@
-KSON: Keystripped Schemafied Object Notation
-============================================
+KSON: Keyless Schemæ Object Notation
+====================================
 
 KSON is a simple data interchange format based on JSON. Its serialized
 representation doesn't contain the redundant keys of typical json
@@ -230,19 +230,3 @@ Development
     $ make test
     $ make bench
     $ make minify
-
-
-TODO:
-
-  Show compressed size in stats area
-  https://github.com/nodeca/pako
-
-  Use last loaded schema as the root in examples
-
-  Add examples showing nested schemas
-
-  Convert readme to .rst
-
-  call update_stats onchange of textareas?
-
-  expand spec to documet wire format
