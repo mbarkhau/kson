@@ -47,6 +47,13 @@ header {
 	padding: 50px 10px 30px 10px;
 }
 
+#livecoding_banner,
+#forkme_banner {
+	box-shadow: 0 0 10px rgba(0,0,0,.5);
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+}
+
 #livecoding_banner {
 	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAAeCAMAAACGwcfRAAAAnFBMVEUAAAD+/v7+/v7+/v7////+/v7////+/v7////+/v7////+/v7+/v7+/v7+/v7////////////+/v7+/v7+/v7////////+/v7+/v7+/v7////+/v7+/v7+/v7////////////+/v7+/v7+/v7+/v7+/v7////////+/v7+/v7+/v7+/v7+/v7////+/v7+/v7+/v7+/v7+/v7////8Y6QAAAAAM3RSTlMAlrncAfwE+fHmFe7qo29gGg302ckIzbSnmnl1UEhCMRDSrI9qXUA6LSgh1cVkvYaEg1oy7CZdAAABTklEQVQ4y42TV5KDMBBEBWiQRM5gTHDO3jT3v9saWIzxFqG/RqpXdDeSiM1xjviecF+aI4UTlMgcSThAhqlF55H3ZnuaVH12mSIbzwxNMuquHhKrxgM4EVM60QHSWSoIu2oqMCYkQQjs1X+S5htALpW0mmU4PAzyDUNvUfZJJ1WQyT9hs1tC0PhqVgQY3FcduWLopw5plWD2LHjeClz3SCW9tPkvcKVP8rQ1MHpx15Y+wsfe/Ytktx2tNTxquf1Gh6TKf6TEYaLOq2Zx1fFM37rXH74CWuQbl/Vyg3Czw4E/T4/mztX1JsRiex4/TQs/u3MdI0PhafPup92uJ8ky16bI6dchDHmODEGKSOkkkHm6bgihczSUV0VF3yPDvfoQVVUNTDIiKntuO8fcHSGPsHjOOX4Ng5rPne5N3VgxBO4MXEudYmRDUU18l05e9AtFVSpZbBLMGQAAAABJRU5ErkJggg==) #000 no-repeat 90% 55%;
 }
@@ -117,10 +124,14 @@ section > div {
 	padding: 0;
 	position: absolute;
 }
-.ke-editor > .ke-schema-wrap {width: 50%; height: 400px;}
-.ke-editor .ke-schema-wrap .CodeMirror {width: 100%; height: 400px;}
-.ke-editor > .ke-data-wrap {width: 50%; height: 400px;}
-.ke-editor .ke-data-wrap .CodeMirror {width: 100%; height: 400px;}
+.ke-editor > .ke-schema-wrap,
+.ke-editor > .ke-data-wrap {
+	width: 50%; height: 400px;
+}
+.ke-editor .ke-schema-wrap .CodeMirror,
+.ke-editor .ke-data-wrap .CodeMirror {
+	width: 100%; height: 400px;
+}
 
 .ke-editor .ke-data-wrap {
 	top: 0px;
@@ -137,14 +148,17 @@ section > div {
 	height: 32px;
 	position: relative;
 }
+
+.ke-network-controls,
 .ke-example-controls {
 	position: absolute;
-	right: 320px;
+	right: 0px;
 }
 
+.ke-network-controls .ke-ctrl,
 .ke-example-controls .ke-ctrl {
 	display: block;
-	float: right;
+	float: left;
 }
 
 .ke-controls > div {
@@ -153,23 +167,37 @@ section > div {
 
 .ke-controls .ke-ctrl-convert {
 	position: absolute;
-	right: 160px;
+	/* right: 160px; */
+	left: 0;
 }
 .ke-controls .ke-ctrl-derive {
+	display: none;  /* until implemented */
 	position: absolute;
-	right: 0;
+	left: 0;
 }
 
 .ke-controls .ke-ctrl-run-benchmark {
 	position: absolute;
-	right: 0;
+	left: 0;
+}
+
+.ke-controls .ke-ctrl-doc-size-label {
+	position: absolute;
+	left: 270px;
+}
+
+.ke-controls .ke-ctrl-doc-size {
+	position: absolute;
+	margin-top: 4px;
+	left: 180px;
+	text-align: right;
+	width: 80px;
 }
 
 .ke-controls .ke-ctrl {
 	cursor: pointer;
 	background: #EEE;
 	text-align: center;
-	width: 143px;
 	margin-right: 5px;
 	margin-bottom: 8px;
 
@@ -184,6 +212,9 @@ section > div {
 	-ms-user-select: none;
 	user-select: none;
 	transition: all 100ms ease;
+}
+.ke-controls > .ke-ctrl {
+	width: 143px;
 }
 .ke-controls .ke-ctrl:hover {
 	background-color: #FFF;
@@ -207,7 +238,7 @@ section > div {
 }
 
 .ke-controls .ke-ctrl.ke-ctrl-switcher {
-	width: 23px;
+	padding: 0 8px;
 	margin-right: 5px;
 }
 
@@ -245,7 +276,7 @@ section > div {
 
 .ke-stats {
 	padding: 0 4px;
-	border: 1px solid #ccc;
+	border: 1px solid #CCC;
 	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 	background: #FFF;
 	border-radius: 3px;
@@ -261,22 +292,19 @@ section > div {
 	width: 11em;
 }
 .ke-stats p span:nth-child(2) {
-	width: 5em;
-	text-align: right;
+	margin-left: -.25em;
 }
 .ke-stats p span:nth-child(3) {
 }
 
 .ke-bench {
 	display: table;
-	height: 222px;
 	width: 100%;
-	font-family: monospace;
 }
 
 .ke-labels {
 	display: table-cell;
-	width: 9em;
+	width: 11em;
 }
 
 .ke-bars {
@@ -284,16 +312,15 @@ section > div {
 }
 
 .ke-stat-bar-label {
-	height: 19px;
-	font-size: 13px;
-	line-height: 15px;
+	height: 28px;
+	line-height: 28px;
 }
 
 .ke-stat-bar {
 	width: 100%;
-	height: 19px;
-	font-size: 11px;
-	line-height: 16px;
+	height: 28px;
+	font-size: 16px;
+	line-height: 20px;
 }
 
 .ke-stat-bar-val,
@@ -302,12 +329,11 @@ section > div {
 	transition: width 300ms;
 }
 
-
 .ke-stat-bar-val {
 	display: inline-block;
 	width: 0;
-	height: 13px;
-	background: #ED4;
+	height: 20px;
+	background: #FD3;
 	border-radius: 1px;
 	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -328,7 +354,6 @@ section > div {
 	margin-top: 4px;
 	background: black;
 }
-
 
 .ke-stat-bar-label-val {
 	display: inline-block;

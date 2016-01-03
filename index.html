@@ -38,7 +38,6 @@ h1 {
 	color: #111;
 	font-size: 36px;
 	font-weight: 700;
-	font-family: "Open Sans", Tahoma, Verdana, Segoe, sans-serif;
 	letter-spacing: -1px;
 }
 b {font-weight: bold; font-size: 1.03em;}
@@ -77,15 +76,12 @@ a {
 
 	color: #FFF;
 	font-weight: 700;
-	box-shadow: 0 0 10px rgba(0,0,0,.5);
-	border-bottom-left-radius: 2px;
-	border-bottom-right-radius: 2px;
 }
 
 #livecoding_banner {
 	right: 150px;
 	padding: 10px 65px 10px 10px;
-	background: #000;
+	background-color: #000;
 }
 
 #forkme_banner {
@@ -170,8 +166,7 @@ section > div {
 </p>
 
 <div class="ke-controls">
-	<div class="ke-example-controls">
-	</div>
+	<div class="ke-example-controls"></div>
 	<div class="ke-ctrl ke-ctrl-convert">KSON.stringify</div>
 	<div class="ke-ctrl ke-ctrl-derive">Derive Schema</div>
 </div>
@@ -182,70 +177,80 @@ section > div {
 	<span class="ke-infotag ke-it-schema">Schema</span>
 	<span class="ke-infotag ke-it-state">JSON</span>
 </div>
+
+
 <div class="ke-controls">
 	<div class="ke-ctrl ke-ctrl-run-benchmark">Run Benchmark</div>
+	<input class="ke-ctrl-doc-size" id="doc-size" type="number" min="1" value="100">
+	<label class="ke-ctrl-doc-size-label" for="doc-size">Element Count</label>
+	<div class="ke-network-controls"></div>
 </div>
 <div class="ke-stats">
 	<p>
-		<span>JSON document size:</span>
-		<span class="ke-json-doc-bytes"></span>
-		<span>bytes</span>
-	</p>
-	<p>
-		<span>KSON document size:</span>
-		<span class="ke-kson-doc-bytes"></span>
-		<span>bytes</span>
-	</p>
-	<p>
-		<span>JSON Size per item:</span>
-		<span class="ke-json-bytes-per-item"></span>
-		<span>bytes/item</span>
-	</p>
-	<p>
-		<span>KSON Size per item:</span>
+		<span>KSON Size/Item</span>
 		<span class="ke-kson-bytes-per-item"></span>
 		<span>bytes/item</span>
 	</p>
-	<p title="The point after which KSON is saving bandwidth.">
-		<span>Break-even: </span>
-		<span class="ke-breakeven-bytes"></span>
-		<span>bytes</span>
+	<p>
+		<span>JSON Size/Item</span>
+		<span class="ke-json-bytes-per-item"></span>
+		<span>bytes/item</span>
 	</p>
 
 	<div class="ke-bench">
 		<div class="ke-labels">
-			<div class="ke-stat-bar-label">json encode time</div>
-			<div class="ke-stat-bar-label">json decode time</div>
-			<div class="ke-stat-bar-label">json net latency</div>
-			<div class="ke-stat-bar-label">json total time</div>
-			<div class="ke-stat-bar-label">kson encode time</div>
-			<div class="ke-stat-bar-label">kson decode time</div>
-			<div class="ke-stat-bar-label">kson net latency</div>
-			<div class="ke-stat-bar-label">kson total time</div>
+			<div class="ke-stat-bar-label">KSON Net Latency</div>
+			<div class="ke-stat-bar-label">JSON Net Latency</div>
+			<div class="ke-stat-bar-label">KSON Net Latency (gz)</div>
+			<div class="ke-stat-bar-label">JSON Net Latency (gz)</div>
+
+			<div class="ke-stat-bar-label">KSON Encode Time</div>
+			<div class="ke-stat-bar-label">JSON Encode Time</div>
+			<div class="ke-stat-bar-label">KSON Decode Time</div>
+			<div class="ke-stat-bar-label">JSON Decode Time</div>
+
+			<div class="ke-stat-bar-label">KSON Total Time</div>
+			<div class="ke-stat-bar-label">JSON Total Time</div>
+			<div class="ke-stat-bar-label">KSON Total Time (gz)</div>
+			<div class="ke-stat-bar-label">JSON Total Time (gz)</div>
 		</div>
 		<div class="ke-bars">
-			<div class="ke-stat-bar ke-json-encode-time">
-				<div class="ke-stat-bar-val">ms</div><div class="ke-stat-bar-err"></div>
-			</div>
-			<div class="ke-stat-bar ke-json-decode-time">
-				<div class="ke-stat-bar-val">ms</div><div class="ke-stat-bar-err"></div>
+			<div class="ke-stat-bar ke-kson-net-latency">
+				<div class="ke-stat-bar-val">ms</div>
 			</div>
 			<div class="ke-stat-bar ke-json-net-latency">
 				<div class="ke-stat-bar-val">ms</div>
 			</div>
-			<div class="ke-stat-bar ke-json-net-total-latency">
+			<div class="ke-stat-bar ke-kson-net-gz-latency">
 				<div class="ke-stat-bar-val">ms</div>
 			</div>
+			<div class="ke-stat-bar ke-json-net-gz-latency">
+				<div class="ke-stat-bar-val">ms</div>
+			</div>
+
 			<div class="ke-stat-bar ke-kson-encode-time">
+				<div class="ke-stat-bar-val">ms</div><div class="ke-stat-bar-err"></div>
+			</div>
+			<div class="ke-stat-bar ke-json-encode-time">
 				<div class="ke-stat-bar-val">ms</div><div class="ke-stat-bar-err"></div>
 			</div>
 			<div class="ke-stat-bar ke-kson-decode-time">
 				<div class="ke-stat-bar-val">ms</div><div class="ke-stat-bar-err"></div>
 			</div>
-			<div class="ke-stat-bar ke-kson-net-latency">
+			<div class="ke-stat-bar ke-json-decode-time">
+				<div class="ke-stat-bar-val">ms</div><div class="ke-stat-bar-err"></div>
+			</div>
+
+			<div class="ke-stat-bar ke-kson-total-latency">
 				<div class="ke-stat-bar-val">ms</div>
 			</div>
-			<div class="ke-stat-bar ke-kson-net-total-latency">
+			<div class="ke-stat-bar ke-json-total-latency">
+				<div class="ke-stat-bar-val">ms</div>
+			</div>
+			<div class="ke-stat-bar ke-kson-total-gz-latency">
+				<div class="ke-stat-bar-val">ms</div>
+			</div>
+			<div class="ke-stat-bar ke-json-total-gz-latency">
 				<div class="ke-stat-bar-val">ms</div>
 			</div>
 		</div>

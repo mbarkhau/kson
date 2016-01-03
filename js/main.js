@@ -5,7 +5,7 @@
 	var data_editor;
 	var schema_editor;
 	var kson_script_overhead;
-	var BENCH_DOC_SIZE = 10000;
+	var doc_elem_count = 100;
 
 	function init_script_overhead() {
 		jQuery.ajax({
@@ -58,11 +58,8 @@
 			bench_data = [bench_data];
 		}
 		var bench_data_len = bench_data.length;
+		var grow_by_elems = doc_elem_count - bench_data_len;
 
-		var cur_size = JSON.stringify(bench_data).length;
-		var grow_by_elems = Math.floor(
-			(BENCH_DOC_SIZE - cur_size) / (cur_size / bench_data.length)
-		);
 		for (var i = 0; i < grow_by_elems; i++) {
 			var rand_idx = Math.floor(Math.random() * bench_data_len);
 			bench_data.push(bench_data[rand_idx]);
@@ -71,22 +68,23 @@
 			bench_data = bench_data.slice(0, bench_data_len + grow_by_elems)
 		}
 
+		var raw_kson_bench_data = KSON.stringify(
+			bench_data, global.root_schema_id
+		);
+		var raw_json_bench_data = JSON.stringify(bench_data);
 		return {
-			raw_json: JSON.stringify(data),
-			pretty_json: kson_util.json_str(data),
-			// gz_json: pako.deflate(kson_util.str2ab(raw_json)),
-
-			raw_kson: raw_kson,
-			pretty_kson: kson_util.json_str(JSON.parse(raw_kson)),
-			// gz_kson: pako.deflate(kson_util.str2ab(raw_kson)),
-
 			parsed: data,
 			schema_init_code: schema_init_code,
 
-			raw_json_bench_data: JSON.stringify(bench_data),
-			raw_kson_bench_data: KSON.stringify(
-				bench_data, global.root_schema_id
-			)
+			raw_kson: raw_kson,
+			pretty_kson: kson_util.json_str(JSON.parse(raw_kson)),
+			raw_json: JSON.stringify(data),
+			pretty_json: kson_util.json_str(data),
+
+			raw_kson_bench_data: raw_kson_bench_data,
+			raw_json_bench_data: raw_json_bench_data,
+			gz_kson: pako.deflate(kson_util.str2ab(raw_kson_bench_data)),
+			gz_json: pako.deflate(kson_util.str2ab(raw_json_bench_data))
 		}
 	}
 
@@ -106,21 +104,17 @@
 		var itemcount = current_data.parsed.length;
 		var json_bpi = json_doc_bytes / itemcount;
 		var kson_bpi = kson_doc_bytes / itemcount;
-		var breakeven_itemcount = overhead / (json_bpi - kson_bpi);
-		var breakeven_bytes = json_bpi * breakeven_itemcount;
 
-		$('.ke-json-doc-bytes').text(json_doc_bytes);
-		$('.ke-kson-doc-bytes').text(kson_doc_bytes);
-		$('.ke-json-bytes-per-item').text(json_bpi.toFixed(2));
 		$('.ke-kson-bytes-per-item').text(kson_bpi.toFixed(2));
-		$('.ke-breakeven-bytes').text(parseInt(breakeven_bytes, 10));
+		$('.ke-json-bytes-per-item').text(json_bpi.toFixed(2));
 
 		$('.ke-stats').css('visibility', 'visible');
 	}
 
 	function reset_example(example) {
 		data_state = 'json';
-		$(".ke-ctrl-switcher").removeClass('ke-ctrl-active');
+		$(".ke-example-controls .ke-ctrl-switcher")
+			.removeClass('ke-ctrl-active');
 		example.control_node.addClass('ke-ctrl-active');
 		$('.ke-ctrl-convert').text("KSON.stringify");
 
@@ -132,24 +126,22 @@
 		);
 
 		update_stats();
+		kson_update_graphs(kson_reset_bench_values());
 	}
 
 	function init_examples() {
 		var control_container = $(".ke-example-controls");
-		for (var i = KSON_EXAMPLES.length; i-- > 0;) {
+		for (var i = 0; i < KSON_EXAMPLES.length; i++) {
 			var example = KSON_EXAMPLES[i];
 			example.control_node = $("<div>" + (i + 1) + "</div>");
 			$(example.control_node)
 				.addClass('ke-ctrl')
 				.addClass('ke-ctrl-switcher');
 			control_container.append(example.control_node);
-			var click_handler = (function(example) {
-				return function() {
-					reset_example(example);
-				};
-			})(example);
-			example.control_node.click(click_handler)
-		};
+			example.control_node.click(
+				$.proxy(reset_example, null, example)
+			);
+		}
 	}
 
 	// 'js/benchmark.js',
@@ -162,7 +154,7 @@
 			editors_node.find(".ke-data-wrap")[0],
 			{mode: {name: "javascript", json: true}, lineWrapping: true}
 		);
-		window.test_test = data_editor;
+		global.test_test = data_editor;
 		schema_editor = CodeMirror(
 			editors_node.find(".ke-schema-wrap")[0],
 			{mode: "javascript", lineWrapping: true}
@@ -173,6 +165,7 @@
 	function init_controls() {
 		var convert_ctrl = $('.ke-ctrl-convert');
 		var data_info_tag = $('.ke-it-state');
+		var doc_size_ctrl = $('.ke-ctrl-doc-size')
 
 		convert_ctrl.click(function() {
 			current_data = parse_editors();
@@ -191,6 +184,12 @@
 				console.error("Unknown editor state '" + data_state + "'");
 			}
 			update_stats();
+		});
+
+		doc_size_ctrl.change(function() {
+			doc_elem_count = parseInt(doc_size_ctrl.val());
+			update_stats();
+			kson_update_graphs(kson_recalc_bench_values());
 		});
 	};
 
