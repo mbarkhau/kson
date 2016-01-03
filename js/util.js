@@ -47,9 +47,16 @@
 		});
 		return ua;
 	}
+	function deflate(data) {
+		// level 1 is the default compression level used by nginx
+		// http://nginx.org/en/docs/http/ngx_http_gzip_module.html#gzip_comp_level
+		return pako.deflate(unicodeStringToTypedArray(data), {level: 1});
+	}
+
 	global.kson_util = {
 		json_str: json_str,
 		compile_example_init_code: compile_example_init_code,
-		str2ab: unicodeStringToTypedArray
+		str2ab: unicodeStringToTypedArray,
+		deflate: deflate
 	};
 }(this));

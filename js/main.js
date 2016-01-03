@@ -83,8 +83,8 @@
 
 			raw_kson_bench_data: raw_kson_bench_data,
 			raw_json_bench_data: raw_json_bench_data,
-			gz_kson: pako.deflate(kson_util.str2ab(raw_kson_bench_data)),
-			gz_json: pako.deflate(kson_util.str2ab(raw_json_bench_data))
+			gz_kson: kson_util.deflate(raw_kson_bench_data),
+			gz_json: kson_util.deflate(raw_json_bench_data)
 		}
 	}
 
