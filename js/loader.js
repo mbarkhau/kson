@@ -53,6 +53,7 @@
 		"//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js",
 		"//cdnjs.cloudflare.com/ajax/libs/pako/0.2.8/pako_deflate.min.js",
 		"js/example_data.js",
+		"js/schema_detection.js",
 		"js/kson.js",
 		"js/util.js",
 		"js/main.js"

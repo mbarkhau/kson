@@ -47,6 +47,7 @@
 		});
 		return ua;
 	}
+
 	function deflate(data) {
 		// level 1 is the default compression level used by nginx
 		// http://nginx.org/en/docs/http/ngx_http_gzip_module.html#gzip_comp_level
