@@ -50,8 +50,8 @@
 	};
 	var main_deps = [
 		"js/codemirror.js",   // TODO (mbarkhau 2015-12-27): update lib
-		"//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/pako/0.2.8/pako_deflate.min.js",
+		"https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js",
+		"https://cdnjs.cloudflare.com/ajax/libs/pako/0.2.8/pako_deflate.min.js",
 		"js/example_data.js",
 		"js/schema_detection.js",
 		"js/kson.js",
@@ -60,8 +60,8 @@
 	];
 	load_scripts(main_deps, 'kson_main');
 	load_scripts(main_deps.concat([
-		"//cdnjs.cloudflare.com/ajax/libs/benchmark/1.0.0/benchmark.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/pako/0.2.8/pako_deflate.min.js",
+		"https://cdnjs.cloudflare.com/ajax/libs/benchmark/1.0.0/benchmark.min.js",
+		"https://cdnjs.cloudflare.com/ajax/libs/pako/0.2.8/pako_deflate.min.js",
 		"js/bench_suite.js"
 	]), 'kson_init_benchmarks');
 }());
