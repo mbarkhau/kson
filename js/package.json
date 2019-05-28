@@ -18,7 +18,7 @@
   "devDependencies": {
     "benchmark"    :  "1.0.x",
     "microtime"    :  "0.3.x",
-    "uglify-js"    :  "2.2.x"
+    "uglify-js"    :  "2.8.x"
   },
   "bundledDependencies": [],  
   "license": "BSD",
